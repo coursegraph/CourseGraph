@@ -6,7 +6,8 @@
   "scripts": {
     "pretest": "tslint -c tslint.json -p tsconfig.json 'src/**/*.tsx'",
     "test": "jest",
-    "build": "webpack"
+    "build": "webpack",
+    "docs": "typedoc --out ./doc/ --theme minimal src/index.tsx"
   },
   "repository": {
     "type": "git",
@@ -35,6 +36,7 @@
     "ts-jest": "^22.4.6",
     "tslint": "^5.10.0",
     "tslint-react": "^3.6.0",
+    "typedoc": "^0.11.1",
     "typescript": "^2.9.2",
     "webpack": "^4.12.2",
     "webpack-cli": "^3.0.8"
