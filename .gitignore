@@ -36,11 +36,19 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Distribution directory
+dist/
+
+# Webstorm generated
+/.idea
 # TypeScript v1 declaration files
 typings/
 
 # Optional npm cache directory
 .npm
+
+# npm genrated
+/package-lock.json
 
 # Optional eslint cache
 .eslintcache

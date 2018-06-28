@@ -1,0 +1,33 @@
+{
+  "name": "coursegraph",
+  "version": "1.0.0",
+  "description": "The course search software offered by UCSC (and most colleges) kind of sucks, and there is no easy way to explore classes and majors without a counselor – and the counselors could probably use some help too!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeijiEmery/CourseGraph.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/SeijiEmery/CourseGraph/issues"
+  },
+  "homepage": "https://github.com/SeijiEmery/CourseGraph#readme",
+  "dependencies": {
+    "@types/react": "^16.4.4",
+    "@types/react-dom": "^16.0.6",
+    "react": "^16.4.1",
+    "react-dom": "^16.4.1"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^5.2.0",
+    "source-map-loader": "^0.2.3",
+    "typescript": "^2.9.2",
+    "webpack": "^4.12.2",
+    "webpack-cli": "^3.0.8"
+  }
+}
