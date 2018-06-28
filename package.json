@@ -4,6 +4,7 @@
   "description": "The course search software offered by UCSC (and most colleges) kind of sucks, and there is no easy way to explore classes and majors without a counselor – and the counselors could probably use some help too!",
   "main": "index.js",
   "scripts": {
+    "pretest": "tslint -c tslint.json -p tsconfig.json 'src/**/*.tsx'",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "webpack"
   },
@@ -26,6 +27,8 @@
   "devDependencies": {
     "awesome-typescript-loader": "^5.2.0",
     "source-map-loader": "^0.2.3",
+    "tslint": "^5.10.0",
+    "tslint-react": "^3.6.0",
     "typescript": "^2.9.2",
     "webpack": "^4.12.2",
     "webpack-cli": "^3.0.8"
