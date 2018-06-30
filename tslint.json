@@ -120,6 +120,9 @@
       "check-separator",
       "check-type",
       "check-typecast"
+    ],
+    "import-name":[
+      false
     ]
   }
 }
