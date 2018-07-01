@@ -1,6 +1,6 @@
 <p align="center">
 
-![coursegraph](./logo.png)
+![coursegraph](./assets/logo.png)
 
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest) [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 
@@ -106,7 +106,7 @@ We will follow Airbnb's [JavaScript Style Guide](https://github.com/airbnb/javas
 
 * **Seiji Emery** ([SeijiEmery](https://github.com/SeijiEmery) ) -
 * **Yanwen Xu** ([RaiderSoap](https://github.com/RaiderSoap) ) - :floppy_disk: Back-End Developer
-* **Patrick** () -
+* **Patrick ???** (???) -
 * **Sharad Shrestha** ([sharad97](https://github.com/sharad97) ) -
 * **Wendy Liang** ([wendyrliang](https://github.com/wendyrliang) ) -
 * **Ka Ho Tran** ([Kutaho](https://github.com/Kutaho) ) -
