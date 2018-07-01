@@ -106,7 +106,7 @@ We will follow Airbnb's [JavaScript Style Guide](https://github.com/airbnb/javas
 
 * **Seiji Emery** ([SeijiEmery](https://github.com/SeijiEmery) ) -
 * **Yanwen Xu** ([RaiderSoap](https://github.com/RaiderSoap) ) - :floppy_disk: Back-End Developer
-* **Patrick ???** (???) -
+* **Patrick Lauderdale** ([ThePatrickLauderdale](https://github.com/ThePatrickLauderdale)) -
 * **Sharad Shrestha** ([sharad97](https://github.com/sharad97) ) -
 * **Wendy Liang** ([wendyrliang](https://github.com/wendyrliang) ) -
 * **Ka Ho Tran** ([Kutaho](https://github.com/Kutaho) ) -
