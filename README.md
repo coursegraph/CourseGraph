@@ -6,6 +6,8 @@
 
 </p>
 
+## Introduction
+
 The course search software offered by UCSC (and most colleges) kind of sucks, and there is no easy way to explore classes and majors without a counselor – and the counselors could probably use some help too!
 
 Solution? CourseGraph, a webapp that will:
