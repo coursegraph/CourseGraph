@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-export interface Props {
+export interface IProps {
   name: string;
   enthusiasmLevel?: number;
 }
 
-class Hello extends React.Component<Props, object> {
-  render() {
+class Hello extends React.Component<IProps, object> {
+  public render() {
     const { name, enthusiasmLevel = 1 } = this.props;
 
     if (enthusiasmLevel <= 0) {
