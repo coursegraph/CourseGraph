@@ -11,6 +11,7 @@ const bodyParser = require('body-parser');
 const logger = require('morgan');
 const MongoStore = require('connect-mongo')(session);
 const mongoose = require('mongoose');
+const passport = require('passport');
 const expressValidator = require('express-validator');
 
 /**
@@ -20,6 +21,7 @@ const expressValidator = require('express-validator');
 /**
  * API keys and Passport configuration.
  */
+const passportConfig = require('./config/passport');
 
 /**
  * Create Express server.
@@ -35,10 +37,9 @@ mongoose.connection.on('error', (err) => {
     console.log('MongoDB connection error. Please make sure MongoDB is running.');
     process.exit();
 });
-const Cat = mongoose.model('Cat', {name: String});
-
-const kitty = new Cat({name: 'Zildjian'});
-kitty.save().then(() => console.log('meow'));
+// const Cat = mongoose.model('Cat', {name: String});
+// const kitty = new Cat({name: 'Zildjian'});
+// kitty.save().then(() => console.log('meow'));
 
 /**
  * Express configuration.
@@ -59,13 +60,25 @@ app.use(session({
         autoReconnect: true,
     })
 }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 /**
- * Primary app routes.
+ * Static routes.
  */
 const staticPath = path.join(__dirname, '/');
 app.use(express.static(staticPath));
 
+/**
+ * Primary app routes.
+ */
+app.get('/login', (req, res) => {
+    res.send('Login page using react');
+});
+
+app.get('/secret', passportConfig.isAuthenticated, (req, res) => {
+    res.send('secret');
+});
 
 /**
  * Start Express server.
