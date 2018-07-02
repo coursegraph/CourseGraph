@@ -7,7 +7,8 @@
     "pretest": "tslint -c tslint.json -p tsconfig.json 'src/**/*.tsx'",
     "test": "jest",
     "build": "webpack",
-    "docs": "typedoc --out ./doc/ --theme minimal src/index.tsx"
+    "docs": "typedoc --out ./doc/ --theme minimal src/index.tsx",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
