@@ -121,7 +121,7 @@
       "check-type",
       "check-typecast"
     ],
-    "import-name":[
+    "import-name": [
       false
     ]
   }
