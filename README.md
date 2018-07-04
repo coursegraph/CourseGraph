@@ -70,10 +70,10 @@ npm install
 Running the project is as simple as running
 
 ```
-npm run start
+npm run dev
 ```
 
-This runs the `start` script specified in our `package.json`, and will spawn off a server which reloads the page as we save our files. Typically the server runs at `http://localhost:6666`, but should be automatically opened for you.
+This runs the `dev` script specified in our `package.json`, and will spawn off a server which reloads the page as we save our files. Typically the server runs at `http://localhost:3000`, but should be automatically opened for you.
 
 ## Running the tests
 
@@ -93,10 +93,9 @@ We uses `TSLint`, just a command:
 npm run pretest
 ```
 
-We will follow Airbnb's [JavaScript Style Guide](https://github.com/airbnb/javascript).
-
 ## Built With
 
+* [Next.js](https://nextjs.org/) - A lightweight framework for static and server‑rendered applications.
 * [React](https://reactjs.org) - A JavaScript library for building user interfaces
 * [TypeScript](https://www.typescriptlang.org/) - TypeScript brings you optional static type-checking along with the latest ECMAScript features.
 * [Node.js](https://nodejs.org/en/) - A JavaScript runtime built on Chrome's V8 JavaScript engine.
