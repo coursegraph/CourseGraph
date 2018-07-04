@@ -77,7 +77,7 @@ class PisaSpider(scrapy.Spider):
             # and would ideally like a timestamp somewhere on the outputted data
 
             yield result
-            #yield scrapy.Request(request['url'], callback=self.parse_course_page)
+            # yield scrapy.Request(result['url'], callback=self.parse_course_page)
 
     def parse_course_page(self, response):
         content = response.xpath('//div[@class="panel-body"]')
