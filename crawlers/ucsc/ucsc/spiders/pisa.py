@@ -2,14 +2,17 @@
 import scrapy
 from scrapy.linkextractors import LinkExtractor
 from scrapy.spiders import CrawlSpider, Rule
-from ucsc.items import PisaCourseItem, PisaWebEntry
+from ucsc.items import PisaIndexItem, PisaCourseItem
+import re
 
+site_path = lambda path: '{}/{}'.format(
+    'https://pisa.ucsc.edu/class_search', path)
 
 class PisaSpider(scrapy.Spider):
     name = 'pisa'
     allowed_domains = ['pisa.ucsc.edu']
-    search_url = 'https://pisa.ucsc.edu/class_search/index.php/'
-    start_urls = [search_url]
+    search_url = site_path('index.php')
+    start_urls = [ search_url ]
 
     def parse(self, response):
         yield scrapy.FormRequest(url=self.search_url, 
@@ -36,9 +39,27 @@ class PisaSpider(scrapy.Spider):
         callback=self.parse_course_listings)
 
     def parse_course_listings(self, response):
-        page_links = response.xpath("//a[contains(@id,'class_id_')]")
-        for link in page_links:
-            item = PisaWebEntry()
-            item['title'] = link.xpath('text()').extract()
-            item['url'] = link.xpath('@href').extract()
-            yield item
+        items = response.xpath('//div[contains(@id,"rowpanel")]')
+        for item in items:
+            result = PisaIndexItem()
+            anchor = item.xpath('//a[contains(@id,"class_id_")]')
+            result['url'] = site_path(anchor.xpath('@href').extract()[0])
+
+            # parse course name, title, section
+            title_info = anchor.xpath('text()').extract()[0]
+            match = re.match(r'(\w+\s+\d+)\s+-\s+(\d+)[^\w]+([^\n]+)', title_info)
+            if not match:
+                raise Exception("Failed to parse '%s'"%title_info)
+
+            result['course_name'] = match.group(1)
+            result['course_section'] = match.group(2)
+            result['course_name'] = match.group(3)
+
+            yield result
+            #yield scrapy.Request(request['url'], callback=self.parse_course_page)
+
+    def parse_course_page(self, response):
+        content = response.xpath('//div[@class="panel-body"]')
+        result = PisaCourseItem()
+        result['content'] = str(content.extract())
+        yield result
