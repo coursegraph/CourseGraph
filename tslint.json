@@ -1,7 +1,15 @@
 {
+  "defaultSeverity": "error",
   "extends": [
     "tslint:latest",
-    "tslint-react",
-    "tslint-config-airbnb"
-  ]
+    "tslint-microsoft-contrib"
+  ],
+  "rules": {
+    "missing-jsdoc": false,
+    "export-name": false,
+    "no-default-export": false,
+    "no-relative-imports": false,
+    "no-implicit-dependencies": false,
+    "variable-name": false
+  }
 }
