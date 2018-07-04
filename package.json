@@ -8,8 +8,12 @@
     "build": "next build",
     "start": "next start"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SeijiEmery/CourseGraph.git"
+  },
+  "author": "Course Graph",
   "description": "",
-  "author": "",
   "license": "MIT",
   "dependencies": {
     "next": "^6.1.1",
