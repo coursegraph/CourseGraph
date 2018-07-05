@@ -1,12 +1,12 @@
 import * as React from 'react';
 
-export interface IProps {
+interface IProps {
   name: string;
   enthusiasmLevel?: number;
 }
 
-class Hello extends React.Component<IProps, object> {
-  public render() {
+export class Hello extends React.Component<IProps, object> {
+  public render(): JSX.Element {
     const { name, enthusiasmLevel = 1 } = this.props;
 
     if (enthusiasmLevel <= 0) {
@@ -14,8 +14,8 @@ class Hello extends React.Component<IProps, object> {
     }
 
     return (
-      <div className="hello">
-        <div className="greeting">
+      <div className='hello'>
+        <div className='greeting'>
           Hello {name + getExclamationMarks(enthusiasmLevel)}
         </div>
       </div>
@@ -23,10 +23,6 @@ class Hello extends React.Component<IProps, object> {
   }
 }
 
-export default Hello;
-
-// helpers
-
-function getExclamationMarks(numChars: number) {
+function getExclamationMarks(numChars: number): string {
   return Array(numChars + 1).join('!');
 }

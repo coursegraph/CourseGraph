@@ -1,17 +1,38 @@
 {
+  "compileOnSave": false,
   "compilerOptions": {
-    "noImplicitAny": false,
-    "module": "commonjs",
-    "noEmitOnError": true,
+    "target": "esnext",
+    "module": "esnext",
+    "jsx": "preserve",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
     "removeComments": false,
+    "preserveConstEnums": true,
     "sourceMap": true,
-    "target": "es5",
-    "jsx": "react"
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
+    "lib": [
+      "dom",
+      "es2015",
+      "es2016"
+    ]
   },
   "exclude": [
-    "node_modules"
-  ],
-  "include": [
-    "src/**/*"
+    ".next",
+    "coverage",
+    "node_modules",
+    "**/*.spec.ts",
+    "**/*.spec.tsx",
+    "**/*.test.ts",
+    "**/*.test.tsx",
+    "jest.setup.js",
+    "jest.config.js",
+    "next.config.js"
   ]
 }
