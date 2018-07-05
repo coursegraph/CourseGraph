@@ -1,0 +1,11 @@
+node_modules
+.next
+.idea
+assets
+coverage
+crawlers
+spider
+data
+*.json
+*.md
+yarn.lock

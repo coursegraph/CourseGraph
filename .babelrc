@@ -3,13 +3,21 @@
     "development": {
       "presets": [
         "next/babel",
-        "@zeit/next-typescript/babel"
+        {
+          "preset-env": {
+            "modules": "commonjs"
+          }
+        }
       ]
     },
     "production": {
       "presets": [
         "next/babel",
-        "@zeit/next-typescript/babel"
+        {
+          "preset-env": {
+            "modules": "commonjs"
+          }
+        }
       ]
     },
     "test": {
@@ -21,8 +29,7 @@
               "modules": "commonjs"
             }
           }
-        ],
-        "@zeit/next-typescript/babel"
+        ]
       ]
     }
   }
