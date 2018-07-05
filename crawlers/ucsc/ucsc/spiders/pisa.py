@@ -63,13 +63,12 @@ class PisaSpider(scrapy.Spider):
 
             # parse course name, title, section
             title_info = anchor.xpath('text()').extract()[0]
-            match = re.match(r'(\w+\s+\d+)[^\d]+(\d+)[^\w]+([\w\s]+)', title_info)
+            match = re.match(r'(\w+\s+\d+[A-Z]?)[^\d]+(\d+)[^\w]+([\w\s]*)', title_info)
             if not match:
                 raise Exception("Failed to parse '%s'"%title_info)
             result['course_name'] = match.group(1)
             result['course_section'] = match.group(2)
-            result['course_name'] = match.group(3)
-
+            result['course_title'] = match.group(3)
 
             # grab rest
             rest = item.xpath('div[@class="panel-body"]/div[@class="row"]')
@@ -99,9 +98,9 @@ class PisaSpider(scrapy.Spider):
             return
         self.max_course_entries -= 1
 
-        content = response.xpath('//div[@class="panel-body"]')
+        content = response.xpath('body/div[contains(@class,"panel")]/div[@class="panel-body"]')
         result = PisaCourseItem()
-        result['content'] = str(content.extract())
+        result['raw_content'] = str(content.extract())
         yield result
 
         # TBD: actually parse this and process it, etc...
