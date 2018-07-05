@@ -45,9 +45,9 @@ class PisaSpider(scrapy.Spider):
                   'binds[:session_code]':'', 
                   'rec_start': '0',
                   'rec_dur': '1582'},
-        callback=self.parse_course_listings)
+        callback=self.parse_course_index)
 
-    def parse_course_listings(self, response):
+    def parse_course_index(self, response):
         if self.max_index_entries == 0:
             return
 
