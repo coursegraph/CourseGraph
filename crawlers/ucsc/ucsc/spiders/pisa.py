@@ -63,7 +63,7 @@ class PisaSpider(scrapy.Spider):
 
             # parse course name, title, section
             title_info = anchor.xpath('text()').extract()[0]
-            match = re.match(r'(\w+\s+\d+)\s+-\s+(\d+)[^\w]+([^\n]+)', title_info)
+            match = re.match(r'(\w+\s+\d+)[^\d]+(\d+)[^\w]+([\w\s]+)', title_info)
             if not match:
                 raise Exception("Failed to parse '%s'"%title_info)
             result['course_name'] = match.group(1)
