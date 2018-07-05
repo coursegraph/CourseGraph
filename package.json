@@ -1,42 +1,34 @@
 {
-  "name": "ts-next-starter",
-  "version": "1.0.0",
+  "name": "create-next-example-app",
   "scripts": {
-    "pretest": "tslint  -p tsconfig.json -c tslint.json 'src/**/*'",
+    "dev": "node server/index.js",
+    "pretest": "eslint --ext js --ext jsx **",
     "test": "jest",
-    "dev": "next",
     "build": "next build",
-    "start": "next start"
+    "start": "node server/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SeijiEmery/CourseGraph.git"
-  },
-  "author": "Course Graph",
-  "description": "",
-  "license": "MIT",
   "dependencies": {
-    "next": "^6.1.1",
+    "body-parser": "latest",
+    "express": "^4.16.3",
+    "mongoose": "^5.2.1",
+    "next": "latest",
+    "next-redux-wrapper": "latest",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "react-redux": "5.0.7",
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.5",
+    "redux-thunk": "2.2.0"
   },
   "devDependencies": {
-    "@types/enzyme": "^3.1.11",
-    "@types/jest": "^23.1.4",
-    "@types/next": "^6.0.4",
-    "@types/react": "^16.4.6",
-    "@types/react-dom": "^16.0.6",
-    "@zeit/next-typescript": "^1.1.0",
-    "babel-core": "^7.0.0-bridge.0",
+    "babel-core": "7.0.0-bridge.0",
     "babel-jest": "^23.2.0",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
+    "eslint": "^5.0.1",
+    "eslint-plugin-react": "^7.10.0",
     "jest": "^23.3.0",
     "react-addons-test-utils": "^15.6.2",
-    "react-test-renderer": "^16.4.1",
-    "tslint": "^5.10.0",
-    "tslint-microsoft-contrib": "^5.0.3",
-    "tslint-react": "^3.6.0",
-    "typescript": "^2.9.2"
+    "react-test-renderer": "^16.4.1"
   }
 }
