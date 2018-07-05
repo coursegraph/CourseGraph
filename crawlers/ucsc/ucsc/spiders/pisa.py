@@ -19,9 +19,9 @@ class PisaSpider(scrapy.Spider):
         self.max_index_entries  = 10
         self.max_course_entries = 10
 
-        logger = logging.getLogger('scrapy.spidermiddlewares.httperror')
-        logger.setLevel(logging.WARNING)
-        super(PisaSpider, self).__init__(*args, **kwargs)
+        # logger = logging.getLogger('scrapy.spidermiddlewares.httperror')
+        # logger.setLevel(logging.WARNING)
+        # super(PisaSpider, self).__init__(*args, **kwargs)
 
     def parse(self, response):
         yield scrapy.FormRequest(url=self.search_url, 
@@ -91,7 +91,8 @@ class PisaSpider(scrapy.Spider):
             # and would ideally like a timestamp somewhere on the outputted data
 
             yield result
-            # yield scrapy.Request(result['url'], callback=self.parse_course_page)
+            if self.max_course_entries != 0:
+                yield scrapy.Request(result['url'], callback=self.parse_course_page)
 
     def parse_course_page(self, response):
         if self.max_course_entries == 0:
