@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.idea/
+coverage/
+static/
+spider/
+data/
+assets/
+crawlers/
+*.json
+*.md
