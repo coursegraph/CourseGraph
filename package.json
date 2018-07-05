@@ -1,26 +1,24 @@
 {
-  "name": "ts-next-starter",
-  "version": "1.0.0",
+  "name": "create-next-example-app",
   "scripts": {
-    "pretest": "eslint **/*",
-    "test": "jest",
     "dev": "node server/index.js",
+    "pretest": "eslint --ext js --ext jsx **",
+    "test": "jest",
     "build": "next build",
     "start": "node server/index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SeijiEmery/CourseGraph.git"
-  },
-  "author": "Course Graph",
-  "description": "",
-  "license": "MIT",
   "dependencies": {
     "body-parser": "latest",
     "express": "^4.16.3",
+    "mongoose": "^5.2.1",
     "next": "latest",
+    "next-redux-wrapper": "latest",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "react-redux": "5.0.7",
+    "redux": "^4.0.0",
+    "redux-devtools-extension": "^2.13.5",
+    "redux-thunk": "2.2.0"
   },
   "devDependencies": {
     "babel-core": "7.0.0-bridge.0",
@@ -28,8 +26,6 @@
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^5.0.1",
-    "eslint-config-google": "^0.9.1",
-    "eslint-config-jest-enzyme": "^6.0.2",
     "eslint-plugin-react": "^7.10.0",
     "jest": "^23.3.0",
     "react-addons-test-utils": "^15.6.2",
