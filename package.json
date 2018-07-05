@@ -4,9 +4,9 @@
   "scripts": {
     "pretest": "tslint  -p tsconfig.json -c tslint.json 'src/**/*'",
     "test": "jest",
-    "dev": "next",
+    "dev": "node server/index.js",
     "build": "next build",
-    "start": "next start"
+    "start": "NODE_ENV=production node server/index.js"
   },
   "repository": {
     "type": "git",
@@ -16,9 +16,11 @@
   "description": "",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.16.3",
     "next": "^6.1.1",
     "react": "^16.4.1",
-    "react-dom": "^16.4.1"
+    "react-dom": "^16.4.1",
+    "body-parser": "latest"
   },
   "devDependencies": {
     "@types/enzyme": "^3.1.11",
