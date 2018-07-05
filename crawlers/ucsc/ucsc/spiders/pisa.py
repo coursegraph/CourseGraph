@@ -16,6 +16,9 @@ class PisaSpider(scrapy.Spider):
     start_urls = [ search_url ]
 
     def __init__(self, *args, **kwargs):
+        self.max_index_entries  = 10
+        self.max_course_entries = 10
+
         logger = logging.getLogger('scrapy.spidermiddlewares.httperror')
         logger.setLevel(logging.WARNING)
         super(PisaSpider, self).__init__(*args, **kwargs)
@@ -46,7 +49,13 @@ class PisaSpider(scrapy.Spider):
 
     def parse_course_listings(self, response):
         items = response.xpath('//div[contains(@id,"rowpanel")]')
+        if self.max_index_entries == 0:
+            return
         for item in items:
+            if self.max_index_entries == 0:
+                return
+            self.max_index_entries -= 1
+
             result = PisaIndexItem()
             anchor = item.xpath('//a[contains(@id,"class_id_")]')
             result['url'] = site_path(anchor.xpath('@href').extract()[0])
@@ -80,6 +89,10 @@ class PisaSpider(scrapy.Spider):
             # yield scrapy.Request(result['url'], callback=self.parse_course_page)
 
     def parse_course_page(self, response):
+        if self.max_course_entries == 0:
+            return
+        self.max_course_entries -= 1
+
         content = response.xpath('//div[@class="panel-body"]')
         result = PisaCourseItem()
         result['content'] = str(content.extract())
