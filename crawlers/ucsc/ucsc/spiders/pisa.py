@@ -48,16 +48,17 @@ class PisaSpider(scrapy.Spider):
         callback=self.parse_course_listings)
 
     def parse_course_listings(self, response):
-        items = response.xpath('//div[contains(@id,"rowpanel")]')
         if self.max_index_entries == 0:
             return
+
+        items = response.xpath('body/div[contains(@class,"center-block")]/div[@class="panel-body"]/div[contains(@id,"rowpanel")]')
         for item in items:
             if self.max_index_entries == 0:
                 return
             self.max_index_entries -= 1
 
             result = PisaIndexItem()
-            anchor = item.xpath('//a[contains(@id,"class_id_")]')
+            anchor = item.xpath('div[contains(@class,"heading")]/h2/a')
             result['url'] = site_path(anchor.xpath('@href').extract()[0])
 
             # parse course name, title, section
@@ -69,8 +70,12 @@ class PisaSpider(scrapy.Spider):
             result['course_section'] = match.group(2)
             result['course_name'] = match.group(3)
 
+
+            # grab rest
+            rest = item.xpath('div[@class="panel-body"]/div[@class="row"]')
+
             # grab class number
-            result['class_number'] = item.xpath('//a[contains(@id,"class_nbr")]').extract()[0]
+            # result['class_number'] = rest.xpath('div/a[contains(@id,"class_nbr")]').extract()[0]
 
             # TBD: grab everything else (is wrapped in a <div class="row">, so maybe
             # use an xpath selector for that and iterate its div children...?
