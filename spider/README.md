@@ -1,7 +1,7 @@
 
 ## To run spider:
 
-1. Open cmd prompt (a)
+1. open cmd prompt (a)
 
 2. go to location of project folder by doing:
    ```
