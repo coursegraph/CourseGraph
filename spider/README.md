@@ -19,7 +19,7 @@
    scrapy crawl pisa_spider -o pisa_data.json -t json)
    ```
    
-## create new spider
+## Create new spider
 
 1. open cmd prompt then run:
    ```
