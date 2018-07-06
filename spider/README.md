@@ -14,9 +14,10 @@
    mongod
    ```
     
-3. run follwoing cmd in cmd prompt (a) to upload data into Mongodb and create json file:
+3. run follwoing cmd in cmd prompt (a) to upload data into Mongodb 
+   and creates json + csv file automatically:
    ```
-   scrapy crawl pisa_spider -o pisa_data.json -t json)
+   scrapy crawl pisa_spider
    ```
    
 ## Create new spider
