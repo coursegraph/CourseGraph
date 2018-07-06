@@ -1,7 +1,9 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import { startClock, addCount, serverRenderClock } from '../utils/store';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+
+import { startClock, addCount, serverRenderClock } from '../utils/store';
 import Page from '../components/Page';
 
 class Counter extends React.Component {
@@ -26,6 +28,10 @@ class Counter extends React.Component {
         );
     }
 }
+
+Counter.propTypes = {
+    startClock: PropTypes.func,
+};
 
 const mapDispatchToProps = (dispatch) => {
     return {

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 export default class Post extends Component {
     static getInitialProps({query: {id}}) {
@@ -15,3 +16,7 @@ export default class Post extends Component {
         </div>;
     }
 }
+
+Post.propTypes = {
+    postId: PropTypes.number,
+};
