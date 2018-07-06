@@ -1,8 +1,8 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react';
 
 export default class Post extends Component {
     static getInitialProps({query: {id}}) {
-        return {postId: id}
+        return {postId: id};
     }
 
     render() {
@@ -12,6 +12,6 @@ export default class Post extends Component {
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                 tempor incididunt ut labore et dolore magna aliqua.
             </p>
-        </div>
+        </div>;
     }
 }

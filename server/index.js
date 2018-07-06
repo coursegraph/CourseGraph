@@ -11,7 +11,7 @@ const app = next({dev});
 const defaultRequestHandler = app.getRequestHandler();
 
 const LOCAL_DB = 'test';
-const MONGODB_URI = process.env.MONGODB_URI || `mongodb://localhost/${LOCAL_DB}`;
+const MONGODB_URI = process.env.MONGODB_URI || `mongodb://localhost:27017/${LOCAL_DB}`;
 
 app.prepare()
     .then(() => {
@@ -25,13 +25,12 @@ app.prepare()
 
         // MongoDB
         mongoose.Promise = Promise;
-        mongoose.connect(MONGODB_URI);
+        mongoose.connect(MONGODB_URI, {useNewUrlParser: true});
         const db = mongoose.connection;
         db.on('error', console.error.bind(console, 'connection error:'));
 
         // Next.js request handling
         const customRequestHandler = (page, req, res) => {
-            // Both query and params will be available in getInitialProps({query})
             const mergedQuery = Object.assign({}, req.query, req.params);
             app.render(req, res, page, mergedQuery);
         };

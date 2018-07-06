@@ -1,7 +1,10 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {addCount} from '../utils/store';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { addCount } from '../utils/store';
+
 
 class AddCount extends Component {
     constructor(...args) {
@@ -11,6 +14,11 @@ class AddCount extends Component {
             this.props.addCount();
         };
     }
+
+    static propTypes = {
+        count: PropTypes.number,
+        addCount: PropTypes.func,
+    };
 
     render() {
         const {count} = this.props;
