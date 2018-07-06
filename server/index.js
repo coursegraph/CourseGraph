@@ -4,7 +4,7 @@ const next = require('next');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
-const PORT = parseInt(process.env.PORT, 10) || 3000;
+const PORT = parseInt(process.env.PORT, 10) || 8080;
 const dev = process.env.NODE_ENV !== 'production';
 
 const app = next({dev});
