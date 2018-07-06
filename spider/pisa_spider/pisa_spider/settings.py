@@ -89,7 +89,17 @@ ROBOTSTXT_OBEY = True
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
+<<<<<<< HEAD:spider/pisa_spider/pisa_spider/settings.py
 ITEM_PIPELINES = {'pisa_spider.pipelines.PisaSpiderPipeline':100,}
+=======
+<<<<<<< HEAD:spider/pisa_spider/pisa_spider/settings.py
+ITEM_PIPELINES = {'pisa_spider.pipelines.PisaSpiderPipeline':100,}
+=======
+ITEM_PIPELINES = {'pisa_spider.pipelines.PisaSpiderPipeline':100,
+                  'pisa_spider.pipelines.JsonPipeline': 300,
+                  'pisa_spider.pipelines.CsvPipeline': 500,}
+>>>>>>> master:spider/pisa_spider/pisa_spider/settings.py
+>>>>>>> development:spider/pisa_spider/pisa_spider/settings.py
 
 MONGODB_SERVER = "localhost"
 MONGODB_PORT = 27017
