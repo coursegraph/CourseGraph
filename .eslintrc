@@ -20,6 +20,10 @@
       "global"
     ],
     "curly": "warn",
-    "react/prop-types": "warn"
-  }
+    "react/prop-types": "warn",
+    "babel/semi": 1
+  },
+  "plugins": [
+    "babel"
+  ]
 }
