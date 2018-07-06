@@ -5,6 +5,6 @@ module.exports = {
       fs: 'empty'
     };
 
-    return config
+    return config;
   }
 };
