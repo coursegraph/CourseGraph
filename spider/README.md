@@ -23,7 +23,7 @@
 
 1. open cmd prompt then run:
    ```
-   scrapy startproject stack
+   scrapy startproject project_name (eg. scrapy startproject pisa_spider)
    ```
    
 ## Requirements 
