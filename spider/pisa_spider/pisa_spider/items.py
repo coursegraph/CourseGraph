@@ -7,18 +7,15 @@
 
 import scrapy
 
-
 from scrapy.item import Item, Field
 
-
-class StackItem(Item):
-    #title = Field()
-    #url = Field()
+class PisaSpiderItem(Item):
     course_title = Field()
-    #class_number = Field()
-    #instructor = Field()
-    #location = Field()
-    #time = Field()
-    
-    
-    
+    class_number = Field()
+    instructor = Field()
+    time = Field()
+    location = Field()
+    time = Field() 
+    enrolled = Field()
+    book = Field()
+    course_url = Field()
