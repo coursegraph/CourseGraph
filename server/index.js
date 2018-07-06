@@ -20,7 +20,7 @@ app.prepare()
         server.use(bodyParser.json());
         server.use((req, res, next) => {
             req.db = db;
-            next()
+            next();
         });
 
         // MongoDB
@@ -37,15 +37,15 @@ app.prepare()
 
         // Routes
         server.get('/a', (req, res) => {
-            return app.render(req, res, '/b', req.query)
+            return app.render(req, res, '/b', req.query);
         });
 
         server.get('/b', (req, res) => {
-            return app.render(req, res, '/a', req.query)
+            return app.render(req, res, '/a', req.query);
         });
 
         server.get('/posts/:id', (req, res) => {
-            return app.render(req, res, '/posts', {id: req.params.id})
+            return app.render(req, res, '/posts', {id: req.params.id});
         });
 
         server.get('/', customRequestHandler.bind(undefined, '/'));
@@ -55,6 +55,6 @@ app.prepare()
             if (err) {
                 throw err;
             }
-            console.log(`> Ready on http://localhost:${PORT}`)
-        })
+            console.log(`> Ready on http://localhost:${PORT}`);
+        });
     });
