@@ -29,8 +29,8 @@
    
 ## Requirements 
 
-1. Python installed
-2. Scrapy installed (using anaconda or miniconda)
+1. Python installed (version: Python 3.6.5 :: Anaconda, Inc.)
+2. Scrapy installed (using anaconda or miniconda) (version: scrapy is 1.5.0)
 3. Pymongo installed
 4. mongodb installed
 5. option: Robo 3T for mongodb
