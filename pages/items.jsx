@@ -4,7 +4,26 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
 
+/**
+ * @extends Component
+ * @constructor
+ */
 export default class Items extends Component {
+
+    /**
+     * @type {{item:shim}}
+     */
+    static propTypes = {
+        item: PropTypes.shape({
+            course_title: PropTypes.string,
+        }),
+    };
+
+    /**
+     * @param req
+     * @param query {{itemData}}
+     * @return {Promise<{item:json}>}
+     */
     static async getInitialProps({req, query}) {
         const isServer = !!req;
 
@@ -24,12 +43,9 @@ export default class Items extends Component {
         }
     }
 
-    static propTypes = {
-        item: PropTypes.shape({
-            course_title: PropTypes.string,
-        }),
-    };
-
+    /**
+     * @return {JSX.Element}
+     */
     render() {
         return (
             <div className='item'>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
@@ -6,16 +6,29 @@ import PropTypes from 'prop-types';
 import { addCount, serverRenderClock, startClock } from '../utils/store';
 import Page from '../components/Page';
 
-class Counter extends React.Component {
+/**
+ * @extends Component
+ * @constructor
+ */
+class Counter extends Component {
+
+    /**
+     * @type {{startClock: shim}}
+     */
+    static propTypes = {
+        startClock: PropTypes.func,
+    };
+
+    /**
+     * @param store {Store}
+     * @param isServer {bool}
+     * @return {Promise<{isServer: bool}>}
+     */
     static async getInitialProps({store, isServer}) {
         store.dispatch(serverRenderClock(isServer));
         store.dispatch(addCount());
         return {isServer};
     }
-
-    static propTypes = {
-        startClock: PropTypes.func,
-    };
 
     componentDidMount() {
         this.timer = this.props.startClock();
@@ -25,6 +38,9 @@ class Counter extends React.Component {
         clearInterval(this.timer);
     }
 
+    /**
+     * @return {JSX.Element}
+     */
     render() {
         return (
             <Page title='Other Page' linkTo='/'/>
@@ -32,6 +48,10 @@ class Counter extends React.Component {
     }
 }
 
+/**
+ * @param dispatch
+ * @return {{addCount: addCount|ActionCreator<any>|ActionCreatorsMapObject<any>, startClock: startClock|ActionCreator<any>|ActionCreatorsMapObject<any>}}
+ */
 const mapDispatchToProps = (dispatch) => {
     return {
         addCount: bindActionCreators(addCount, dispatch),

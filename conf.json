@@ -17,7 +17,7 @@
       "include": [
         "./src/"
       ],
-      "includePattern": ".+\\.js(doc)?$",
+      "includePattern": ".+\\.js(doc|x)?$",
       "excludePattern": "(^|\\/|\\\\)_"
     },
     "opts": {

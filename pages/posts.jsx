@@ -1,15 +1,30 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * @extends Component
+ * @constructor
+ */
 export default class Post extends Component {
-    static async getInitialProps({query: {id}}) {
-        return {postId: id};
-    }
 
+    /**
+     * @type {{postId: shim}}
+     */
     static propTypes = {
         postId: PropTypes.number,
     };
 
+    /**
+     * @param id {number}
+     * @return {Promise<{postId: number}>}
+     */
+    static async getInitialProps({query: {id}}) {
+        return {postId: id};
+    }
+
+    /**
+     * @return {JSX.Element}
+     */
     render() {
         return <div>
             <h1>My blog post #{this.props.postId}</h1>

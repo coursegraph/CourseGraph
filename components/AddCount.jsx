@@ -5,7 +5,10 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { addCount } from '../utils/store';
 
-
+/**
+ * @extends Component
+ * @constructor
+ */
 class AddCount extends Component {
     constructor(...args) {
         super(...args);
@@ -15,11 +18,17 @@ class AddCount extends Component {
         };
     }
 
+    /**
+     * @type {{count: shim, addCount: shim}}
+     */
     static propTypes = {
         count: PropTypes.number,
         addCount: PropTypes.func,
     };
 
+    /**
+     * @return {JSX.Element}
+     */
     render() {
         const {count} = this.props;
         return (

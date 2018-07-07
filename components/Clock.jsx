@@ -2,6 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 // eslint-disable-next-line react/display-name
+
+/**
+ * @param lastUpdate
+ * @param light {bool}
+ * @return {JSX.Element}
+ * @constructor
+ */
 const Clock = ({lastUpdate, light}) => {
     return (
         <div className={light ? 'light' : ''}>
@@ -23,6 +30,9 @@ const Clock = ({lastUpdate, light}) => {
     );
 };
 
+/**
+ * @type {{lastUpdate: shim, light: shim}}
+ */
 Clock.propTypes = {
     lastUpdate: PropTypes.any,
     light: PropTypes.bool,

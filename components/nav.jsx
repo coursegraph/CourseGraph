@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Link from 'next/link';
 
 const links = [
@@ -9,6 +8,10 @@ const links = [
     return link;
 });
 
+/**
+ * @return {JSX.Element}
+ * @constructor
+ */
 const Nav = () => (
     <nav>
         <ul>

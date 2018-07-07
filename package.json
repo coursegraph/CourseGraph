@@ -7,7 +7,7 @@
     "test:ci": "npm run pretest && jest --coverage --coverageReporters=text-lcov | coveralls",
     "build": "next build",
     "start": "NODE_ENV=production node server/index.js",
-    "doc": "jsdoc -c conf.json -d docs -R README.md components"
+    "docs": "jsdoc -c conf.json -d docs -R README.md components"
   },
   "dependencies": {
     "body-parser": "latest",
