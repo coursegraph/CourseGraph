@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 export default class Post extends Component {
-    static getInitialProps({query: {id}}) {
+    static async getInitialProps({query: {id}}) {
         return {postId: id};
     }
 

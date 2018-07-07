@@ -3,11 +3,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
-import { startClock, addCount, serverRenderClock } from '../utils/store';
+import { addCount, serverRenderClock, startClock } from '../utils/store';
 import Page from '../components/Page';
 
 class Counter extends React.Component {
-    static getInitialProps({store, isServer}) {
+    static async getInitialProps({store, isServer}) {
         store.dispatch(serverRenderClock(isServer));
         store.dispatch(addCount());
         return {isServer};
