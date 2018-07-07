@@ -11,7 +11,7 @@ export default class Post extends Component {
      * @type {{postId: shim}}
      */
     static propTypes = {
-        postId: PropTypes.number,
+      postId: PropTypes.number,
     };
 
     /**
@@ -19,19 +19,19 @@ export default class Post extends Component {
      * @return {Promise<{postId: number}>}
      */
     static async getInitialProps({query: {id}}) {
-        return {postId: id};
+      return {postId: id};
     }
 
     /**
      * @return {JSX.Element}
      */
     render() {
-        return <div>
-            <h1>My blog post #{this.props.postId}</h1>
-            <p>
+      return <div>
+        <h1>My blog post #{this.props.postId}</h1>
+        <p>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                 tempor incididunt ut labore et dolore magna aliqua.
-            </p>
-        </div>;
+        </p>
+      </div>;
     }
 }

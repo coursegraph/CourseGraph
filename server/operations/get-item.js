@@ -5,8 +5,8 @@ const data = fs.readFileSync('./data/course_title.json', 'utf8');
 const parsedData = JSON.parse(data);
 
 function getItem() {
-    console.log('Requested Item Data:', data);
-    return parsedData;
+  console.log('Requested Item Data:', data);
+  return parsedData;
 }
 
-module.exports = getItem();
+module.exports = {getItem};

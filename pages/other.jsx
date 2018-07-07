@@ -16,7 +16,7 @@ class Counter extends Component {
      * @type {{startClock: shim}}
      */
     static propTypes = {
-        startClock: PropTypes.func,
+      startClock: PropTypes.func,
     };
 
     /**
@@ -25,26 +25,26 @@ class Counter extends Component {
      * @return {Promise<{isServer: bool}>}
      */
     static async getInitialProps({store, isServer}) {
-        store.dispatch(serverRenderClock(isServer));
-        store.dispatch(addCount());
-        return {isServer};
+      store.dispatch(serverRenderClock(isServer));
+      store.dispatch(addCount());
+      return {isServer};
     }
 
     componentDidMount() {
-        this.timer = this.props.startClock();
+      this.timer = this.props.startClock();
     }
 
     componentWillUnmount() {
-        clearInterval(this.timer);
+      clearInterval(this.timer);
     }
 
     /**
      * @return {JSX.Element}
      */
     render() {
-        return (
-            <Page title='Other Page' linkTo='/'/>
-        );
+      return (
+        <Page title="Other Page" linkTo="/"/>
+      );
     }
 }
 
@@ -53,10 +53,10 @@ class Counter extends Component {
  * @return {{addCount: addCount|ActionCreator<any>|ActionCreatorsMapObject<any>, startClock: startClock|ActionCreator<any>|ActionCreatorsMapObject<any>}}
  */
 const mapDispatchToProps = (dispatch) => {
-    return {
-        addCount: bindActionCreators(addCount, dispatch),
-        startClock: bindActionCreators(startClock, dispatch)
-    };
+  return {
+    addCount: bindActionCreators(addCount, dispatch),
+    startClock: bindActionCreators(startClock, dispatch),
+  };
 };
 
 export default connect(null, mapDispatchToProps)(Counter);
