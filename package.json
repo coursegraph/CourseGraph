@@ -2,7 +2,7 @@
   "name": "course-graph",
   "scripts": {
     "dev": "node server/index.js",
-    "pretest": "eslint --ext js --ext jsx **",
+    "pretest": "eslint . --ext js --ext jsx",
     "test": "jest",
     "test:ci": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "build": "next build",
