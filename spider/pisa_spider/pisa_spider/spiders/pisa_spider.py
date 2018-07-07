@@ -7,7 +7,11 @@ from scrapy import log
 <<<<<<< HEAD
 from pisa_spider.items import PisaSpiderItem
 =======
+<<<<<<< HEAD
+from pisa_spider.items import PisaSpiderItem
+=======
 from ..items import PisaSpiderItem
+>>>>>>> development
 >>>>>>> development
 
 class StackCrawlerSpider(CrawlSpider):

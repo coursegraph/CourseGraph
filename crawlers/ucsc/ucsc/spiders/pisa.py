@@ -45,6 +45,10 @@ class PisaSpider(scrapy.Spider):
         callback=self.parse_course_index)
 
 <<<<<<< HEAD
+    def parse_course_listings(self, response):
+        items = response.xpath('//div[contains(@id,"rowpanel")]')
+=======
+<<<<<<< HEAD
     def parse_course_index(self, response):
         if self.max_index_entries == 0:
             return
@@ -53,6 +57,7 @@ class PisaSpider(scrapy.Spider):
 =======
     def parse_course_listings(self, response):
         items = response.xpath('//div[contains(@id,"rowpanel")]')
+>>>>>>> development
 >>>>>>> development
         for item in items:
             result = PisaIndexItem()
