@@ -13,9 +13,10 @@ export default class CourseList extends Component {
    * @type {{item:shim}}
    */
   static propTypes = {
-    item: PropTypes.shape({
-      course_title: PropTypes.string,
-    }),
+    // item: PropTypes.shape({
+    //   course_title: PropTypes.,
+    // }),
+    item: PropTypes.string
   };
 
   /**
@@ -36,7 +37,7 @@ export default class CourseList extends Component {
       return {item: query.itemData};
     } else {
       // On the client, we should fetch the data remotely
-      const res = await fetch('/_data/item', {headers: {'Accept': 'application/json'}});
+      const res = await fetch('/api/item', {headers: {'Accept': 'application/json'}});
       const json = await res.json();
       return {item: json};
     }
@@ -49,7 +50,7 @@ export default class CourseList extends Component {
     return (
       <div className="item">
         <div><Link href="/ucsc"><a>Back Home</a></Link></div>
-        <h1>{this.props.item.course_title}</h1>
+        <h1>{this.props.item}</h1>
       </div>
     );
   }

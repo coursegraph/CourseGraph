@@ -1,11 +1,10 @@
 const express = require('express');
 const next = require('next');
-
+const compression = require('compression');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 const api = require('./operations/get-item');
-
 
 const PORT = parseInt(process.env.PORT, 10) || 8080;
 const dev = process.env.NODE_ENV !== 'production';
@@ -18,21 +17,33 @@ const MONGODB_URI = process.env.MONGODB_URI || `mongodb://localhost:27017/${LOCA
 
 app.prepare()
   .then(() => {
+
+    /**
+     * Create Express server.
+     */
     const server = express();
 
+    /**
+     * Express configuration.
+     */
     server.use(bodyParser.json());
+    server.use(compression());
     server.use((req, res, next) => {
       req.db = db;
       next();
     });
 
-    // MongoDB
+    /**
+     * Connect to MongoDB.
+     */
     mongoose.Promise = Promise;
     mongoose.connect(MONGODB_URI, {useNewUrlParser: true});
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
 
-    // Routes
+    /**
+     * Primary app routes.
+     */
     server.get('/', (req, res) => {
       res.redirect('/ucsc');
     });
@@ -41,18 +52,25 @@ app.prepare()
       return app.render(req, res, '/posts', {id: req.params.id});
     });
 
-    // When rendering client-side, we will request the same data from this route
-    server.get('/_data/item', (req, res) => {
+    /**
+     * API routes.
+     */
+    server.get('/api/item', (req, res) => {
       const itemData = api.getItem();
       res.json(itemData);
     });
 
-    // Fall-back on other next.js assets.
+
+    /**
+     * Fall-back on other next.js assets.
+     */
     server.get('*', (req, res) => {
       return defaultRequestHandler(req, res);
     });
 
-    // Start the server
+    /**
+     * Start Express server.
+     */
     server.listen(PORT, (err) => {
       if (err) {
         throw err;

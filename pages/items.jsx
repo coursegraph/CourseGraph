@@ -11,7 +11,7 @@ import fetch from 'isomorphic-unfetch';
 export default class Items extends Component {
 
   /**
-   * @type {{item:shim}}
+   * @type {{items: shim, item}}
    */
   static propTypes = {
     item: PropTypes.shape({
@@ -37,8 +37,9 @@ export default class Items extends Component {
       return {item: query.itemData};
     } else {
       // On the client, we should fetch the data remotely
-      const res = await fetch('/_data/item', {headers: {'Accept': 'application/json'}});
+      const res = await fetch('/api/item', {headers: {'Accept': 'application/json'}});
       const json = await res.json();
+      console.log(json);
       return {item: json};
     }
   }
@@ -50,7 +51,13 @@ export default class Items extends Component {
     return (
       <div className="item">
         <div><Link href="/"><a>Back Home</a></Link></div>
-        <h1>{this.props.item.course_title}</h1>
+        <h1>
+          <ol>{
+            this.props.item.map((obj) => (
+              <li>{obj.course_title}</li>
+            ))
+          }</ol>
+        </h1>
       </div>
     );
   }
