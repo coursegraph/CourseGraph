@@ -1,7 +1,15 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 // eslint-disable-next-line react/display-name
-export default ({lastUpdate, light}) => {
+
+/**
+ * @param lastUpdate
+ * @param light {bool}
+ * @return {JSX.Element}
+ * @constructor
+ */
+const Clock = ({lastUpdate, light}) => {
     return (
         <div className={light ? 'light' : ''}>
             {format(new Date(lastUpdate))}
@@ -19,8 +27,18 @@ export default ({lastUpdate, light}) => {
         }
       `}</style>
         </div>
-    )
-}
+    );
+};
+
+/**
+ * @type {{lastUpdate: shim, light: shim}}
+ */
+Clock.propTypes = {
+    lastUpdate: PropTypes.any,
+    light: PropTypes.bool,
+};
+
+export default Clock;
 
 const format = t => `${pad(t.getUTCHours())}:${pad(t.getUTCMinutes())}:${pad(t.getUTCSeconds())}`;
 

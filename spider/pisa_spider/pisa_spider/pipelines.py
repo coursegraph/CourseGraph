@@ -9,9 +9,18 @@ import pymongo
 
 from scrapy.conf import settings
 from scrapy.exceptions import DropItem
+<<<<<<< HEAD
 from scrapy.contrib.exporter import JsonItemExporter
 from scrapy.contrib.exporter import CsvItemExporter
 
+=======
+<<<<<<< HEAD
+=======
+from scrapy.contrib.exporter import JsonItemExporter
+from scrapy.contrib.exporter import CsvItemExporter
+
+>>>>>>> development
+>>>>>>> development
 from scrapy import log
 
 class PisaSpiderPipeline(object):
@@ -34,6 +43,11 @@ class PisaSpiderPipeline(object):
             log.msg("course_data added to MongoDB database!",
                     level=log.DEBUG, spider=spider)
         return item    
+<<<<<<< HEAD
+=======
+<<<<<<< HEAD
+=======
+>>>>>>> development
         
 class JsonPipeline(object):
     def __init__(self):
@@ -67,4 +81,9 @@ def create_valid_csv(self, item):
     for key, value in item.items():
         is_string = (isinstance(value, basestring))
         if (is_string and ("," in value.encode('utf-8'))):
+<<<<<<< HEAD
             item[key] = "\"" + value + "\""        
+=======
+            item[key] = "\"" + value + "\""        
+>>>>>>> development
+>>>>>>> development

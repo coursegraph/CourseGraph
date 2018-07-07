@@ -42,10 +42,23 @@ class PisaSpider(scrapy.Spider):
                   'binds[:session_code]':'', 
                   'rec_start': '0',
                   'rec_dur': '1582'},
-        callback=self.parse_course_listings)
+        callback=self.parse_course_index)
 
+<<<<<<< HEAD
     def parse_course_listings(self, response):
         items = response.xpath('//div[contains(@id,"rowpanel")]')
+=======
+<<<<<<< HEAD
+    def parse_course_index(self, response):
+        if self.max_index_entries == 0:
+            return
+
+        items = response.xpath('body/div[contains(@class,"center-block")]/div[@class="panel-body"]/div[contains(@id,"rowpanel")]')
+=======
+    def parse_course_listings(self, response):
+        items = response.xpath('//div[contains(@id,"rowpanel")]')
+>>>>>>> development
+>>>>>>> development
         for item in items:
             result = PisaIndexItem()
             anchor = item.xpath('//a[contains(@id,"class_id_")]')

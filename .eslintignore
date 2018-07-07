@@ -7,5 +7,6 @@ spider/
 data/
 assets/
 crawlers/
+docs/
 *.json
 *.md

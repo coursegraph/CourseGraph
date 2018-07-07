@@ -1,12 +1,16 @@
 import React from 'react';
-
-import NextHead from 'next/head'
-import {string} from 'prop-types'
+import NextHead from 'next/head';
+import PropTypes from 'prop-types';
 
 const defaultDescription = '';
 const defaultOGURL = '';
 const defaultOGImage = '';
 
+/**
+ * @param props
+ * @return {JSX.Element}
+ * @constructor
+ */
 const Head = (props) => (
     <NextHead>
         <meta charSet="UTF-8"/>
@@ -29,11 +33,14 @@ const Head = (props) => (
     </NextHead>
 );
 
+/**
+ * @type {{title: shim, description: shim, url: shim, ogImage: shim}}
+ */
 Head.propTypes = {
-    title: string,
-    description: string,
-    url: string,
-    ogImage: string
+    title: PropTypes.string,
+    description: PropTypes.string,
+    url: PropTypes.string,
+    ogImage: PropTypes.string
 };
 
-export default Head
+export default Head;

@@ -4,7 +4,15 @@ from scrapy.contrib.linkextractors import LinkExtractor
 from scrapy.contrib.spiders import CrawlSpider, Rule
 from scrapy import log
 
+<<<<<<< HEAD
 from pisa_spider.items import PisaSpiderItem
+=======
+<<<<<<< HEAD
+from pisa_spider.items import PisaSpiderItem
+=======
+from ..items import PisaSpiderItem
+>>>>>>> development
+>>>>>>> development
 
 class StackCrawlerSpider(CrawlSpider):
     name = 'pisa_spider'
