@@ -13,6 +13,10 @@ class Counter extends React.Component {
         return {isServer};
     }
 
+    static propTypes = {
+        startClock: PropTypes.func,
+    };
+
     componentDidMount() {
         this.timer = this.props.startClock();
     }
@@ -27,10 +31,6 @@ class Counter extends React.Component {
         );
     }
 }
-
-Counter.propTypes = {
-    startClock: PropTypes.func,
-};
 
 const mapDispatchToProps = (dispatch) => {
     return {

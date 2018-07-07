@@ -15,6 +15,11 @@ class AddCount extends Component {
         };
     }
 
+    static propTypes = {
+        count: PropTypes.number,
+        addCount: PropTypes.func,
+    };
+
     render() {
         const {count} = this.props;
         return (
@@ -30,11 +35,6 @@ class AddCount extends Component {
         );
     }
 }
-
-AddCount.propTypes = {
-    count: PropTypes.number,
-    addCount: PropTypes.func,
-};
 
 const mapStateToProps = ({count}) => ({count});
 

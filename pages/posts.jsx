@@ -6,6 +6,10 @@ export default class Post extends Component {
         return {postId: id};
     }
 
+    static propTypes = {
+        postId: PropTypes.number,
+    };
+
     render() {
         return <div>
             <h1>My blog post #{this.props.postId}</h1>
@@ -16,7 +20,3 @@ export default class Post extends Component {
         </div>;
     }
 }
-
-Post.propTypes = {
-    postId: PropTypes.number,
-};

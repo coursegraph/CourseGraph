@@ -24,6 +24,12 @@ export default class Items extends Component {
         }
     }
 
+    static propTypes = {
+        item: PropTypes.shape({
+            course_title: PropTypes.string,
+        }),
+    };
+
     render() {
         return (
             <div className='item'>
@@ -34,8 +40,3 @@ export default class Items extends Component {
     }
 }
 
-Items.propTypes = {
-    item: PropTypes.shape({
-        course_title: PropTypes.string,
-    }),
-};
