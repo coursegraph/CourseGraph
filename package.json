@@ -1,18 +1,22 @@
 {
-  "name": "create-next-example-app",
+  "name": "course-graph",
   "scripts": {
     "dev": "node server/index.js",
     "pretest": "eslint --ext js --ext jsx **",
     "test": "jest",
+    "test:ci": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "build": "next build",
-    "start": "node server/index.js"
+    "start": "NODE_ENV=production node server/index.js",
+    "docs": "jsdoc -c conf.json -d docs -R README.md components"
   },
   "dependencies": {
     "body-parser": "latest",
     "express": "^4.16.3",
+    "isomorphic-unfetch": "^2.0.0",
     "mongoose": "^5.2.1",
     "next": "latest",
     "next-redux-wrapper": "latest",
+    "prop-types": "^15.6.2",
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-redux": "5.0.7",
@@ -22,13 +26,22 @@
     "redux-thunk": "2.2.0"
   },
   "devDependencies": {
+    "@pixi/jsdoc-template": "^2.4.2",
     "babel-core": "7.0.0-bridge.0",
+    "babel-eslint": "^8.2.5",
     "babel-jest": "^23.2.0",
+    "coveralls": "^3.0.2",
     "enzyme": "^3.3.0",
     "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^5.0.1",
+    "eslint-config-fbjs": "^2.0.1",
+    "eslint-plugin-babel": "^5.1.0",
+    "eslint-plugin-flowtype": "^2.49.3",
+    "eslint-plugin-jsx-a11y": "^6.1.0",
     "eslint-plugin-react": "^7.10.0",
+    "eslint-plugin-relay": "0.0.24",
     "jest": "^23.3.0",
+    "jsdoc": "^3.5.5",
     "react-addons-test-utils": "^15.6.2",
     "react-test-renderer": "^16.4.1"
   }

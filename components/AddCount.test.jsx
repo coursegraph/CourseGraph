@@ -5,7 +5,7 @@
 // import AddCount from './AddCount';
 
 describe('AddCount', () => {
-    it('always true', () => {
-        expect(true).toEqual(true);
-    });
+  it('always true', () => {
+    expect(true).toEqual(true);
+  });
 });

@@ -1,36 +1,39 @@
 import React from 'react';
-
-import Link from 'next/link'
+import Link from 'next/link';
 
 const links = [
-    {href: 'https://github.com/segmentio/create-next-app', label: 'Github'}
+  {href: 'https://github.com/segmentio/create-next-app', label: 'Github'},
 ].map(link => {
-    link.key = `nav-link-${link.href}-${link.label}`;
-    return link
+  link.key = `nav-link-${link.href}-${link.label}`;
+  return link;
 });
 
+/**
+ * @return {JSX.Element}
+ * @constructor
+ */
 const Nav = () => (
-    <nav>
-        <ul>
-            <li>
-                <Link prefetch href="/">
-                    <a>Home</a>
-                </Link>
+  <nav>
+    <ul>
+      <li>
+        <Link prefetch href="/">
+          <a>Home</a>
+        </Link>
+      </li>
+      <ul>
+        {links.map(
+          ({key, href, label}) => (
+            <li key={key}>
+              <Link href={href}>
+                <a>{label}</a>
+              </Link>
             </li>
-            <ul>
-                {links.map(
-                    ({key, href, label}) => (
-                        <li key={key}>
-                            <Link href={href}>
-                                <a>{label}</a>
-                            </Link>
-                        </li>
-                    )
-                )}
-            </ul>
-        </ul>
+          )
+        )}
+      </ul>
+    </ul>
 
-        <style jsx>{`
+    <style jsx>{`
       :global(body) {
         margin: 0;
         font-family: -apple-system,BlinkMacSystemFont,Avenir Next,Avenir,Helvetica,sans-serif;
@@ -55,7 +58,7 @@ const Nav = () => (
         font-size: 13px;
       }
     `}</style>
-    </nav>
+  </nav>
 );
 
-export default Nav
+export default Nav;

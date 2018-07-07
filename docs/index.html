@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Home</title>
+
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Home</h1>
+
+
+    <h3></h3>
+
+
+    <section>
+        <article><p align="center">
+
+            <img src="./assets/logo.png" alt="coursegraph">
+
+            <a href="https://github.com/facebook/jest"><img
+                    src="https://img.shields.io/badge/tested_with-jest-99424f.svg" alt="tested with jest"></a> <a
+                href="https://github.com/facebook/jest"><img src="https://jestjs.io/img/jest-badge.svg" alt="jest"></a>
+
+        </p>
+
+            <h2>Introduction</h2>
+            <p>The course search software offered by UCSC (and most colleges) kind of sucks, and there is no easy way to
+                explore classes and majors without a counselor – and the counselors could probably use some help
+                too!</p>
+            <p>Solution? CourseGraph, a webapp that will:</p>
+            <ul>
+                <li>datamine pisa and the registrar for course information and sections (and major / minor requirements
+                    if we can do that)
+                </li>
+                <li>display this information visually as a web of interdependent courses and major requirements,
+                    filterable and presented through different layers and views
+                </li>
+            </ul>
+            <p>Technology: we will need</p>
+            <ul>
+                <li>a web frontend (probably React, Typescript, D3) and people interested in UX and software design
+                    (myself included)
+                </li>
+                <li>a web backend (probably node) and people interested in backend development and data storage /
+                    retrieval
+                </li>
+                <li>several web crawlers to datamine UCSC sites and maybe others; anyone interested in this please
+                    apply!
+                    <ul>
+                        <li>possible integration of other web services (if we could embed eg. ratemyprofessors that
+                            would be awesome)
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <p>Is this feasible in &lt;5 weeks?</p>
+            <ul>
+                <li>Yes, but it will be challenging as we'll have a lot of work to do</li>
+                <li>Plus side is we all get to wear lots of hats and use a lot of cool tech to build a real tool that
+                    students and counselors can use to explore class options and make planning schedules a lot easier
+                </li>
+                <li>This project can be subdivided with 2-3 teams working in parallel on different components (eg.
+                    frontend and data mining), so we should be able to work without too many bottlenecks
+                </li>
+            </ul>
+            <p>You do NOT need to have experience with typescript, react, node, or d3 to join this project, just a good
+                attitude and a willingness to learn and contribute.</p>
+            <p>That said, you will need time to learn a bit of typescript and either frontend (react, d3), backend
+                (node, databases – ask Ivan), or data mining (web crawlers, either node or python), since we'll probably
+                be splitting into sub-teams that focus on one of those categories. And you'll need to do this fairly
+                quickly (ie. over the next few weeks) since we'll need to hit the ground running as soon as possible.
+                Oh, and if you'd like to do project management (as one of your many hats) that would be very useful
+                too.</p>
+            <p>I'll be learning react and d3 over the next week or so, so if you're interested in that (whether you're a
+                part of this team or not) please hit me up! (<a href="mailto:ssemery@ucsc.edu">ssemery@ucsc.edu</a>)</p>
+            <h2>Getting Started</h2>
+            <p>These instructions will get you a copy of the project up and running on your local machine for
+                development and testing purposes. (To developers) See deployment for notes on how to deploy the project
+                on a live system.</p>
+            <h3>Prerequisites</h3>
+            <p><a href="https://nodejs.org/en/">Node.js</a> - JavaScript runtime built on Chrome's V8 JavaScript engine.
+            </p>
+            <p>The minimum supported Node version is <code>v6.0.0</code> by default. (We are using <code>v10.0.0</code>).
+            </p>
+            <pre class="prettyprint source"><code>node --version
+
+// v10.0.0</code></pre>
+            <h3>Installing</h3>
+            <p>Clone our repository (or unzip the project and cd into the root folder),</p>
+            <pre class="prettyprint source"><code>git clone https://github.com/coursegraph/CourseGraph myProject
+cd myProject</code></pre>
+            <p>And install dependencies, via <a href="https://www.npmjs.com/"><code>npm</code></a> (installed with
+                Node.js).</p>
+            <pre class="prettyprint source"><code>npm install</code></pre>
+            <h3>Running the project</h3>
+            <p>Running the project is as simple as running</p>
+            <pre class="prettyprint source"><code>npm run dev</code></pre>
+            <p>This runs the <code>dev</code> script specified in our <code>package.json</code>, and will spawn off a
+                server which reloads the page as we save our files. Typically the server runs at <code>http://localhost:3000</code>,
+                but should be automatically opened for you.</p>
+            <h2>Running the tests</h2>
+            <p>Testing is also just a command away:</p>
+            <pre class="prettyprint source"><code>npm run test</code></pre>
+            <p>This command runs <a href="http://jestjs.io/"><code>jest</code></a> and <a
+                    href="http://airbnb.io/enzyme/"><code>enzyme</code></a>, an incredibly useful testing utility.</p>
+            <h3>And coding style tests</h3>
+            <p>We uses <code>TSLint</code>, just a command:</p>
+            <pre class="prettyprint source"><code>npm run pretest</code></pre>
+            <h2>Built With</h2>
+            <ul>
+                <li><a href="https://nextjs.org/">Next.js</a> - A lightweight framework for static and server‑rendered
+                    applications.
+                </li>
+                <li><a href="https://reactjs.org">React</a> - A JavaScript library for building user interfaces</li>
+                <li><a href="https://www.typescriptlang.org/">TypeScript</a> - TypeScript brings you optional static
+                    type-checking along with the latest ECMAScript features.
+                </li>
+                <li><a href="https://nodejs.org/en/">Node.js</a> - A JavaScript runtime built on Chrome's V8 JavaScript
+                    engine.
+                </li>
+                <li><a href="https://www.mongodb.com/">MongoDB</a> - Build innovative modern applications that create a
+                    competitive advantage.
+                </li>
+            </ul>
+            <h2>Authors</h2>
+            <ul>
+                <li><strong>Seiji Emery</strong> (<a href="https://github.com/SeijiEmery">SeijiEmery</a> ) -</li>
+                <li><strong>Yanwen Xu</strong> (<a href="https://github.com/RaiderSoap">RaiderSoap</a> ) - :floppy_disk:
+                    Back-End Developer
+                </li>
+                <li><strong>Patrick Lauderdale</strong> (<a href="https://github.com/ThePatrickLauderdale">ThePatrickLauderdale</a>)
+                    -
+                </li>
+                <li><strong>Sharad Shrestha</strong> (<a href="https://github.com/sharad97">sharad97</a> ) -</li>
+                <li><strong>Wendy Liang</strong> (<a href="https://github.com/wendyrliang">wendyrliang</a> ) -</li>
+                <li><strong>Ka Ho Tran</strong> (<a href="https://github.com/Kutaho">Kutaho</a> ) -</li>
+            </ul>
+            <p>See also the list of <a href="https://github.com/coursegraph/CourseGraph/settings/collaboration">contributors</a>
+                who participated in this project.</p>
+            <h2>License</h2>
+            <p>This project is licensed under the MIT License - see the <a href="LICENSE.md">LICENSE.md</a> file for
+                details</p>
+            <h2>Acknowledgments</h2>
+            <p>Big thanks to Richard Jullig.</p>
+            <p>:kissing_heart:</p></article>
+    </section>
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2>
+    <h3>Classes</h3>
+    <ul>
+        <li><a href="AddCount.html">AddCount</a></li>
+        <li><a href="Clock.html">Clock</a></li>
+        <li><a href="Head.html">Head</a></li>
+        <li><a href="Nav.html">Nav</a></li>
+    </ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Jul 07 2018 11:11:34
+    GMT-0700 (太平洋夏令时)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"></script>
+</body>
+</html>

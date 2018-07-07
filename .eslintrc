@@ -1,7 +1,8 @@
 {
   "extends": [
     "eslint:recommended",
-    "plugin:react/recommended"
+    "plugin:react/recommended",
+    "fbjs"
   ],
   "env": {
     "browser": true,
@@ -13,13 +14,13 @@
     "ecmaVersion": 8,
     "sourceType": "module"
   },
+  "parser": "babel-eslint",
   "rules": {
     "no-console": "off",
     "strict": [
       "error",
       "global"
     ],
-    "curly": "warn",
-    "react/prop-types": "warn"
+    "curly": "warn"
   }
 }
