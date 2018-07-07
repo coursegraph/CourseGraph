@@ -4,7 +4,7 @@
     "dev": "node server/index.js",
     "pretest": "eslint --ext js --ext jsx **",
     "test": "jest",
-    "test:ci": "npm run pretest && jest --coverage --coverageReporters=text-lcov | coveralls",
+    "test:ci": "jest --coverage --coverageReporters=text-lcov | coveralls",
     "build": "next build",
     "start": "NODE_ENV=production node server/index.js",
     "docs": "jsdoc -c conf.json -d docs -R README.md components"
