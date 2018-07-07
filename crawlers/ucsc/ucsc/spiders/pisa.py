@@ -20,6 +20,9 @@ class PisaSpider(scrapy.Spider):
         logger.setLevel(logging.WARNING)
         super(PisaSpider, self).__init__(*args, **kwargs)
 
+        self.max_index_scrapes = 10
+        self.max_page_scrapes = 10
+
     def parse(self, response):
         yield scrapy.FormRequest(url=self.search_url, 
         formdata={'action':'results',
@@ -44,22 +47,16 @@ class PisaSpider(scrapy.Spider):
                   'rec_dur': '1582'},
         callback=self.parse_course_index)
 
-<<<<<<< HEAD
-    def parse_course_listings(self, response):
-        items = response.xpath('//div[contains(@id,"rowpanel")]')
-=======
-<<<<<<< HEAD
     def parse_course_index(self, response):
-        if self.max_index_entries == 0:
+        if self.max_index_scrapes == 0:
             return
 
         items = response.xpath('body/div[contains(@class,"center-block")]/div[@class="panel-body"]/div[contains(@id,"rowpanel")]')
-=======
-    def parse_course_listings(self, response):
-        items = response.xpath('//div[contains(@id,"rowpanel")]')
->>>>>>> development
->>>>>>> development
         for item in items:
+            if self.max_index_scrapes == 0:
+                return
+            self.max_index_scrapes -= 1
+
             result = PisaIndexItem()
             anchor = item.xpath('//a[contains(@id,"class_id_")]')
             result['url'] = site_path(anchor.xpath('@href').extract()[0])
@@ -90,12 +87,15 @@ class PisaSpider(scrapy.Spider):
             # and would ideally like a timestamp somewhere on the outputted data
 
             yield result
-            # yield scrapy.Request(result['url'], callback=self.parse_course_page)
+            if self.max_page_scrapes != 0:
+                self.max_page_scrapes -= 1
+                yield scrapy.Request(result['url'], callback=self.parse_course_page)
+
 
     def parse_course_page(self, response):
         content = response.xpath('//div[@class="panel-body"]')
         result = PisaCourseItem()
-        result['content'] = str(content.extract())
+        result['raw_content'] = str(content.extract())
         yield result
 
         # TBD: actually parse this and process it, etc...
