@@ -55,39 +55,39 @@ class PisaSpider(scrapy.Spider):
             return
 
         items = response.xpath('body/div[contains(@class,"center-block")]/div[@class="panel-body"]/div[contains(@id,"rowpanel")]')
+        assert(items)
         for item in items:
             if self.max_index_scrapes == 0:
                 return
             self.max_index_scrapes -= 1
 
             result = PisaIndexItem()
-            anchor = item.xpath('//a[contains(@id,"class_id_")]')
+            anchor = item.xpath('div[contains(@class,"panel-heading")]/h2/a[contains(@id,"class_id_")]')
+            assert(anchor)
             result['url'] = site_path(anchor.xpath('@href').extract()[0])
 
             # parse course name, title, section
             title_info = anchor.xpath('text()').extract()[0]
-            match = re.match(r'(\w+\s+\d+)\s+-\s+(\d+)[^\w]+([^\n]+)', title_info)
+            assert(title_info)
+            match = re.match(r'(\w+\s+\d+[A-Z]?)[^\d]+(\d+)[^\w]+([^\n]+)', title_info)
             if not match:
                 raise Exception("Failed to parse '%s'"%title_info)
             result['course_name'] = match.group(1)
             result['course_section'] = match.group(2)
             result['course_name'] = match.group(3)
 
-            # grab class number
-            result['class_number'] = item.xpath('//a[contains(@id,"class_nbr")]').extract()[0]
+            # grab class number + enrollment info
+            rest = item.xpath('div[contains(@class,"panel-body")]/div[contains(@class,"row")]')
+            assert(rest)
+            result['class_number'] = int(rest.xpath('div[1]/a/text()').extract()[0])
+            result['instructor'] = rest.xpath('div[2]/text()').extract()[0].strip()
+            location_info = rest.xpath('div[3]/text()')
+            result['class_type'], result['location'] = location_info.re(r'\s*([A-Z]+):\s+([\s\w]+)')
 
-            # TBD: grab everything else (is wrapped in a <div class="row">, so maybe
-            # use an xpath selector for that and iterate its div children...?
-            # Each remaining field is in text inside of one of these divs; use
-            # regexes to clean up and eg. separate class_type ("LEC") from location, etc...
-
-            # Also TBD: this is slow AF so maybe (eventually) optimize this to, well,
-            # have less shit performance (note: prob xpath), but also be properly async 
-            # (visit page => generate async todo-queue to process each item individually)
-            # so that we can use multiprocessing to further speed up
-
-            # TBD: also need to store the term info (retain this somehow?),
-            # and would ideally like a timestamp somewhere on the outputted data
+            result['meet_times'] = rest.xpath('div[4]/text()').extract()[0].strip()
+            enroll_info = rest.xpath('div[5]/text()')
+            result['enroll_current'], result['enroll_max'] = map(int, enroll_info.re(r'\s*(\d+)\s+of\s+(\d+)'))
+            result['materials_url'] = rest.xpath('div[6]/a/@href').extract()[0]
 
             yield result
             if self.max_page_scrapes != 0:
