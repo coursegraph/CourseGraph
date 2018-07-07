@@ -1,6 +1,6 @@
-import {createStore, applyMiddleware} from 'redux'
-import {composeWithDevTools} from 'redux-devtools-extension'
-import thunkMiddleware from 'redux-thunk'
+import { createStore, applyMiddleware } from 'redux';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import thunkMiddleware from 'redux-thunk';
 
 const exampleInitialState = {
     lastUpdate: 0,
@@ -26,13 +26,13 @@ export const reducer = (state = exampleInitialState, action) => {
                 count: state.count + 1
             });
         default:
-            return state
+            return state;
     }
 };
 
 // ACTIONS
 export const serverRenderClock = (isServer) => dispatch => {
-    return dispatch({type: actionTypes.TICK, light: !isServer, ts: Date.now()})
+    return dispatch({type: actionTypes.TICK, light: !isServer, ts: Date.now()});
 };
 
 export const startClock = () => dispatch => {
@@ -40,13 +40,13 @@ export const startClock = () => dispatch => {
         type: actionTypes.TICK,
         light: true,
         ts: Date.now()
-    }), 1000)
+    }), 1000);
 };
 
 export const addCount = () => dispatch => {
-    return dispatch({type: actionTypes.ADD})
+    return dispatch({type: actionTypes.ADD});
 };
 
 export const initStore = (initialState = exampleInitialState) => {
-    return createStore(reducer, initialState, composeWithDevTools(applyMiddleware(thunkMiddleware)))
+    return createStore(reducer, initialState, composeWithDevTools(applyMiddleware(thunkMiddleware)));
 };

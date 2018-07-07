@@ -14,7 +14,7 @@ from scrapy.exceptions import DropItem
 from scrapy.contrib.exporter import JsonItemExporter
 from scrapy.contrib.exporter import CsvItemExporter
 
->>>>>>> master
+>>>>>>> development
 from scrapy import log
 
 class PisaSpiderPipeline(object):
@@ -73,4 +73,4 @@ def create_valid_csv(self, item):
         is_string = (isinstance(value, basestring))
         if (is_string and ("," in value.encode('utf-8'))):
             item[key] = "\"" + value + "\""        
->>>>>>> master
+>>>>>>> development

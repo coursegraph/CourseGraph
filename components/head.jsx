@@ -1,7 +1,7 @@
 import React from 'react';
 
-import NextHead from 'next/head'
-import {string} from 'prop-types'
+import NextHead from 'next/head';
+import { string } from 'prop-types';
 
 const defaultDescription = '';
 const defaultOGURL = '';
@@ -36,4 +36,4 @@ Head.propTypes = {
     ogImage: string
 };
 
-export default Head
+export default Head;
