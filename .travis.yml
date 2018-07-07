@@ -9,3 +9,7 @@ script:
   - npm test
 env:
 NODE_ENV=test
+branches:
+  only:
+  - master
+  - development
