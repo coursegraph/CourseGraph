@@ -10,10 +10,10 @@ import PropTypes from 'prop-types';
  * @constructor
  */
 const Clock = ({lastUpdate, light}) => {
-    return (
-        <div className={light ? 'light' : ''}>
-            {format(new Date(lastUpdate))}
-            <style jsx>{`
+  return (
+    <div className={light ? 'light' : ''}>
+      {format(new Date(lastUpdate))}
+      <style jsx>{`
         div {
           padding: 15px;
           display: inline-block;
@@ -26,20 +26,21 @@ const Clock = ({lastUpdate, light}) => {
           background-color: #999;
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 /**
  * @type {{lastUpdate: shim, light: shim}}
  */
 Clock.propTypes = {
-    lastUpdate: PropTypes.any,
-    light: PropTypes.bool,
+  lastUpdate: PropTypes.any,
+  light: PropTypes.bool,
 };
 
 export default Clock;
 
-const format = t => `${pad(t.getUTCHours())}:${pad(t.getUTCMinutes())}:${pad(t.getUTCSeconds())}`;
+const format = t => `${pad(t.getUTCHours())}:${pad(t.getUTCMinutes())}:${
+  pad(t.getUTCSeconds())}`;
 
 const pad = n => n < 10 ? `0${n}` : n;

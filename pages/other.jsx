@@ -12,40 +12,40 @@ import Page from '../components/Page';
  */
 class Counter extends Component {
 
-    /**
-     * @type {{startClock: shim}}
-     */
-    static propTypes = {
-        startClock: PropTypes.func,
-    };
+  /**
+   * @type {{startClock: shim}}
+   */
+  static propTypes = {
+    startClock: PropTypes.func,
+  };
 
-    /**
-     * @param store {Store}
-     * @param isServer {bool}
-     * @return {Promise<{isServer: bool}>}
-     */
-    static async getInitialProps({store, isServer}) {
-        store.dispatch(serverRenderClock(isServer));
-        store.dispatch(addCount());
-        return {isServer};
-    }
+  /**
+   * @param store {Store}
+   * @param isServer {bool}
+   * @return {Promise<{isServer: bool}>}
+   */
+  static async getInitialProps({store, isServer}) {
+    store.dispatch(serverRenderClock(isServer));
+    store.dispatch(addCount());
+    return {isServer};
+  }
 
-    componentDidMount() {
-        this.timer = this.props.startClock();
-    }
+  componentDidMount() {
+    this.timer = this.props.startClock();
+  }
 
-    componentWillUnmount() {
-        clearInterval(this.timer);
-    }
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
 
-    /**
-     * @return {JSX.Element}
-     */
-    render() {
-        return (
-            <Page title='Other Page' linkTo='/'/>
-        );
-    }
+  /**
+   * @return {JSX.Element}
+   */
+  render() {
+    return (
+      <Page title="Other Page" linkTo="/"/>
+    );
+  }
 }
 
 /**
@@ -53,10 +53,10 @@ class Counter extends Component {
  * @return {{addCount: addCount|ActionCreator<any>|ActionCreatorsMapObject<any>, startClock: startClock|ActionCreator<any>|ActionCreatorsMapObject<any>}}
  */
 const mapDispatchToProps = (dispatch) => {
-    return {
-        addCount: bindActionCreators(addCount, dispatch),
-        startClock: bindActionCreators(startClock, dispatch)
-    };
+  return {
+    addCount: bindActionCreators(addCount, dispatch),
+    startClock: bindActionCreators(startClock, dispatch),
+  };
 };
 
 export default connect(null, mapDispatchToProps)(Counter);

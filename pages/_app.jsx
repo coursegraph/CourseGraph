@@ -7,26 +7,26 @@ import { initStore } from '../utils/store';
 
 export default withRedux(initStore)(class MyApp extends App {
 
-    /**
-     * @param Component
-     * @param ctx
-     * @return {Promise<{pageProps: {}}>}
-     */
-    static async getInitialProps({Component, ctx}) {
-        return {
-            pageProps: (Component.getInitialProps ? await Component.getInitialProps(ctx) : {})
-        };
-    }
+  /**
+   * @param Component
+   * @param ctx
+   * @return {Promise<{pageProps: {}}>}
+   */
+  static async getInitialProps({Component, ctx}) {
+    return {
+      pageProps: (Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
+    };
+  }
 
-    /**
-     * @return {JSX.Element}
-     */
-    render() {
-        const {Component, pageProps, store} = this.props;
-        return <Container>
-            <Provider store={store}>
-                <Component {...pageProps} />
-            </Provider>
-        </Container>;
-    }
+  /**
+   * @return {JSX.Element}
+   */
+  render() {
+    const {Component, pageProps, store} = this.props;
+    return <Container>
+      <Provider store={store}>
+        <Component {...pageProps} />
+      </Provider>
+    </Container>;
+  }
 });

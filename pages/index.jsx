@@ -12,47 +12,47 @@ import Page from '../components/Page';
  */
 class Counter extends React.Component {
 
-    /**
-     * @type {{startClock: shim}}
-     */
-    static propTypes = {
-        startClock: PropTypes.func,
-    };
+  /**
+   * @type {{startClock: shim}}
+   */
+  static propTypes = {
+    startClock: PropTypes.func,
+  };
 
-    /**
-     * @param store {Store}
-     * @param isServer {bool}
-     * @return {Promise<{isServer: bool}>}
-     */
-    static async getInitialProps({store, isServer}) {
-        store.dispatch(serverRenderClock(isServer));
-        store.dispatch(addCount());
+  /**
+   * @param store {Store}
+   * @param isServer {bool}
+   * @return {Promise<{isServer: bool}>}
+   */
+  static async getInitialProps({store, isServer}) {
+    store.dispatch(serverRenderClock(isServer));
+    store.dispatch(addCount());
 
-        return {isServer};
-    }
+    return {isServer};
+  }
 
-    /**
-     * Start the timer.
-     */
-    componentDidMount() {
-        this.timer = this.props.startClock();
-    }
+  /**
+   * Start the timer.
+   */
+  componentDidMount() {
+    this.timer = this.props.startClock();
+  }
 
-    /**
-     * Reset the timer.
-     */
-    componentWillUnmount() {
-        clearInterval(this.timer);
-    }
+  /**
+   * Reset the timer.
+   */
+  componentWillUnmount() {
+    clearInterval(this.timer);
+  }
 
-    /**
-     * @return {JSX.Element}
-     */
-    render() {
-        return (
-            <Page title='Index Page' linkTo='/other'/>
-        );
-    }
+  /**
+   * @return {JSX.Element}
+   */
+  render() {
+    return (
+      <Page title="Index Page" linkTo="/other"/>
+    );
+  }
 }
 
 /**
@@ -60,10 +60,10 @@ class Counter extends React.Component {
  * @return {{addCount: addCount|ActionCreator<any>|ActionCreatorsMapObject<any>, startClock: startClock|ActionCreator<any>|ActionCreatorsMapObject<any>}}
  */
 const mapDispatchToProps = (dispatch) => {
-    return {
-        addCount: bindActionCreators(addCount, dispatch),
-        startClock: bindActionCreators(startClock, dispatch)
-    };
+  return {
+    addCount: bindActionCreators(addCount, dispatch),
+    startClock: bindActionCreators(startClock, dispatch),
+  };
 };
 
 export default connect(null, mapDispatchToProps)(Counter);
