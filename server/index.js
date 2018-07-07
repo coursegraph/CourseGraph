@@ -32,19 +32,9 @@ app.prepare()
     const db = mongoose.connection;
     db.on('error', console.error.bind(console, 'connection error:'));
 
-    // Next.js request handling
-    const customRequestHandler = (page, req, res) => {
-      const mergedQuery = Object.assign({}, req.query, req.params);
-      app.render(req, res, page, mergedQuery);
-    };
-
     // Routes
-    server.get('/a', (req, res) => {
-      return app.render(req, res, '/b', req.query);
-    });
-
-    server.get('/b', (req, res) => {
-      return app.render(req, res, '/a', req.query);
+    server.get('/', (req, res) => {
+      res.redirect('/ucsc');
     });
 
     server.get('/posts/:id', (req, res) => {
@@ -57,12 +47,12 @@ app.prepare()
       res.json(itemData);
     });
 
-    // Set up home page as a simple render of the page.
-    server.get('/', customRequestHandler.bind(undefined, '/'));
-
     // Fall-back on other next.js assets.
-    server.get('*', defaultRequestHandler);
+    server.get('*', (req, res) => {
+      return defaultRequestHandler(req, res);
+    });
 
+    // Start the server
     server.listen(PORT, (err) => {
       if (err) {
         throw err;
