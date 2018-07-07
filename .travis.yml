@@ -7,9 +7,3 @@ install:
   - npm install
 script:
   - npm test:ci
-env:
-NODE_ENV=test
-branches:
-  only:
-  - master
-  - development
