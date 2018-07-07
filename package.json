@@ -5,7 +5,7 @@
     "pretest": "eslint --ext js --ext jsx **",
     "test": "jest",
     "build": "next build",
-    "start": "node server/index.js"
+    "start": "NODE_ENV=production node server/index.js"
   },
   "dependencies": {
     "body-parser": "latest",

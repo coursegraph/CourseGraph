@@ -4,6 +4,9 @@ const next = require('next');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const api = require('./operations/get-item');
+
+
 const PORT = parseInt(process.env.PORT, 10) || 8080;
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -48,7 +51,16 @@ app.prepare()
             return app.render(req, res, '/posts', {id: req.params.id});
         });
 
+        // When rendering client-side, we will request the same data from this route
+        server.get('/_data/item', (req, res) => {
+            const itemData = api.getItem();
+            res.json(itemData);
+        });
+
+        // Set up home page as a simple render of the page.
         server.get('/', customRequestHandler.bind(undefined, '/'));
+
+        // Fall-back on other next.js assets.
         server.get('*', defaultRequestHandler);
 
         server.listen(PORT, (err) => {
