@@ -8,7 +8,7 @@ export default () => (
     <Header/>
     <h1> This is the UCSC placeholder page </h1>
     <ul>
-      <li><Link href="/ucsc/list/courses"><a>courses</a></Link></li>
+      {/*<li><Link href="/ucsc/list/courses"><a>courses</a></Link></li>*/}
       <li><Link href="/ucsc/list/locations"><a>locations</a></Link></li>
       <li><Link href="/ucsc/list/professors"><a>Professors</a></Link></li>
       <li><Link href="/ucsc/list/sections"><a>Sections</a></Link></li>
