@@ -14,17 +14,13 @@ class AddCount extends Component {
    * @type {{count: shim, addCount: shim}}
    */
   static propTypes = {
-    count: PropTypes.number,
-    addCount: PropTypes.func,
+    count: PropTypes.number.isRequired,
+    addCount: PropTypes.func.isRequired,
   };
 
-  constructor(...args) {
-    super(...args);
-
-    this.add = () => {
-      this.props.addCount();
-    };
-  }
+  add = () => {
+    this.props.addCount();
+  };
 
   /**
    * @return {JSX.Element}
