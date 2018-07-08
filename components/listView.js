@@ -7,13 +7,13 @@ class listView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listdata: this.props.listdata,
+      listdata: this.props.listdata, //error occurs here where because listdata is undefined?
     };
   }
 
   render() {
     return (
-      <List>{this.state.listdata.map(value => (
+      <List>{this.state.listdata.map(value => (  //here's where the code actually breaks. "cannot read property map of undefined
         <ListItem
           key={value}
           role={undefined}
