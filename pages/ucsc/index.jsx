@@ -1,8 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
 
+import Header from '../../components/Header';
+
 export default () => (
-  <div>This is the UCSC index page.
+  <div>
+    <Header/>
+    <h1> This is the UCSC placeholder page </h1>
     <ul>
       <li><Link href="/ucsc/list/courses"><a>courses</a></Link></li>
       <li><Link href="/ucsc/list/locations"><a>locations</a></Link></li>
