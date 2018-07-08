@@ -38,13 +38,14 @@ class PisaCourseIndexCrawler (BaseCrawler):
         anchor.xpath_attrib('@href').bind(result, 'url')
         anchor.xpath_stripped_text().bind_re(
             r'\s*(\w+\s+\d+[A-Z]?)[^\d]+(\d+)[^\w]+([^\n]+)',
+            result,
             ('course_name', 'course_section', 'course_title'))
 
         content = response \
             .xpath_require_one('div[contains(@class,"panel-body")]') \
             .xpath_require_one('div[contains(@class,"row")]')
 
-        content.xpath_require_many('div[@class="col-xs-6 col-sm-3"') \
+        content.xpath_require_many('div[@class="col-xs-6 col-sm-3"]') \
             .map_sequential_cases(check='maybe', cases=(
                 ('required',
                     lambda test: 
@@ -66,8 +67,9 @@ class PisaCourseIndexCrawler (BaseCrawler):
                         test.xpath_require_one('i[1]').xpath_attrib('@class').contains('fa-location-arrow') and \
                         test.xpath_require_one('i[2]').xpath_attrib('@class').equals('sr-only') and \
                         test.xpath_require_one('i[2]').xpath_stripped_text().equals('Location:'),
-                    lambda value: value.xpath_stripped_text().bind_re(
+                    lambda value: value.xpath_stripped_text().bind_re_map(
                         r'(\d+)\s+of\s+(\d+)',
+                        result,
                         ('enroll_current','enroll_max'), 
                         (int,int))),
 
@@ -78,6 +80,7 @@ class PisaCourseIndexCrawler (BaseCrawler):
                         test.xpath_require_one('i[2]').xpath_stripped_text().equals('Location:'),
                     lambda value: value.xpath_stripped_text().bind_re(
                         r'([M(?:Tu)W(?:Tr)F]+)\s+(\d+:\d+(?:PM|AM))',
+                        result,
                         ('meet_days', 'meet_begin', 'meet_end'),
                         (lambda days: days.replace('Tr','R').replace('Tu','T'), to_time, to_time))),
 
@@ -86,6 +89,7 @@ class PisaCourseIndexCrawler (BaseCrawler):
                         test.xpath_stripped_text().matches_re(r'\d+\s+of\d+\s+Enrolled'),
                     lambda value: value.xpath_stripped_text().bind_re_map(
                         r'(\d+)\s+of(\d+)\s+Enrolled',
+                        result,
                         ('enroll_max', 'enroll_current'),
                         (int, int)))
             ))
