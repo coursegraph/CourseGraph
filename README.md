@@ -3,6 +3,7 @@
 ![coursegraph](./assets/logo.png)
 
 [![Build Status](https://travis-ci.org/coursegraph/CourseGraph.svg?branch=development)](https://travis-ci.org/coursegraph/CourseGraph)
+[![Coverage Status](https://coveralls.io/repos/github/coursegraph/CourseGraph/badge.svg)](https://coveralls.io/github/coursegraph/CourseGraph)
 [![tested with jest](https://img.shields.io/badge/tested_with-jest-99424f.svg)](https://github.com/facebook/jest)
 [![jest](https://jestjs.io/img/jest-badge.svg)](https://github.com/facebook/jest)
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)](https://github.com/coursegraph/CourseGraph/blob/master/LICENSE.md)
@@ -100,7 +101,6 @@ npm run pretest
 
 * [Next.js](https://nextjs.org/) - A lightweight framework for static and server‑rendered applications.
 * [React](https://reactjs.org) - A JavaScript library for building user interfaces
-* [TypeScript](https://www.typescriptlang.org/) - TypeScript brings you optional static type-checking along with the latest ECMAScript features.
 * [Node.js](https://nodejs.org/en/) - A JavaScript runtime built on Chrome's V8 JavaScript engine.
 * [MongoDB](https://www.mongodb.com/) - Build innovative modern applications that create a competitive advantage.
 

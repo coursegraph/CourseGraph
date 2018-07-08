@@ -6,6 +6,5 @@ node_js:
 install:
   - npm install
 script:
-  - npm test
-env:
-NODE_ENV=test
+  - npm run pretest
+  - npm run test:ci
