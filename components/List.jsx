@@ -17,6 +17,7 @@ export default class List extends React.Component {
   static defaultProps = {
     isFetching: true,
     loadingLabel: 'Loading...',
+    items: [],
   };
 
   /**

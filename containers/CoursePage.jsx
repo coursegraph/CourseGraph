@@ -42,9 +42,7 @@ class CoursePage extends React.Component {
  * @return {{isFetching: boolean}}
  */
 const mapStateToProps = (state) => {
-  const {
-    isFetching,
-  } = state || {
+  const {isFetching} = state || {
     isFetching: true,
   };
 

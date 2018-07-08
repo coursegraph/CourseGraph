@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 
 import Header from '../../components/Header';
+import CoursePage from '../../containers/CoursePage';
 
 export default () => (
   <div>
@@ -14,5 +15,6 @@ export default () => (
       <li><Link href="/ucsc/list/sections"><a>Sections</a></Link></li>
       <li><Link href="/ucsc/list/terms"><a>Terms</a></Link></li>
     </ul>
+    <CoursePage courses={[]}/>
   </div>
 );
