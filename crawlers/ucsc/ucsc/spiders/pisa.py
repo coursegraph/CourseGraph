@@ -105,61 +105,89 @@ class PisaSpider(scrapy.Spider):
         parse_course_title(content.xpath('div[1]/div/h2/text()').extract()[0], result)
         result['term'] = content.xpath('div[2]/div/text()').extract()[0].strip()
 
-        info = content.xpath('div[contains(@class,"panel-group")]')
-        details = info.xpath('div[1]/div[contains(@class,"panel-body")]/div[1]')
+        def parse_panel_class_details (panel_body):
+            details = panel_body.xpath('div[contains(@class,"row")]')
+            print(details)
+            left_panel, right_panel = details.xpath('div[1]/dl'), details.xpath('div[2]/dl')
+            print(left_panel)
+            print(right_panel)
+            # left_panel, right_panel = details.xpath('div[contains(@class,"col-xs-12")]')
+            result['career_type'] = left_panel.xpath('dd[1]/text()').extract()[0].strip('"')
+            result['grading_options'] = left_panel.xpath('dd[2]/text()').extract()[0].strip('"')
+            result['class_number'] = int(left_panel.xpath('dd[3]/text()').extract()[0].strip('"'))
+            result['lecture_number'] = result['class_number']
+            result['class_type_pretty'] = left_panel.xpath('dd[4]/text()').extract()[0].strip('"')
+            result['credits'] = left_panel.xpath('dd[5]/text()').extract()[0].strip('"')
+            result['gen_ed_categories'] = left_panel.xpath('dd[5]/text()').extract()[0].strip('"')
+            result['enroll_status'] = right_panel.xpath('dd[1]/text()').extract()[0].strip('"')
+            avail_seats = int(right_panel.xpath('dd[2]/text()').extract()[0].strip('"'))
+            result['enroll_max'] = int(right_panel.xpath('dd[3]/text()').extract()[0].strip('"'))
+            result['enroll_current'] = int(right_panel.xpath('dd[4]/text()').extract()[0].strip('"'))
+            result['waitlist_max'] = int(right_panel.xpath('dd[5]/text()').extract()[0].strip('"'))
+            result['waitlist_current'] = int(right_panel.xpath('dd[6]/text()').extract()[0].strip('"'))
+            assert(avail_seats == result['enroll_max'] - result['enroll_current'])
 
-        left_panel = details.xpath('div[1]/dl')
-        result['career_type'] = left_panel.xpath('dd[1]/text()').extract()[0].strip('"')
-        result['grading_options'] = left_panel.xpath('dd[2]/text()').extract()[0].strip('"')
-        result['class_number'] = int(left_panel.xpath('dd[3]/text()').extract()[0].strip('"'))
-        result['lecture_number'] = result['class_number']
+        def parse_panel_description (panel_body):
+            result['course_description'] = panel_body.xpath('text()').extract()[0].strip()
 
-        result['class_type_pretty'] = left_panel.xpath('dd[4]/text()').extract()[0].strip('"')
-        result['credits'] = left_panel.xpath('dd[5]/text()').extract()[0].strip('"')
-        result['gen_ed_categories'] = left_panel.xpath('dd[5]/text()').extract()[0].strip('"')
+        def parse_panel_enrollment_reqs (panel_body):
+            result['enrollment_reqs'] = panel_body.xpath('text()').extract()[0].strip()
 
-        right_panel = details.xpath('div[2]/dl')
-        result['enroll_status'] = right_panel.xpath('dd[1]/text()').extract()[0].strip('"')
-        avail_seats = int(right_panel.xpath('dd[2]/text()').extract()[0].strip('"'))
-        result['enroll_max'] = int(right_panel.xpath('dd[3]/text()').extract()[0].strip('"'))
-        result['enroll_current'] = int(right_panel.xpath('dd[4]/text()').extract()[0].strip('"'))
-        assert(avail_seats == result['enroll_max'] - result['enroll_current'])
+        def parse_panel_class_notes (panel_body):
+            result['class_notes'] = panel_body.xpath('text()').extract()[0].strip()
 
-        result['waitlist_max'] = int(right_panel.xpath('dd[5]/text()').extract()[0].strip('"'))
-        result['waitlist_current'] = int(right_panel.xpath('dd[6]/text()').extract()[0].strip('"'))
+        def parse_panel_meeting_info (panel_body):
+            meet_info = panel_body.xpath('table')
+            meet_info = panel_body.xpath('tbody') or meet_info
+            if meet_info:
+                result['meet_times'] = meet_info.xpath('td[1]/text()').extract()[0].strip()
+                result['location'] = meet_info.xpath('td[2]/text()').extract()[0].strip()
+                result['instructor'] = meet_info.xpath('td[3]/text()').extract()[0].strip()
+                result['class_dates'] = meet_info.xpath('td[4]/text()').extract()[0].strip()
 
-        result['course_description'] = info.xpath('div[2]/div[contains(@class,"panel-body")]/text()').extract()[0].strip()
-        result['enrollment_reqs'] = info.xpath('div[3]/div[contains(@class,"panel-body")]/text()').extract()[0].strip()
-        result['class_notes'] = info.xpath('div[4]/div[contains(@class,"panel-body")]/text()').extract()[0].strip()
+        def parse_panel_sections (panel_body):
+            pass
 
-        meet_info = info.xpath('div[5]/div[contains(@class,"panel-body")]/table')
-        if meet_info:
-            result['meet_times'] = meet_info.xpath('td[1]/text()').extract()[0].strip()
-            result['location'] = meet_info.xpath('td[2]/text()').extract()[0].strip()
-            result['instructor'] = meet_info.xpath('td[3]/text()').extract()[0].strip()
-            result['class_dates'] = meet_info.xpath('td[4]/text()').extract()[0].strip()
-        else:
+        panels = content.xpath('div[contains(@class,"panel-group")]/div[contains(@class,"row")]')
+        for panel in panels:
+            header = panel.xpath('div[contains(@class,"panel-heading")]/h2/text()').extract()[0].strip()
+            body = panel.xpath('div[contains(@class,"panel-body")]')
+            try:
+                {
+                    'Class Details': parse_panel_class_details,
+                    'Description': parse_panel_description,
+                    'Enrollment Requirements': parse_panel_enrollment_reqs,
+                    'Class Notes': parse_panel_class_notes,
+                    'Meeting Information': parse_panel_meeting_info,
+                    'Associated Discussions Sections or Labs': parse_panel_sections,
+                }[header](body)
+            except KeyError:
+                raise Exception("Unhandled panel: '%s', with content:\n%s"%(header, body.extract()))
+
+
+
+        # details = info.xpath('div[1]/div[contains(@class,"panel-body")]/div[1]')
+
+        # left_panel = details.xpath('div[1]/dl')
+        
+
+        # right_panel = details.xpath('div[2]/dl')
+        
+
+        # result['course_description'] = info.xpath('div[2]/div[contains(@class,"panel-body")]/text()').extract()[0].strip()
+        # result['enrollment_reqs'] = info.xpath('div[3]/div[contains(@class,"panel-body")]/text()').extract()[0].strip()
+        # result['class_notes'] = info.xpath('div[4]/div[contains(@class,"panel-body")]/text()').extract()[0].strip()
+
+        # meet_info = info.xpath('div[5]/div[contains(@class,"panel-body")]/table')
+        
+        # else:
+        #     pass
+            # print("NO MEETING INFO FOR '%s'?!\tContent dump:\n%s"%(result['course_name'], info.extract()))
 
         # print(info.xpath('div[5]/div[contains(@class,"panel-body")]/table').extract())
         # print(info.xpath('div[5]/div[contains(@class,"panel-body")]/table/tbody').extract())
         # print(info.xpath('div[5]/div[contains(@class,"panel-body")]/table/tr[2]').extract())
         # print(meet_info.extract())
         # print(meet_info.xpath('td[1]').extract())
-
-        
-
         associated_sections = info.xpath('div[6]/div[contains(@class,"panel-body")]')
-
-
         yield result
-
-
-
-
-
-
-
-
-
-
-
