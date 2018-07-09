@@ -125,9 +125,11 @@ class PisaSpider(scrapy.Spider):
                     'Seminar': 'SEM',
                     'Laboratory': 'LAB',
                     'Field Studies': 'FLD',
+                    'Studio': 'fixme (Studio)',
                 }[class_type]
             except KeyError:
-                raise Exception("Unhandled class_type: '%s'"%class_type)
+                print("FIXME unhandled class type: '%s'"%class_type)
+                # raise Exception("Unhandled class_type: '%s'"%class_type)
             result['credits'] = left_panel.xpath('dd[5]/text()').extract()[0].strip('"')
             result['gen_ed_categories'] = left_panel.xpath('dd[5]/text()').extract()[0].strip('"')
             avail_seats = int(right_panel.xpath('dd[2]/text()').extract()[0].strip('"'))
