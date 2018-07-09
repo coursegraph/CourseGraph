@@ -24,9 +24,6 @@ class PisaSpider(scrapy.Spider):
     search_url = site_path('index.php')
     start_urls = [ search_url ]
 
-    def __init__(self, item_count):
-        self.item_count = item
-
     def __init__(self, *args, **kwargs):
         logger = logging.getLogger('scrapy.spidermiddlewares.httperror')
         logger.setLevel(logging.WARNING)

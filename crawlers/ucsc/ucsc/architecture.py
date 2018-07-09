@@ -93,12 +93,18 @@ class SelectorWrapper:
         return self.value.re(regex) is not None
 
     def contains (self, other):
-        return self.contains(other)
+        if type(self.value) == str or type(self.value) == unicode:
+            return other in self.value
+        return self.value.contains(other)
 
     def bind_re (self, regex, result, attrib):
         if self.value:
-            value = self.value if type(self.value) == str or type(self.value) == unicode or type(self.value) == int \
-                else self.value.extract()[0]
+            try:
+                value = self.value.extract()[0]
+            except AttributeError:
+                value = self.value
+            # value = self.value if type(self.value) == str or type(self.value) == unicode or type(self.value) == int \
+            #     else self.value.extract()[0]
             
             match = re.match(regex, self.value)
             if not match:
@@ -120,19 +126,19 @@ class SelectorWrapper:
 
     def bind_re_map (self, regex, result, attrib, transform):
         if self.value:
-            value = self.value if type(self.value) == str or type(self.value) == int \
+            value = self.value if type(self.value) == str or type(self.value) == int or type(self.value) == unicode \
                 else self.value.extract()[0]
             
-            match = re.match(regex, self.value)
+            match = re.match(regex, value)
             if not match:
                 raise Exception("Failed to match regex '%s' against input %s"%(
-                    match, value))
+                    regex, value))
 
             if type(attrib) == str:
                 result[attrib] = transform(match.group(1))
             elif type(attrib) == tuple:
                 for i, (k, f) in enumerate(zip(attrib, transform)):
-                    result[k] = f(match.group[i+1])
+                    result[k] = f(match.group(i+1))
             else:
                 raise Exception("Invalid argument passed to %s.bind_re(): %s %s"%(
                     type(self), type(attrib), attrib))
@@ -150,7 +156,7 @@ class SelectorWrapper:
         assert(crawler is not None and url is not None)
 
 
-    def map_sequential_cases (self, selection = None, check='maybe', cases=None):
+    def map_sequential_cases (self, selection=None, check='maybe', cases=None):
         assert(check in set(('yes', 'no', 'maybe')))
         assert(cases is not None)
         assert(type(cases) == tuple)

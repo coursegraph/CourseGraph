@@ -50,8 +50,8 @@ class PisaCourseIndexCrawler (BaseCrawler):
                 ('required',
                     lambda test: 
                         test.xpath_stripped_text().equals("Class Number:") and \
-                        test.xpath_attrib('@id').matches_re(r'class_nbr_\d+') and \
-                        test.xpath_attrib('@href').matches_re(
+                        test.xpath_attrib('a/@id').matches_re(r'class_nbr_\d+') and \
+                        test.xpath_attrib('a/@href').matches_re(
                             r'https://pisa\.ucsc\.edu/class_search/index\.php\?action=detail&class_data=\w+'),
                     lambda value: value.xpath_stripped_text('a').to_int().bind(result, 'class_number')),
 
@@ -60,22 +60,21 @@ class PisaCourseIndexCrawler (BaseCrawler):
                         test.xpath_require_one('i[1]').xpath_attrib('@class').contains('fa-user') and \
                         test.xpath_require_one('i[2]').xpath_attrib('@class').equals('sr-only') and \
                         test.xpath_require_one('i[2]').xpath_stripped_text().equals('Instructor:'),
-                    lambda value: value.xpath_stripped_text().bind(result, '')),
+                    lambda value: value.xpath_stripped_text().bind(result, 'instructor')),
 
                 ('required',
                     lambda test:
                         test.xpath_require_one('i[1]').xpath_attrib('@class').contains('fa-location-arrow') and \
                         test.xpath_require_one('i[2]').xpath_attrib('@class').equals('sr-only') and \
-                        test.xpath_require_one('i[2]').xpath_stripped_text().equals('Location:'),
-                    lambda value: value.xpath_stripped_text().bind_re_map(
-                        r'(\d+)\s+of\s+(\d+)',
+                        test.xpath_require_one('i[2]').xpath_stripped_text().equals('Day and Time:'),
+                    lambda value: value.xpath_stripped_text().bind_re(
+                        r'(LEC|DISC|LAB):\s+([\w\s]+)',
                         result,
-                        ('enroll_current','enroll_max'), 
-                        (int,int))),
+                        ('class_type', 'location'))),
 
                 ('required',
                     lambda test:
-                        test.xpath_require_one('i[1]').xpath_attrib('@class').contains('fa-location-arrow') and \
+                        test.xpath_require_one('i[1]').xpath_attrib('@class').contains('fa-clock-o') and \
                         test.xpath_require_one('i[2]').xpath_attrib('@class').equals('sr-only') and \
                         test.xpath_require_one('i[2]').xpath_stripped_text().equals('Location:'),
                     lambda value: value.xpath_stripped_text().bind_re(
@@ -85,8 +84,8 @@ class PisaCourseIndexCrawler (BaseCrawler):
                         (lambda days: days.replace('Tr','R').replace('Tu','T'), to_time, to_time))),
 
                 ('required',
-                    lambda test:
-                        test.xpath_stripped_text().matches_re(r'\d+\s+of\d+\s+Enrolled'),
+                    lambda test: True,
+                        # test.xpath_stripped_text().matches_re(r'\d+\s+of\d+\s+Enrolled'),
                     lambda value: value.xpath_stripped_text().bind_re_map(
                         r'(\d+)\s+of(\d+)\s+Enrolled',
                         result,
