@@ -60,6 +60,7 @@ class PisaSpider(scrapy.Spider):
         if self.max_index_scrapes == 0:
             return
 
+        print("Parsing index '%s'"%response.url)
         items = response.xpath('body/div[contains(@class,"center-block")]/div[@class="panel-body"]/div[contains(@id,"rowpanel")]')
         assert(items)
         for item in items:
@@ -72,23 +73,26 @@ class PisaSpider(scrapy.Spider):
             assert(anchor)
             result['url'] = site_path(anchor.xpath('@href').extract()[0])
 
+            # Temporarily disabled; this IS valid index data
+            
             # parse course name, title, section
-            parse_course_title(anchor.xpath('text()').extract()[0], result)
+            # parse_course_title(anchor.xpath('text()').extract()[0], result)
 
             # grab class number + enrollment info
-            rest = item.xpath('div[contains(@class,"panel-body")]/div[contains(@class,"row")]')
-            assert(rest)
-            result['class_number'] = int(rest.xpath('div[1]/a/text()').extract()[0])
-            result['instructor'] = rest.xpath('div[2]/text()').extract()[0].strip()
-            location_info = rest.xpath('div[3]/text()')
-            result['class_type'], result['location'] = location_info.re(r'\s*([A-Z]+):\s+([\s\w]+)')
+            # rest = item.xpath('div[contains(@class,"panel-body")]/div[contains(@class,"row")]')
+            # assert(rest)
+            # result['class_number'] = int(rest.xpath('div[1]/a/text()').extract()[0])
+            # result['instructor'] = rest.xpath('div[2]/text()').extract()[0].strip()
+            # location_info = rest.xpath('div[3]/text()')
+            # result['class_type'], result['location'] = location_info.re(r'\s*([A-Z]+):\s+([\s\w]+)')
 
-            result['meet_times'] = rest.xpath('div[4]/text()').extract()[0].strip()
-            enroll_info = rest.xpath('div[5]/text()')
-            result['enroll_current'], result['enroll_max'] = map(int, enroll_info.re(r'\s*(\d+)\s+of\s+(\d+)'))
-            result['materials_url'] = rest.xpath('div[6]/a/@href').extract()[0]
+            # result['meet_times'] = rest.xpath('div[4]/text()').extract()[0].strip()
+            # enroll_info = rest.xpath('div[5]/text()')
+            # result['enroll_current'], result['enroll_max'] = map(int, enroll_info.re(r'\s*(\d+)\s+of\s+(\d+)'))
+            # result['materials_url'] = rest.xpath('div[6]/a/@href').extract()[0]
 
-            yield result
+            # yield result
+            print("Sending crawl request for '%s'"%result['url'])
             if self.max_page_scrapes != 0:
                 self.max_page_scrapes -= 1
                 yield scrapy.Request(result['url'], callback=self.parse_course_page)
@@ -104,19 +108,23 @@ class PisaSpider(scrapy.Spider):
 
         def parse_panel_class_details (panel_body):
             details = panel_body.xpath('div[contains(@class,"row")]')
-            print(details)
             left_panel, right_panel = details.xpath('div[1]/dl'), details.xpath('div[2]/dl')
-            print(left_panel)
-            print(right_panel)
-            # left_panel, right_panel = details.xpath('div[contains(@class,"col-xs-12")]')
             result['career_type'] = left_panel.xpath('dd[1]/text()').extract()[0].strip('"')
             result['grading_options'] = left_panel.xpath('dd[2]/text()').extract()[0].strip('"')
             result['class_number'] = int(left_panel.xpath('dd[3]/text()').extract()[0].strip('"'))
             result['lecture_number'] = result['class_number']
-            result['class_type_pretty'] = left_panel.xpath('dd[4]/text()').extract()[0].strip('"')
+            class_type = left_panel.xpath('dd[4]/text()').extract()[0].strip('"')
+            try:
+                result['class_type'] = {
+                    'Lecture': 'LEC',
+                    'Discussion': 'DISC',
+                    'Seminar': 'SEM',
+                    'Laboratory': 'LAB'
+                }[class_type]
+            except KeyError:
+                raise Exception("Unhandled class_type: '%s'"%class_type)
             result['credits'] = left_panel.xpath('dd[5]/text()').extract()[0].strip('"')
             result['gen_ed_categories'] = left_panel.xpath('dd[5]/text()').extract()[0].strip('"')
-            result['enroll_status'] = right_panel.xpath('dd[1]/text()').extract()[0].strip('"')
             avail_seats = int(right_panel.xpath('dd[2]/text()').extract()[0].strip('"'))
             result['enroll_max'] = int(right_panel.xpath('dd[3]/text()').extract()[0].strip('"'))
             result['enroll_current'] = int(right_panel.xpath('dd[4]/text()').extract()[0].strip('"'))
@@ -136,6 +144,8 @@ class PisaSpider(scrapy.Spider):
         def parse_panel_meeting_info (panel_body):
             meet_info = panel_body.xpath('table')
             meet_info = panel_body.xpath('tbody') or meet_info
+            meet_info = meet_info.xpath('tr[2]')
+            # print(meet_info.extract())
             if meet_info:
                 result['meet_times'] = meet_info.xpath('td[1]/text()').extract()[0].strip()
                 result['location'] = meet_info.xpath('td[2]/text()').extract()[0].strip()
@@ -143,6 +153,9 @@ class PisaSpider(scrapy.Spider):
                 result['class_dates'] = meet_info.xpath('td[4]/text()').extract()[0].strip()
 
         def parse_panel_sections (panel_body):
+            pass
+
+        def parse_panel_combined_sections (panel_body):
             pass
 
         panels = content.xpath('div[contains(@class,"panel-group")]/div[contains(@class,"row")]')
@@ -156,7 +169,8 @@ class PisaSpider(scrapy.Spider):
                     'Enrollment Requirements': parse_panel_enrollment_reqs,
                     'Class Notes': parse_panel_class_notes,
                     'Meeting Information': parse_panel_meeting_info,
-                    'Associated Discussions Sections or Labs': parse_panel_sections,
+                    'Combined Sections': parse_panel_combined_sections,
+                    'Associated Discussion Sections or Labs': parse_panel_sections,
                 }[header](body)
             except KeyError:
                 raise Exception("Unhandled panel: '%s', with content:\n%s"%(header, body.extract()))
@@ -186,5 +200,5 @@ class PisaSpider(scrapy.Spider):
         # print(info.xpath('div[5]/div[contains(@class,"panel-body")]/table/tr[2]').extract())
         # print(meet_info.extract())
         # print(meet_info.xpath('td[1]').extract())
-        associated_sections = info.xpath('div[6]/div[contains(@class,"panel-body")]')
+        # associated_sections = info.xpath('div[6]/div[contains(@class,"panel-body")]')
         yield result

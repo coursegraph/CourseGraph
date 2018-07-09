@@ -42,23 +42,16 @@ class PisaCourseItem(scrapy.Item):
     enroll_max = Field()        # int
     enroll_current = Field()    # int
     materials_url = Field()     # link to materials page, eg. "http://ucsc.verbacompare.com/comparison?id=FL18__AMS__003__01"
-    term = Field()              # TBD, eg. "Fall 2018"
-    term_id = Field()           # TBD, integer id used when searching via form
+    term = Field()              # eg. "Fall 2018"
+    term_id = Field()           # integer id used when searching via form
     career_type = Field()
     grading_options = Field()
     credits = Field()
     gen_ed_categories = Field()
     waitlist_max = Field()
     waitlist_current = Field()
-    enroll_status = Field()
 
-    course_description = Field()
-    enrollment_reqs = Field()
-    class_notes = Field()
+    course_description = Field()    # Description text
+    enrollment_reqs = Field()       # Enrollment text
+    class_notes = Field()           # Class notes text
     class_dates = Field()
-    
-
-
-
-
-
