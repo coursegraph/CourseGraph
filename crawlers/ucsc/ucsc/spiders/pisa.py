@@ -29,8 +29,10 @@ class PisaSpider(scrapy.Spider):
         logger.setLevel(logging.WARNING)
         super(PisaSpider, self).__init__(*args, **kwargs)
 
-        self.max_index_scrapes = 10
-        self.max_page_scrapes = 10
+        self.max_index_scrapes = -1
+        self.max_page_scrapes = -1
+        self.pages_total = 0
+        self.pages_done = 0
 
     def parse(self, response):
         yield scrapy.FormRequest(url=self.search_url, 
@@ -74,7 +76,7 @@ class PisaSpider(scrapy.Spider):
             result['url'] = site_path(anchor.xpath('@href').extract()[0])
 
             # Temporarily disabled; this IS valid index data
-            
+            #
             # parse course name, title, section
             # parse_course_title(anchor.xpath('text()').extract()[0], result)
 
@@ -92,10 +94,12 @@ class PisaSpider(scrapy.Spider):
             # result['materials_url'] = rest.xpath('div[6]/a/@href').extract()[0]
 
             # yield result
-            print("Sending crawl request for '%s'"%result['url'])
+            # print("Sending crawl request for '%s'"%result['url'])
             if self.max_page_scrapes != 0:
                 self.max_page_scrapes -= 1
                 yield scrapy.Request(result['url'], callback=self.parse_course_page)
+                self.pages_total += 1
+        print("%d / %d"%(self.pages_done, self.pages_total))
 
 
     def parse_course_page(self, response):
@@ -119,7 +123,8 @@ class PisaSpider(scrapy.Spider):
                     'Lecture': 'LEC',
                     'Discussion': 'DISC',
                     'Seminar': 'SEM',
-                    'Laboratory': 'LAB'
+                    'Laboratory': 'LAB',
+                    'Field Studies': 'FLD',
                 }[class_type]
             except KeyError:
                 raise Exception("Unhandled class_type: '%s'"%class_type)
@@ -130,7 +135,7 @@ class PisaSpider(scrapy.Spider):
             result['enroll_current'] = int(right_panel.xpath('dd[4]/text()').extract()[0].strip('"'))
             result['waitlist_max'] = int(right_panel.xpath('dd[5]/text()').extract()[0].strip('"'))
             result['waitlist_current'] = int(right_panel.xpath('dd[6]/text()').extract()[0].strip('"'))
-            assert(avail_seats == result['enroll_max'] - result['enroll_current'])
+            # assert(avail_seats == result['enroll_max'] - result['enroll_current'])
 
         def parse_panel_description (panel_body):
             result['course_description'] = panel_body.xpath('text()').extract()[0].strip()
@@ -175,30 +180,6 @@ class PisaSpider(scrapy.Spider):
             except KeyError:
                 raise Exception("Unhandled panel: '%s', with content:\n%s"%(header, body.extract()))
 
-
-
-        # details = info.xpath('div[1]/div[contains(@class,"panel-body")]/div[1]')
-
-        # left_panel = details.xpath('div[1]/dl')
-        
-
-        # right_panel = details.xpath('div[2]/dl')
-        
-
-        # result['course_description'] = info.xpath('div[2]/div[contains(@class,"panel-body")]/text()').extract()[0].strip()
-        # result['enrollment_reqs'] = info.xpath('div[3]/div[contains(@class,"panel-body")]/text()').extract()[0].strip()
-        # result['class_notes'] = info.xpath('div[4]/div[contains(@class,"panel-body")]/text()').extract()[0].strip()
-
-        # meet_info = info.xpath('div[5]/div[contains(@class,"panel-body")]/table')
-        
-        # else:
-        #     pass
-            # print("NO MEETING INFO FOR '%s'?!\tContent dump:\n%s"%(result['course_name'], info.extract()))
-
-        # print(info.xpath('div[5]/div[contains(@class,"panel-body")]/table').extract())
-        # print(info.xpath('div[5]/div[contains(@class,"panel-body")]/table/tbody').extract())
-        # print(info.xpath('div[5]/div[contains(@class,"panel-body")]/table/tr[2]').extract())
-        # print(meet_info.extract())
-        # print(meet_info.xpath('td[1]').extract())
-        # associated_sections = info.xpath('div[6]/div[contains(@class,"panel-body")]')
         yield result
+        self.pages_done += 1
+        print("%d / %d"%(self.pages_done, self.pages_total))
