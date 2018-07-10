@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import scrapy
+import os
 
 
 class RegistrarCoursesSpider(scrapy.Spider):
@@ -7,6 +8,31 @@ class RegistrarCoursesSpider(scrapy.Spider):
     allowed_domains = ['registrar.ucsc.edu']
     start_urls = ['https://registrar.ucsc.edu/catalog/programs-courses/index.html']
 
+    def __init__(self, *args, **kwargs):
+        super(RegistrarCoursesSpider, self).__init__(*args, **kwargs)
+        self.crawled = set()
+
+    def parse (self, response):
+        print("Parsing %s"%response.url)
+        if response.url in self.crawled:
+            return
+        else:
+            self.crawled.add(response.url)
+        all_links = response.xpath('//a')
+        for link in all_links:
+            print("Got link: %s"%link.extract())
+            try:
+                href = link.xpath('@href').extract()[0]
+                url = href if 'http' in href else os.path.join(os.path.split(response.url)[0], href)
+                print(url)
+                yield scrapy.Request(url, self.parse)
+            except IndexError:
+                pass
+
+
+
+
+class Unused:
     def parse(self, response):
         # Get links to all course pages from the registrar
         page_content = response\
