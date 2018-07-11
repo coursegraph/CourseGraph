@@ -3,6 +3,43 @@ import scrapy
 import os
 
 
+def path_components (path):
+    if '://' in path:
+        path = path.split('://')[1]
+    parts = path.split('/')
+    while parts and parts[0] == '':
+        parts = parts[1:]
+    while parts and parts[-1] == '':
+        parts = parts[:-1]
+    return parts
+
+assert(path_components('') == [])
+assert(path_components('/') == [])
+assert(path_components('foo/') == ['foo'])
+assert(path_components('/bar') == ['bar'])
+assert(path_components('foo/bar') == ['foo','bar'])
+
+def merge_url (url, rel):
+    # note: blame seiji for all the issues with this code
+    thing = url.split('://')[0] if '://' in url else 'https' 
+    if url and url[-1] == '/':
+        url = path_components(url)
+    else:
+        url = path_components(url)[:-1]
+
+    for part in path_components(rel):
+        if part == '..':
+            url = url[:-1]
+        else:
+            url.append(part)
+    return thing + '://' + '/'.join(url)
+
+assert(merge_url('https://registrar.ucsc.edu/catalog/programs-courses/index.html', 
+    '../foo/bar/../baz.html') == 'https://registrar.ucsc.edu/catalog/foo/baz.html')
+assert(merge_url('', 'bar.baz') == 'https://bar.baz')
+assert(merge_url('https://foo/bar/baz.html', '') == 'https://foo/bar')
+
+
 class RegistrarCoursesSpider(scrapy.Spider):
     name = 'registrar_courses'
     allowed_domains = ['registrar.ucsc.edu']
