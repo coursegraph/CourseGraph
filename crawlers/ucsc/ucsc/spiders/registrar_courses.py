@@ -39,11 +39,15 @@ assert(merge_url('https://registrar.ucsc.edu/catalog/programs-courses/index.html
 assert(merge_url('', 'bar.baz') == 'https://bar.baz')
 assert(merge_url('https://foo/bar/baz.html', '') == 'https://foo/bar')
 
+registrar_base_url = 'https://registrar.ucsc.edu/catalog/programs-courses'
+base_course_description_url = 'https://registrar.ucsc.edu/catalog/programs-courses/course-descriptions'
+base_faculty_url = 'https://registrar.ucsc.edu/catalog/programs-courses/faculty'
+base_program_description_url = 'https://registrar.ucsc.edu/catalog/programs-courses/program-statements'
 
 class RegistrarCoursesSpider(scrapy.Spider):
     name = 'registrar_courses'
     allowed_domains = ['registrar.ucsc.edu']
-    start_urls = ['https://registrar.ucsc.edu/catalog/programs-courses/index.html']
+    start_urls = [merge_url(registrar_base_url, 'index.html')]
 
     def __init__(self, *args, **kwargs):
         super(RegistrarCoursesSpider, self).__init__(*args, **kwargs)
@@ -51,21 +55,39 @@ class RegistrarCoursesSpider(scrapy.Spider):
 
     def parse (self, response):
         print("Parsing %s"%response.url)
-        if response.url in self.crawled:
-            return
-        else:
-            self.crawled.add(response.url)
+
+        if base_course_description_url in response.url:
+            self.parse_course_info(response)
+        elif base_faculty_url in response.url:
+            self.parse_faculty_info(response)
+        elif base_program_description_url in response.url:
+            self.parse_program_info(response)
+
         all_links = response.xpath('//a')
         for link in all_links:
             print("Got link: %s"%link.extract())
             try:
                 href = link.xpath('@href').extract()[0]
-                url = href if 'http' in href else os.path.join(os.path.split(response.url)[0], href)
-                print(url)
-                yield scrapy.Request(url, self.parse)
+                url = merge_url(response.url, href)
+                if url in self.crawled:
+                    continue
+                self.crawled.add(url)
+                if registrar_base_url in url:
+                    #yield { 'url': url }
+                    yield scrapy.Request(url, self.parse)
+                else:
+                    print("Skipping link %s"%url)
             except IndexError:
                 pass
 
+    def parse_course_info (self, response):
+        print("Got %s"%response.url)
+
+    def parse_faculty_info (self, response):
+        print("Got %s"%response.url)
+
+    def parse_program_info (self, response):
+        print("Got %s"%response.url)
 
 
 
