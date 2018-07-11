@@ -65,18 +65,27 @@ class RegistrarCoursesSpider(scrapy.Spider):
 
         all_links = response.xpath('//a')
         for link in all_links:
-            print("Got link: %s"%link.extract())
+            #print("Got link: %s"%link.extract())
             try:
                 href = link.xpath('@href').extract()[0]
-                url = merge_url(response.url, href)
+
+                def is_local_url (url):
+                    for thing in ('http:','https:','C:','www','ucsc.edu'):
+                        if thing in url:
+                            return False
+                    return True
+
+                url = merge_url(response.url, href) if is_local_url(href) else href
                 if url in self.crawled:
                     continue
+                #print("Got URL: %s"%url)
                 self.crawled.add(url)
                 if registrar_base_url in url:
-                    #yield { 'url': url }
+                    yield { 'url': url }
                     yield scrapy.Request(url, self.parse)
                 else:
-                    print("Skipping link %s"%url)
+                    pass
+                    #print("Skipping %s"%url)
             except IndexError:
                 pass
 
