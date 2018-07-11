@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import Link from 'next/link';
 import fetch from 'isomorphic-unfetch';
 
+import Header from '../../../components/Header';
+
 /**
  * @extends Component
  * @constructor
@@ -16,7 +18,7 @@ export default class CourseList extends Component {
     // item: PropTypes.shape({
     //   course_title: PropTypes.,
     // }),
-    item: PropTypes.string
+    item: PropTypes.string,
   };
 
   /**
@@ -49,6 +51,7 @@ export default class CourseList extends Component {
   render() {
     return (
       <div className="item">
+        <Header/>
         <div><Link href="/ucsc"><a>Back Home</a></Link></div>
         <h1>{this.props.item}</h1>
       </div>
