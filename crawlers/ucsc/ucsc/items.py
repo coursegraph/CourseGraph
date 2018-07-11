@@ -8,6 +8,27 @@
 import scrapy
 from scrapy.item import Item, Field
 
+class ProgramStatementItem(scrapy.Item): # not very important
+    url = Field()
+    title = Field()
+    program_statement = Field()
+    raw_page_content = Field()
+
+class CourseDescriptionItem(scrapy.Item): # VERY IMPORTANT
+    url = Field()
+    dept = Field()
+    dept_title = Field()
+    course_numnber = Field()
+    course_title = Field()
+    quarters_offered = Field()
+    course_description = Field()
+
+class FacultyItem(scrapy.Item): # would be nice to have
+    name = Field()      # before ','           (recommend .split(',')[0])
+    title = Field()     # everything after ',' (recommend .split(',')[1:])
+    statement = Field() # optional
+
+
 class PisaIndexItem(scrapy.Item):
     """ Encapsulates all the data visible from a Pisa course listing on pisa.ucsc.edu/class_search/index.php """
     url = Field()               # url of class page, eg. "https://pisa.ucsc.edu/class_search/index.php/index.php?action=detail&class_data=YToyOntzOjU6IjpTVFJNIjtzOjQ6IjIxODgiO3M6MTA6IjpDTEFTU19OQlIiO3M6NToiMjE3MjMiO30%3D"
