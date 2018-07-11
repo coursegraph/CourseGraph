@@ -24,6 +24,7 @@ class CourseDescriptionItem(scrapy.Item): # VERY IMPORTANT
     course_description = Field()
 
 class FacultyItem(scrapy.Item): # would be nice to have
+    url = Field()
     name = Field()      # before ','           (recommend .split(',')[0])
     title = Field()     # everything after ',' (recommend .split(',')[1:])
     statement = Field() # optional
