@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<style>
+.link {stroke: gray;}
+.node {stroke: white; stroke-width: 3px;}
+</style>
+
+<body>
+    <div>
+        <input name="updateButton" 
+               type="button" 
+               value="Nodes:1582 Links:1582" 
+               onclick="updateData()" />
+
+        <input name="updateButton1" 
+               type="button" 
+               value="Nodes:100 Links:100"
+               onclick="updateData1()" />
+        <input name="updateButton2" 
+               type="button" 
+               value="Nodes:10 Links:10 wiht arrow"
+               onclick="updateData2()" />
+        <input name="updateButton3" 
+               type="button" 
+               value="Nodes:1582 Links:1582 wiht fade(highlight)"
+               onclick="updateData3()" />
+        <input name="updateButton4" 
+               type="button" 
+               value="Nodes:100 Links:100 wiht fade(highlight)"
+               onclick="updateData4()" />
+        </div>
+<script src="http://d3js.org/d3.v2.js"></script>
+
+<script>
+var margin = {top: 40, right: 15, bottom: 10, left: 15};
+var width = window.innerWidth - margin.left - margin.right;
+var height = window.innerHeight - margin.top - margin.bottom;
+    
+var colors = d3.scale.category10();
+var num_nodes = 100, // number of nodes (change to add or remove nodes)
+    num_links = 100, // number of links (change to add or remove links)
+    charge = -300;
+    
+var zoom = d3.behavior.zoom()
+    .scaleExtent([0, 10])
+    .on("zoom", zoomed);  
+    
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.right + ")")
+    .call(zoom);
+    
+var rect = svg.append("rect")
+    .attr("width", width)
+    .attr("height", height)
+    .style("fill", "none")
+    .style("pointer-events", "all");    
+var container = svg.append("g");
+    
+container.append("g")
+    .attr("class", "x axis")
+    .selectAll("line")
+    .data(d3.range(0, width, 10))
+    .enter().append("line")
+    .attr("x1", function(d) { return d; })
+    .attr("y1", 0)
+    .attr("x2", function(d) { return d; })
+    .attr("y2", height);
+container.append("g")
+    .attr("class", "y axis")
+    .selectAll("line")
+    .data(d3.range(0, height, 10))
+    .enter().append("line")
+    .attr("x1", 0)
+    .attr("y1", function(d) { return d; })
+    .attr("x2", width)
+    .attr("y2", function(d) { return d; });
+    
+create();
+function create () {
+    svg.selectAll(".link, .node").remove();
+    randomGraph(num_nodes, num_links, charge);
+}
+function randomGraph (num_nodes, num_links, charge) { //creates a random graph on n nodes and m links
+    var nodes = d3.range(num_nodes).map(Object),
+        list  = randomChoose(unorderedPairs(d3.range(num_nodes)), num_links),
+        links = list.map(function (a) { return {source: a[0], target: a[1]} });
+    
+    var force = d3.layout.force()
+        .size([width, height])
+        .nodes(nodes)
+        .links(links)
+        .charge(charge)
+        .gravity(.05)
+        .linkDistance(60)
+        .on("tick", tick)
+        .start();
+    
+    var g = svg.append("g")
+        .attr("class", "everything");
+    
+    /* arrow for link
+     g.append("defs").append("marker")
+            .attr("id", "arrow")
+            .attr("viewBox", "0 -3 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 8)
+            .attr("orient", "auto")
+            .append("svg:path")
+            .attr("d", "M0,-5L10,0L0,5");  
+    */
+    
+    var svgLinks = container.append("g").selectAll(".link").data(links)
+        .enter().append("line")
+        .attr("class", "link");
+        //.attr("marker-end", "url(#arrow)");
+    
+  var svgNodes = container.append("g").selectAll(".node").data(nodes)
+      .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 3)
+      .style("fill", "white")
+          .call(force.drag);
+    
+  svgNodes.transition().duration(800)
+      .attr("r", function (d) { return 3 + 3 * d.weight })
+      .style("fill", function (d) { return colors(d.weight) });
+  svgLinks.transition().duration(800)
+      .style("stroke-width", 1);
+    
+  function tick () {
+    svgNodes
+        .attr("cx", function(d) { return d.x })
+        .attr("cy", function(d) { return d.y });
+    svgLinks
+        .attr("x1", function(d) { return d.source.x })
+        .attr("y1", function(d) { return d.source.y })
+        .attr("x2", function(d) { return d.target.x })
+        .attr("y2", function(d) { return d.target.y });
+  }
+}
+    
+function zoomed() {
+    container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+    
+function randomChoose (s, k) { // returns a random k element subset of s
+    var a = [], i = -1, j;
+    while (++i < k) {
+        j = Math.floor(Math.random() * s.length);
+        a.push(s.splice(j, 1)[0]);
+    };
+    return a;
+}
+function unorderedPairs (s) { // returns the list of all unordered pairs from s
+    var i = -1, a = [], j;
+    while (++i < s.length) {
+        j = i;
+        while (++j < s.length) a.push([s[i],s[j]])
+    };
+    return a;
+}
+    
+
+function updateData() {
+    var num_nodes = 1582, // number of nodes (change to add or remove nodes)
+    num_links = 1582, // number of links (change to add or remove links)
+    charge = -300;
+        
+        var zoom = d3.behavior.zoom()
+    .scaleExtent([0, 10])
+    .on("zoom", zoomed);  
+    
+
+create();
+function create () {
+    svg.selectAll(".link, .node").remove();
+    randomGraph(num_nodes, num_links, charge);
+}
+function randomGraph (num_nodes, num_links, charge) { //creates a random graph on n nodes and m links
+    var nodes = d3.range(num_nodes).map(Object),
+        list  = randomChoose(unorderedPairs(d3.range(num_nodes)), num_links),
+        links = list.map(function (a) { return {source: a[0], target: a[1]} });
+    
+    var force = d3.layout.force()
+        .size([width, height])
+        .nodes(nodes)
+        .links(links)
+        .linkDistance(60)
+        .charge(charge)
+        .on("tick", tick)
+        .start();
+    
+    var g = svg.append("g")
+        .attr("class", "everything");
+    
+    /* arrow for link
+    g.append("defs").append("marker")
+            .attr("id", "arrow")
+            .attr("viewBox", "0 -3 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 10)
+            .attr("markerHeight", 20)
+            .attr("orient", "auto")
+            .append("svg:path")
+            .attr("d", "M0,-5L10,0L0,5"); 
+    */
+    
+    var svgLinks = container.append("g").selectAll(".link").data(links)
+        .enter().append("line")
+        .attr("class", "link");
+        //.attr("marker-end", "url(#arrow)");
+    
+
+  var svgNodes = container.append("g").selectAll(".node").data(nodes)
+      .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 3)
+      .style("fill", "white")
+          .call(force.drag);
+    
+  svgNodes.transition().duration(800)
+      .attr("r", function (d) { return 3 + 3 * d.weight })
+      .style("fill", function (d) { return colors(d.weight) });
+  svgLinks.transition().duration(800)
+      .style("stroke-width", 1);
+    
+  function tick () {
+    svgNodes
+        .attr("cx", function(d) { return d.x })
+        .attr("cy", function(d) { return d.y });
+    svgLinks
+        .attr("x1", function(d) { return d.source.x })
+        .attr("y1", function(d) { return d.source.y })
+        .attr("x2", function(d) { return d.target.x })
+        .attr("y2", function(d) { return d.target.y });
+  }
+}
+}
+function updateData1() {
+    var num_nodes = 100, // number of nodes (change to add or remove nodes)
+    num_links = 100, // number of links (change to add or remove links)
+    charge = -300;
+        
+        var zoom = d3.behavior.zoom()
+    .scaleExtent([0, 10])
+    .on("zoom", zoomed);  
+    
+
+create();
+function create () {
+    svg.selectAll(".link, .node").remove();
+    randomGraph(num_nodes, num_links, charge);
+}
+function randomGraph (num_nodes, num_links, charge) { //creates a random graph on n nodes and m links
+    var nodes = d3.range(num_nodes).map(Object),
+        list  = randomChoose(unorderedPairs(d3.range(num_nodes)), num_links),
+        links = list.map(function (a) { return {source: a[0], target: a[1]} });
+    
+    var force = d3.layout.force()
+        .size([width, height])
+        .nodes(nodes)
+        .links(links)
+        .linkDistance(60)
+        .charge(charge)
+        .on("tick", tick)
+        .start();
+    
+    var g = svg.append("g")
+        .attr("class", "everything");
+    
+    /* arrow for link
+    g.append("defs").append("marker")
+            .attr("id", "arrow")
+            .attr("viewBox", "0 -3 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 10)
+            .attr("markerHeight", 20)
+            .attr("orient", "auto")
+            .append("svg:path")
+            .attr("d", "M0,-5L10,0L0,5"); 
+    */
+    
+    var svgLinks = container.append("g").selectAll(".link").data(links)
+        .enter().append("line")
+        .attr("class", "link");
+              //.attr("marker-end", "url(#arrow)");
+    
+  var svgNodes = container.append("g").selectAll(".node").data(nodes)
+      .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 3)
+      .style("fill", "white")
+          .call(force.drag);
+    
+  svgNodes.transition().duration(800)
+      .attr("r", function (d) { return 3 + 3 * d.weight })
+      .style("fill", function (d) { return colors(d.weight) });
+  svgLinks.transition().duration(800)
+      .style("stroke-width", 1);
+    
+  function tick () {
+    svgNodes
+        .attr("cx", function(d) { return d.x })
+        .attr("cy", function(d) { return d.y });
+    svgLinks
+        .attr("x1", function(d) { return d.source.x })
+        .attr("y1", function(d) { return d.source.y })
+        .attr("x2", function(d) { return d.target.x })
+        .attr("y2", function(d) { return d.target.y });
+  }
+}
+}
+    
+function updateData2() {
+    var num_nodes = 20, // number of nodes (change to add or remove nodes)
+    num_links = 20, // number of links (change to add or remove links)
+    charge = -300;
+        
+        var zoom = d3.behavior.zoom()
+    .scaleExtent([0, 10])
+    .on("zoom", zoomed);  
+    
+
+create();
+function create () {
+    svg.selectAll(".link, .node").remove();
+    randomGraph(num_nodes, num_links, charge);
+}
+function randomGraph (num_nodes, num_links, charge) { //creates a random graph on n nodes and m links
+    var nodes = d3.range(num_nodes).map(Object),
+        list  = randomChoose(unorderedPairs(d3.range(num_nodes)), num_links),
+        links = list.map(function (a) { return {source: a[0], target: a[1]} });
+    
+    var force = d3.layout.force()
+        .size([width, height])
+        .nodes(nodes)
+        .links(links)
+        .linkDistance(60)
+        .charge(charge)
+        .on("tick", tick)
+        .start();
+    
+    var g = svg.append("g")
+        .attr("class", "everything");
+    
+    // arrow for link
+    g.append("defs").append("marker")
+            .attr("id", "arrow")
+            .attr("viewBox", "0 -3 10 10")
+            .attr("refX", 20)
+            .attr("refY", 0)
+            .attr("markerWidth", 10)
+            .attr("markerHeight", 10)
+            .attr("orient", "auto")
+            .append("svg:path")
+            .attr("d", "M0,-5L10,0L0,5"); 
+    
+    
+    var svgLinks = container.append("g").selectAll(".link").data(links)
+        .enter().append("line")
+        .attr("class", "link")
+        .attr("marker-end", "url(#arrow)");
+    
+
+    
+  var svgNodes = container.append("g").selectAll(".node").data(nodes)
+      .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 3)
+      .style("fill", "white")
+          .call(force.drag);
+    
+  svgNodes.transition().duration(800)
+      .attr("r", function (d) { return 3 + 3 * d.weight })
+      .style("fill", function (d) { return colors(d.weight) });
+  svgLinks.transition().duration(800)
+      .style("stroke-width", 1);
+    
+  function tick () {
+    svgNodes
+        .attr("cx", function(d) { return d.x })
+        .attr("cy", function(d) { return d.y });
+    svgLinks
+        .attr("x1", function(d) { return d.source.x })
+        .attr("y1", function(d) { return d.source.y })
+        .attr("x2", function(d) { return d.target.x })
+        .attr("y2", function(d) { return d.target.y });
+  }
+}
+        
+}
+
+function updateData3() {
+    var num_nodes = 1582, // number of nodes (change to add or remove nodes)
+    num_links = 1582, // number of links (change to add or remove links)
+    charge = -300;
+        
+        var zoom = d3.behavior.zoom()
+    .scaleExtent([0, 10])
+    .on("zoom", zoomed);  
+    
+create();
+function create () {
+    svg.selectAll(".link, .node").remove();
+    randomGraph(num_nodes, num_links, charge);
+}
+function randomGraph (num_nodes, num_links, charge) { //creates a random graph on n nodes and m links
+    var nodes = d3.range(num_nodes).map(Object),
+        list  = randomChoose(unorderedPairs(d3.range(num_nodes)), num_links),
+        links = list.map(function (a) { return {source: a[0], target: a[1]} });
+    
+    var force = d3.layout.force()
+        .size([width, height])
+        .nodes(nodes)
+        .links(links)
+        .charge(charge)
+        .gravity(.05)
+        .linkDistance(60)
+        .on("tick", tick)
+        .start();
+    
+    var g = svg.append("g")
+        .attr("class", "everything");
+    
+/*
+  svg.append('svg:defs').selectAll('marker')
+    .data([{ id: 'end-arrow', opacity: 1 }, { id: 'end-arrow-fade', opacity: 0.1 }])
+    .enter().append('marker')
+      .attr('id', d => d.id)
+      .attr('viewBox', '0 0 10 10')
+      .attr('refX', 2 + 18)
+      .attr('refY', 5)
+      .attr('markerWidth', 4)
+      .attr('markerHeight', 4)
+      .attr('orient', 'auto')
+      .append('svg:path')
+        .attr('d', 'M0,0 L0,10 L10,5 z')
+        .style('opacity', d => d.opacity);
+    */
+    var svgLinks = container.append("g").selectAll(".link").data(links)
+        .enter().append("line")
+        .attr("class", "link")
+        //.attr('marker-end', 'url(#end-arrow)')
+        .on('mouseout', fade(1));
+
+    
+  var svgNodes = container.append("g").selectAll(".node").data(nodes)
+      .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 3)
+      .on('mouseover', fade(0.1))
+      .on('mouseout', fade(1))
+      .call(force.drag);
+    
+  svgNodes.transition().duration(800)
+      .attr("r", function (d) { return 3 + 3 * d.weight })
+      .style("fill", function (d) { return colors(d.weight) });
+  svgLinks.transition().duration(800)
+      .style("stroke-width", 1);
+    
+  function tick () {
+    svgNodes
+        .attr("cx", function(d) { return d.x })
+        .attr("cy", function(d) { return d.y });
+    svgLinks
+        .attr("x1", function(d) { return d.source.x })
+        .attr("y1", function(d) { return d.source.y })
+        .attr("x2", function(d) { return d.target.x })
+        .attr("y2", function(d) { return d.target.y });
+  }
+    
+const linkedByIndex = {};
+  links.forEach(d => {
+    linkedByIndex[`${d.source.index},${d.target.index}`] = 1;
+  });
+
+  function isConnected(a, b) {
+    return linkedByIndex[`${a.index},${b.index}`] || linkedByIndex[`${b.index},${a.index}`] || a.index === b.index;
+  }
+
+  function fade(opacity) {
+    return d => {
+      svgNodes.style('stroke-opacity', function (o) {
+        const thisOpacity = isConnected(d, o) ? 1 : opacity;
+        this.setAttribute('fill-opacity', thisOpacity);
+        return thisOpacity;
+      });
+
+      svgLinks.style('stroke-opacity', o => (o.source === d || o.target === d ? 1 : opacity));
+      svgLinks.attr('marker-end', o => (opacity === 1 || o.source === d || o.target === d ? 'url(#end-arrow)' : 'url(#end-arrow-fade)'));
+    };
+  }
+}
+    
+function zoomed() {
+    container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+    
+function randomChoose (s, k) { // returns a random k element subset of s
+    var a = [], i = -1, j;
+    while (++i < k) {
+        j = Math.floor(Math.random() * s.length);
+        a.push(s.splice(j, 1)[0]);
+    };
+    return a;
+}
+function unorderedPairs (s) { // returns the list of all unordered pairs from s
+    var i = -1, a = [], j;
+    while (++i < s.length) {
+        j = i;
+        while (++j < s.length) a.push([s[i],s[j]])
+    };
+    return a;
+}
+}
+
+function updateData4() {
+    var num_nodes = 100, // number of nodes (change to add or remove nodes)
+    num_links = 100, // number of links (change to add or remove links)
+    charge = -300;
+        
+        var zoom = d3.behavior.zoom()
+    .scaleExtent([0, 10])
+    .on("zoom", zoomed);  
+    
+create();
+function create () {
+    svg.selectAll(".link, .node").remove();
+    randomGraph(num_nodes, num_links, charge);
+}
+function randomGraph (num_nodes, num_links, charge) { //creates a random graph on n nodes and m links
+    var nodes = d3.range(num_nodes).map(Object),
+        list  = randomChoose(unorderedPairs(d3.range(num_nodes)), num_links),
+        links = list.map(function (a) { return {source: a[0], target: a[1]} });
+    
+    var force = d3.layout.force()
+        .size([width, height])
+        .nodes(nodes)
+        .links(links)
+        .charge(charge)
+        .gravity(.05)
+        .linkDistance(60)
+        .on("tick", tick)
+        .start();
+    
+    var g = svg.append("g")
+        .attr("class", "everything");
+    
+/*
+  svg.append('svg:defs').selectAll('marker')
+    .data([{ id: 'end-arrow', opacity: 1 }, { id: 'end-arrow-fade', opacity: 0.1 }])
+    .enter().append('marker')
+      .attr('id', d => d.id)
+      .attr('viewBox', '0 0 10 10')
+      .attr('refX', 2 + 18)
+      .attr('refY', 5)
+      .attr('markerWidth', 4)
+      .attr('markerHeight', 4)
+      .attr('orient', 'auto')
+      .append('svg:path')
+        .attr('d', 'M0,0 L0,10 L10,5 z')
+        .style('opacity', d => d.opacity);
+    */
+    var svgLinks = container.append("g").selectAll(".link").data(links)
+        .enter().append("line")
+        .attr("class", "link")
+        //.attr('marker-end', 'url(#end-arrow)')
+        .on('mouseout', fade(1));
+
+    
+  var svgNodes = container.append("g").selectAll(".node").data(nodes)
+      .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", 3)
+      .on('mouseover', fade(0.1))
+      .on('mouseout', fade(1))
+      .call(force.drag);
+    
+  svgNodes.transition().duration(800)
+      .attr("r", function (d) { return 3 + 3 * d.weight })
+      .style("fill", function (d) { return colors(d.weight) });
+  svgLinks.transition().duration(800)
+      .style("stroke-width", 1);
+    
+  function tick () {
+    svgNodes
+        .attr("cx", function(d) { return d.x })
+        .attr("cy", function(d) { return d.y });
+    svgLinks
+        .attr("x1", function(d) { return d.source.x })
+        .attr("y1", function(d) { return d.source.y })
+        .attr("x2", function(d) { return d.target.x })
+        .attr("y2", function(d) { return d.target.y });
+  }
+    
+const linkedByIndex = {};
+  links.forEach(d => {
+    linkedByIndex[`${d.source.index},${d.target.index}`] = 1;
+  });
+
+  function isConnected(a, b) {
+    return linkedByIndex[`${a.index},${b.index}`] || linkedByIndex[`${b.index},${a.index}`] || a.index === b.index;
+  }
+
+  function fade(opacity) {
+    return d => {
+      svgNodes.style('stroke-opacity', function (o) {
+        const thisOpacity = isConnected(d, o) ? 1 : opacity;
+        this.setAttribute('fill-opacity', thisOpacity);
+        return thisOpacity;
+      });
+
+      svgLinks.style('stroke-opacity', o => (o.source === d || o.target === d ? 1 : opacity));
+      svgLinks.attr('marker-end', o => (opacity === 1 || o.source === d || o.target === d ? 'url(#end-arrow)' : 'url(#end-arrow-fade)'));
+    };
+  }
+}
+    
+function zoomed() {
+    container.attr("transform", "translate(" + d3.event.translate + ")scale(" + d3.event.scale + ")");
+}
+    
+function randomChoose (s, k) { // returns a random k element subset of s
+    var a = [], i = -1, j;
+    while (++i < k) {
+        j = Math.floor(Math.random() * s.length);
+        a.push(s.splice(j, 1)[0]);
+    };
+    return a;
+}
+function unorderedPairs (s) { // returns the list of all unordered pairs from s
+    var i = -1, a = [], j;
+    while (++i < s.length) {
+        j = i;
+        while (++j < s.length) a.push([s[i],s[j]])
+    };
+    return a;
+}
+}    
+</script>
