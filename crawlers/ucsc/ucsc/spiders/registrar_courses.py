@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import os
+from ucsc.items import FacultyItem, ProgramStatementItem, CourseDescriptionItem
 
 
 def path_components (path):
@@ -57,11 +58,11 @@ class RegistrarCoursesSpider(scrapy.Spider):
         print("Parsing %s"%response.url)
 
         if base_course_description_url in response.url:
-            self.parse_course_info(response)
+            yield self.parse_course_info(response)
         elif base_faculty_url in response.url:
-            self.parse_faculty_info(response)
+            yield self.parse_faculty_info(response)
         elif base_program_description_url in response.url:
-            self.parse_program_info(response)
+            yield self.parse_program_info(response)
 
         all_links = response.xpath('//a')
         for link in all_links:
@@ -90,13 +91,22 @@ class RegistrarCoursesSpider(scrapy.Spider):
                 pass
 
     def parse_course_info (self, response):
+        info = CourseDescriptionItem()
+        info['url'] = response.url
         print("Got %s"%response.url)
+        return info
 
     def parse_faculty_info (self, response):
+        info = FacultyItem()
+        info['url'] = response.url
         print("Got %s"%response.url)
+        return info
 
     def parse_program_info (self, response):
+        info = ProgramStatementItem()
+        info['url'] = response.url
         print("Got %s"%response.url)
+        return info
 
 
 
