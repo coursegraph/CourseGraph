@@ -1,6 +1,8 @@
 import std.stdio;
+import std.net.curl: get;
+
 
 void main()
 {
-	writeln("Edit source/app.d to start your project.");
+    writeln(get("https://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/math.html"));
 }
