@@ -1,6 +1,7 @@
 import std.stdio;
 import std.net.curl: get, CurlException;
 import std.format: format;
+import std.exception: enforce;
 import arsd.dom;
 
 
@@ -36,12 +37,37 @@ void processRegistrarCoursePage (string dept) {
         auto content = main
             .requireSelector("div[class~=content]");
 
-        try {
-            // Should fail; demonstrates helpful error messages for dom selectors
-            auto foo = document
-                .requireSelector("foo");
-        } catch (ElementNotFoundException e) {
-            writefln("%s", e);
+        // Iterate over all children.
+        // This part is a bit tricky, as it has lots of stuff glommed
+        // together under the same div -_-
+
+        size_t[] sectionIndices;
+        size_t k = 0;
+        for (; content[k]; ++k) {
+            if (content[k].tagName == "h2") {
+                sectionIndices ~= k;
+            }
+        }
+        sectionIndices ~= k;
+        enforce(sectionIndices.length >= 2, 
+            format("Not enough section indices (expected 2+, got %s)",
+                sectionIndices.length));
+
+        writefln("\nHeader section: (%s element(s))", sectionIndices[0]);
+        foreach (i; 0 .. sectionIndices[0]) {
+            auto text = content[i].innerText;
+            if (text) {
+                writefln("\t%s", text);
+            }
+        }
+        foreach (j; 1 .. sectionIndices.length) {
+            writefln("\nSection %s (%s element(s))", j, sectionIndices[j] - sectionIndices[j - 1]);
+            foreach (i; sectionIndices[j - 1] .. sectionIndices[j]) {
+                auto text = content[i].innerText;
+                if (text) {
+                    writefln("\t%s", text);
+                }
+            }
         }
     } catch (CurlException e) {
         writefln("Couldn't fetch dept course page '%s' with url '%s'", dept, url);
@@ -51,6 +77,12 @@ void processRegistrarCoursePage (string dept) {
 
 void main()
 {
-    processRegistrarCoursePage("math");
-    processRegistrarCoursePage("fubar");
+    string[] depts = [
+        "acen", "anth", "aplx", "art", "artg", "havc", "arts", "astr", "bioc", "eeb", "mcdb", "mcdb", "chem", "chin", "clst", "cogs", "clni", "clte", "cmmu", "cowl", "cres", "crwn", "danm", "eart", "east", "econ", "educ", "ams", "beng", "bme", "cmpm", "cmpe", "cmps", "ee", "engr", "tim", "envs", "fmst", "film", "fren", "germ", "gmst", "gree", "hebr", "his", "havc", "hisc", "humn", "ital", "itst", "japn", "jwst", "krsg", "laal", "lnst", "latn", "lals", "lgst", "ling", "lit", "ocea", "math", "merr", "metx", "musc", "oaks", "ocea", "phil", "pbs", "phye", "phys", "poli", "prtr", "port", "psyc", "punj", "qsex", "crsn", "reli", "russ", "scic", "sced", "socd", "socs", "socy", "sphs", "spst", "stev", "sust", "thea", "ucdc", "writ", "yidd" 
+    ];
+    foreach (dept; depts) {
+        processRegistrarCoursePage(dept);
+    }
+    //processRegistrarCoursePage("math");
+    //processRegistrarCoursePage("fubar");
 }
