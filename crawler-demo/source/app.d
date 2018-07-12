@@ -2,8 +2,10 @@ import std.stdio;
 import std.net.curl: get, CurlException;
 import std.format: format;
 import std.exception: enforce;
+import std.parallelism: parallel;
 import arsd.dom;
 
+immutable bool RUN_PARALLEL = false;
 
 void processRegistrarCoursePage (string dept) {
     // Get URL for a department's course page
@@ -80,9 +82,13 @@ void main()
     string[] depts = [
         "acen", "anth", "aplx", "art", "artg", "havc", "arts", "astr", "bioc", "eeb", "mcdb", "mcdb", "chem", "chin", "clst", "cogs", "clni", "clte", "cmmu", "cowl", "cres", "crwn", "danm", "eart", "east", "econ", "educ", "ams", "beng", "bme", "cmpm", "cmpe", "cmps", "ee", "engr", "tim", "envs", "fmst", "film", "fren", "germ", "gmst", "gree", "hebr", "his", "havc", "hisc", "humn", "ital", "itst", "japn", "jwst", "krsg", "laal", "lnst", "latn", "lals", "lgst", "ling", "lit", "ocea", "math", "merr", "metx", "musc", "oaks", "ocea", "phil", "pbs", "phye", "phys", "poli", "prtr", "port", "psyc", "punj", "qsex", "crsn", "reli", "russ", "scic", "sced", "socd", "socs", "socy", "sphs", "spst", "stev", "sust", "thea", "ucdc", "writ", "yidd" 
     ];
-    foreach (dept; depts) {
-        processRegistrarCoursePage(dept);
+    static if (RUN_PARALLEL) {
+        foreach (dept; parallel(depts)) {
+            processRegistrarCoursePage(dept);
+        }
+    } else {
+        foreach (dept; depts) {
+            processRegistrarCoursePage(dept);
+        }
     }
-    //processRegistrarCoursePage("math");
-    //processRegistrarCoursePage("fubar");
 }
