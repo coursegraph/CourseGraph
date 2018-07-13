@@ -20,18 +20,28 @@
 var svg = d3.select("svg"),
     width = +svg.attr("width"),
     height = +svg.attr("height");
-    
+
     
 var nodes_data =  [
-    {"name": "AMS 3 - 01   Precalculus", "sex": "21731"},
-    {"name": "AMS 3 - 02   Precalculus", "sex": "21732"},
-    {"name": "AMS 5 - 01   Statistics", "sex": "21751"},
-    {"name": "AMS 5 - 02   Statistics", "sex": "21752"},
-    {"name": "AMS 7 - 01   StatMthdsBio/Env/Hlth", "sex": "21771"},
-    {"name": "AMS 7 - 02   StatMthdsBio/Env/Hlth", "sex": "21772"}
+    {"title": "AMS 3 - 01   Precalculus", "number": "21731", "status": "complete" },
+    {"title": "AMS 3 - 02   Precalculus", "number": "21732", "status": "complete"},
+    {"title": "AMS 5 - 01   Statistics", "number": "21751", "status": "incomplete"},
+    {"title": "AMS 5 - 02   Statistics", "number": "21752", "status": "incomplete"},
+    {"title": "AMS 7 - 01   StatMthdsBio/Env/Hlth", "number": "21771", "status":"possible"},
+    {"title": "AMS 7 - 02   StatMthdsBio/Env/Hlth", "number": "21772", "status":"possible"}
     ]
 
-
+function nodeColour(d){
+    if(d.status == "complete"){
+        return "Red";
+    }else if(d.status == "incomplete"){
+        return "Green";
+    }else if(d.status == "possible"){
+        return "Aqua";
+    }else if(d.status == "impossible"){
+        return "Black";
+    }
+}
 
 //set up the simulation 
 //nodes only for now 
@@ -55,7 +65,7 @@ var node = svg.append("g")
         .enter()
         .append("circle")
         .attr("r", 5)
-        .attr("fill", "red");  
+        .attr("fill", nodeColour);
 
 
         
@@ -78,10 +88,10 @@ var links_data = [
 
 
 //Create the link force 
-//We need the id accessor to use named sources and targets 
+//We need the id accessor to use titled sources and targets 
 
 var link_force =  d3.forceLink(links_data)
-					.id(function(d) { return d.name; })
+					.id(function(d) { return d.title; })
 
 //Add a links force to the simulation
 //Specify links  in d3.forceLink argument   
