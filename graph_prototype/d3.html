@@ -81,7 +81,7 @@ var links_data = [
 //We need the id accessor to use named sources and targets 
 
 var link_force =  d3.forceLink(links_data)
-                        .id(function(d) { return d.name; })
+					.id(function(d) { return d.name; })
 
 //Add a links force to the simulation
 //Specify links  in d3.forceLink argument   
@@ -91,11 +91,11 @@ simulation.force("links",link_force)
 
 //draw lines for the links 
 var link = svg.append("g")
-      .attr("class", "links")
-    .selectAll("line")
-    .data(links_data)
-    .enter().append("line")
-      .attr("stroke-width", 2);        
+    	.attr("class", "links")
+    	.selectAll("line")
+		.data(links_data)
+		.enter().append("line")
+		.attr("stroke-width", 2);        
                 
                 
 function tickActions() {
