@@ -23,6 +23,7 @@ struct CourseEntry {
     string instructor;
     string prereqs;
     string coreqs;
+    
 
     string toString () {
         return format(`
@@ -37,7 +38,7 @@ struct CourseEntry {
             "description": "%s",
             "prereqs": "%s",
             "coreqs": "%s",
-            "ge-categories": "%s"
+            "ge_categories": "%s"
         },`, name, title, departmentTitle, credits, quartersOffered, division, instructor, description, prereqs, coreqs, "");
     }
 }
@@ -154,7 +155,7 @@ void processRegistrarCoursePage (string dept) {
             }
 
             // Get credits (optional)
-            if (auto match = matchFirst(before, ctRegex!(`\(?:(\d+)\s+credits?|no credit\)\s*`, "g"))) {
+            if (auto match = matchFirst(before, ctRegex!(`>\((?:(\d+)\s+credits?|no credit)\)\.<`, "g"))) {
                 auto str = match[1];
                 if (!str.length) str = "-1";
                 result.credits = parse!int(str);
@@ -166,12 +167,12 @@ void processRegistrarCoursePage (string dept) {
             }
 
             // Get course title (technically optional...)
-            if (auto match = matchFirst(before, ctRegex!(`>([^\<]+)\.</`, "g"))) {
+            if (auto match = matchFirst(before, ctRegex!(`<strong>([^<]+)\.?</strong>`, "g"))) {
                 result.title = match[1];
                 //writefln("Got course title '%s'", result.title);
                 before = match.pre;
             } else {
-                writefln("Could not find course title field in '%s'", text);
+                writefln("Could not find course title field in '%s'\n\n\tfull:\n'%s'", before, text);
             }
             
             writefln("%s", result);
