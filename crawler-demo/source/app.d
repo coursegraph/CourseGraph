@@ -17,11 +17,29 @@ struct CourseEntry {
     string title;
     int credits;
     string quartersOffered;
+    string departmentTitle;
     string division;
     string description;
     string instructor;
     string prereqs;
     string coreqs;
+
+    string toString () {
+        return format(`
+        {
+            "course_name": "%s",
+            "course_title": "%s",
+            "department": "%s",
+            "credits": "%d",
+            "terms": "%s",
+            "division": "%s",
+            "instructor": "%s",
+            "description": "%s",
+            "prereqs": "%s",
+            "coreqs": "%s",
+            "ge-categories": "%s"
+        },`, name, title, departmentTitle, credits, quartersOffered, division, instructor, description, prereqs, coreqs, "");
+    }
 }
 
 void processRegistrarCoursePage (string dept) {
@@ -59,36 +77,110 @@ void processRegistrarCoursePage (string dept) {
         // Iterate over all children.
         // This part is a bit tricky, as it has lots of stuff glommed
         // together under the same div -_-
-
-        size_t[] sectionIndices;
-        size_t k = 0;
-        for (; content[k]; ++k) {
-            if (content[k].tagName == "h2") {
-                sectionIndices ~= k;
+        size_t i = 0;
+        string header;
+        for (bool continue_ = true; continue_ && content[i]; ++i) {
+            switch (content[i].tagName) {
+                case "p": header ~= content[i].innerText; header ~= '\n'; break;
+                case "hr": continue_ = false; --i; break;
+                case "h2": continue_ = false; --i; break;
+                default: 
+                    if (content[i].tagName != "#text" || content[i].innerText.length) {
+                        writefln("Unexpected tag '%s' in content header: '%s'",
+                            content[i].tagName, content[i].innerHTML);
+                    }
             }
         }
-        sectionIndices ~= k;
-        enforce(sectionIndices.length >= 2, 
-            format("Not enough section indices (expected 2+, got %s)",
-                sectionIndices.length));
+        writefln("Header:\n\t%s", header);
+        enforce(content[i].tagName == "hr" || content[i].tagName == "h2",
+            format("Expected tag 'hr', not '%s': '%s'",
+                content[i].tagName, content[i].innerHTML));
 
-        writefln("\nHeader section: (%s element(s))", sectionIndices[0]);
-        foreach (i; 0 .. sectionIndices[0]) {
-            auto text = content[i].innerText;
-            if (text) {
-                writefln("\t%s", text);
-            }
-        }
+        while (content[i] && content[i].tagName != "h2") ++i;
+        enforce(content[i].tagName == "h2",
+            format("Expected tag 'h2', not '%s': '%s'",
+                content[i].tagName, content[i].innerHTML));
+
         string coursePrefix = dept.toUpper; coursePrefix ~= ' ';
         string divisionName = "N/A";
-        foreach (j; 1 .. sectionIndices.length) {
-            writefln("\nSection %s (%s element(s))", j, sectionIndices[j] - sectionIndices[j - 1]);
-            foreach (i; sectionIndices[j - 1] .. sectionIndices[j]) {
-                int status = 0;
-                CourseEntry result;
-                auto inner = content[i];
-                if (inner.tagName == "h2") {
-                    auto text = inner.innerText;
+        void parseCourseInfo (Element elem) {
+            auto text = elem.innerHTML;
+            CourseEntry result;
+
+            // Get divider between course name, title, credits, and terms (in that order),
+            // and the course description and instructor info (after)
+            string before, after;
+            if (auto match = matchFirst(text, ctRegex!(`<br />\s*`, "g"))) {
+                before = match.pre;
+                after = match.post;
+                //writefln("Got course description '%s'", result.description);
+            } else {
+                return;
+                //writefln("Could not find course description in '%s'", text);
+            }
+
+            // Get instructor info + course description
+            if (auto match = matchFirst(after, ctRegex!(`\s*<em>([^<]+)</em>`, "g"))) {
+                result.instructor = match[1];
+                after = match.pre;
+                //writefln("Got course instructor(s) '%s'", result.instructor);
+            } else {
+                //writefln("Could not find instructor field in '%s'", text);
+            }
+            result.description = after;
+
+            // Get course number => course name (REQUIRED!)
+            if (auto match = matchFirst(before, ctRegex!(`<strong>(\d+[A-Z]?)\.</strong>\s*`))) {
+                result.name = coursePrefix ~ match[1];
+                result.division = divisionName;
+                result.departmentTitle = title;
+                //writefln("Got course name '%s'", result.name);
+                before = match.post;
+            } else {
+                writefln("Could not find course name field in '%s'", text);
+            }
+
+            //
+            // Match remaining items in reverse order:
+            //
+
+            // Get terms (optional)
+            if (auto match = matchFirst(before, ctRegex!(`>((?:[FWS],)*[FWS]|\*)</`, "g"))) {// `((?:[FWS],)*[FWS]|\*)\s*`)) {
+                result.quartersOffered = match[1];
+                //writefln("Got course terms '%s'", result.quartersOffered);
+                before = match.pre;
+            } else {
+                //writefln("Could not find course terms field in '%s'", text);
+            }
+
+            // Get credits (optional)
+            if (auto match = matchFirst(before, ctRegex!(`\(?:(\d+)\s+credits?|no credit\)\s*`, "g"))) {
+                auto str = match[1];
+                if (!str.length) str = "-1";
+                result.credits = parse!int(str);
+                //writefln("Got course credits '%d'", result.credits);
+                before = match.pre;
+            } else {
+                result.credits = -1;
+                //writefln("Could not find course credit field in '%s'", text);
+            }
+
+            // Get course title (technically optional...)
+            if (auto match = matchFirst(before, ctRegex!(`>([^\<]+)\.</`, "g"))) {
+                result.title = match[1];
+                //writefln("Got course title '%s'", result.title);
+                before = match.pre;
+            } else {
+                writefln("Could not find course title field in '%s'", text);
+            }
+            
+            writefln("%s", result);
+        }
+
+        for (; content[i]; ++i) {
+            switch (content[i].tagName) {
+                case "h2": {
+                    auto text = content[i].innerText;
                     auto match = matchFirst(text,
                         ctRegex!`([\w\-]+)\s+Courses`);
                     if (match) {
@@ -96,114 +188,171 @@ void processRegistrarCoursePage (string dept) {
                     } else {
                         writefln("Invalid input for division name: '%s'", text);
                     }
-                    continue;
-                }
-                bool touched = false;
-                for (size_t n = 0; inner[n]; ++n) {
-                    writefln("%d: %s '%s'", status, inner[n].tagName, inner[n].innerHTML);
-                    switch (status) {
-                        case 0: {
-                            if (inner[n].tagName == "strong") {
-                                auto text = inner[n].innerText;
-                                auto match = matchFirst(text, ctRegex!`(\d+[A-Z]?)\.`);
-                                if (match) {
-                                    result.name = coursePrefix ~ match[1];
-                                    result.division = divisionName;
-                                    touched = true;
-                                    ++status;
-                                } else {
-                                    writefln("Invalid input for course number: '%s'", text);
-                                    status = -1;
-                                }
-                            } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-                            } else {
-                                writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-                            }
-                        } break;
-                        case 1: {
-                            if (inner[n].tagName == "strong") {
-                                result.title = inner[n].innerText.strip;
-                                ++status;
-                            } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-                            } else {
-                                writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-                            }
-                        } break;
-                        case 2: {
-                            if (inner[n].tagName == "strong") {
-                                auto text = inner[n].innerText.strip;
-                                if (text[0] == '(') {
-                                    auto match = matchFirst(text, ctRegex!`\((\d+)\s+credits?|no credit\)`);
-                                    if (match) {
-                                        string str = match[1];
-                                        if (!str.length) str = "-1";
-                                        result.credits = parse!int(str);
-                                    } else {
-                                        writefln("Invalid input for credit field: '%s'", text);
-                                    }
-                                } else {
-                                    --n;
-                                }
-                                ++status;
-                            } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-                            } else {
-                                writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-                            }
-                        } break;
-                        case 3: {
-                            if (inner[n].tagName == "br") { ++status; --n; }
-                            else if (inner[n].tagName == "strong") {
-                                result.quartersOffered = inner[n].innerText.strip;
-                                ++status;
-                            } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-                            } else {
-                                writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-                            }
-                        } break;
-                        case 4: {
-                            if (inner[n].tagName == "br") {}
-                            else if (inner[n].tagName == "em") { ++status; --n; }
-                            else if (inner[n].tagName == "#text" && inner[n].innerText.length != 0) {
-                                ++status;
-                                result.description = inner[n].innerText.strip;
-                            } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-                            } else {
-                                writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-                            } 
-                        } break;
-                        case 5: {
-                            if (inner[n].tagName == "em") {
-                                result.instructor = inner[n].innerText.strip;
-                            } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-                            } else {
-                                writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-                            }
-                        } break;
-                        default: {
-                            writefln("unhandled element: '%s': '%s'",
-                                inner[n].tagName, inner[n].innerText);
-                        }
+                } break;
+                case "p": {
+                    parseCourseInfo(content[i]);
+                } break;
+                case "strong": case "em": case "br": {
+                    //parseCourseInfo(content);
+                } break;
+                default:
+                    if (content[i].tagName != "#text" || content[i].innerText.length) {
+                        writefln("Unexpected tag '%s' in content body: '%s'",
+                            content[i].tagName, content[i].innerHTML);
                     }
-                }
-                if (touched) {
-                    //writefln("\t%s", inner.innerText);
-                    writefln("\t%s", result);
-                }
-
-                //for (size_t n = 0; inner[n]; ++n) {
-                //    writefln("\t%s => %s", inner[n].tagName, inner[n].innerText);
-                //}
-                //if (auto elems = content[i].selector("strong")) {
-                //    for (size_t k = 0; elems[k]; ++k) {
-                //        writefln("\t\t%s", elems[k].innerText);
-                //    }
-                //}
-                //auto text = content[i].innerText;
-                //if (text) {
-                //    writefln("\t%s", text);
-                //}
             }
         }
+        
+
+
+
+
+
+
+
+        //size_t[] sectionIndices;
+        //size_t k = 0;
+        //for (; content[k]; ++k) {
+        //    if (content[k].tagName == "h2") {
+        //        sectionIndices ~= k;
+        //    }
+        //}
+        //sectionIndices ~= k;
+        //enforce(sectionIndices.length >= 2, 
+        //    format("Not enough section indices (expected 2+, got %s)",
+        //        sectionIndices.length));
+
+        //writefln("\nHeader section: (%s element(s))", sectionIndices[0]);
+        //foreach (i; 0 .. sectionIndices[0]) {
+        //    auto text = content[i].innerText;
+        //    if (text) {
+        //        writefln("\t%s", text);
+        //    }
+        //}
+        
+        //foreach (j; 1 .. sectionIndices.length) {
+        //    writefln("\nSection %s (%s element(s))", j, sectionIndices[j] - sectionIndices[j - 1]);
+        //    foreach (i; sectionIndices[j - 1] .. sectionIndices[j]) {
+        //        int status = 0;
+        //        CourseEntry result;
+        //        auto inner = content[i];
+        //        if (inner.tagName == "h2") {
+        //            auto text = inner.innerText;
+        //            auto match = matchFirst(text,
+        //                ctRegex!`([\w\-]+)\s+Courses`);
+        //            if (match) {
+        //                divisionName = match[1];
+        //            } else {
+        //                writefln("Invalid input for division name: '%s'", text);
+        //            }
+        //            continue;
+        //        }
+        //        bool touched = false;
+        //        for (size_t n = 0; inner[n]; ++n) {
+        //            writefln("%d: %s '%s'", status, inner[n].tagName, inner[n].innerHTML);
+        //            switch (status) {
+        //                case 0: {
+        //                    if (inner[n].tagName == "strong") {
+        //                        auto text = inner[n].innerText;
+        //                        auto match = matchFirst(text, ctRegex!`(\d+[A-Z]?)\.`);
+        //                        if (match) {
+        //                            result.name = coursePrefix ~ match[1];
+        //                            result.division = divisionName;
+        //                            touched = true;
+        //                            ++status;
+        //                        } else {
+        //                            writefln("Invalid input for course number: '%s'", text);
+        //                            status = -1;
+        //                        }
+        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
+        //                    } else {
+        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
+        //                    }
+        //                } break;
+        //                case 1: {
+        //                    if (inner[n].tagName == "strong") {
+        //                        result.title = inner[n].innerText.strip;
+        //                        ++status;
+        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
+        //                    } else {
+        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
+        //                    }
+        //                } break;
+        //                case 2: {
+        //                    if (inner[n].tagName == "strong") {
+        //                        auto text = inner[n].innerText.strip;
+        //                        if (text[0] == '(') {
+        //                            auto match = matchFirst(text, ctRegex!`\((\d+)\s+credits?|no credit\)`);
+        //                            if (match) {
+        //                                string str = match[1];
+        //                                if (!str.length) str = "-1";
+        //                                result.credits = parse!int(str);
+        //                            } else {
+        //                                writefln("Invalid input for credit field: '%s'", text);
+        //                            }
+        //                        } else {
+        //                            --n;
+        //                        }
+        //                        ++status;
+        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
+        //                    } else {
+        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
+        //                    }
+        //                } break;
+        //                case 3: {
+        //                    if (inner[n].tagName == "br") { ++status; --n; }
+        //                    else if (inner[n].tagName == "strong") {
+        //                        result.quartersOffered = inner[n].innerText.strip;
+        //                        ++status;
+        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
+        //                    } else {
+        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
+        //                    }
+        //                } break;
+        //                case 4: {
+        //                    if (inner[n].tagName == "br") {}
+        //                    else if (inner[n].tagName == "em") { ++status; --n; }
+        //                    else if (inner[n].tagName == "#text" && inner[n].innerText.length != 0) {
+        //                        ++status;
+        //                        result.description = inner[n].innerText.strip;
+        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
+        //                    } else {
+        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
+        //                    } 
+        //                } break;
+        //                case 5: {
+        //                    if (inner[n].tagName == "em") {
+        //                        result.instructor = inner[n].innerText.strip;
+        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
+        //                    } else {
+        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
+        //                    }
+        //                } break;
+        //                default: {
+        //                    writefln("unhandled element: '%s': '%s'",
+        //                        inner[n].tagName, inner[n].innerText);
+        //                }
+        //            }
+        //        }
+        //        if (touched) {
+        //            //writefln("\t%s", inner.innerText);
+        //            writefln("\t%s", result);
+        //        }
+
+        //        //for (size_t n = 0; inner[n]; ++n) {
+        //        //    writefln("\t%s => %s", inner[n].tagName, inner[n].innerText);
+        //        //}
+        //        //if (auto elems = content[i].selector("strong")) {
+        //        //    for (size_t k = 0; elems[k]; ++k) {
+        //        //        writefln("\t\t%s", elems[k].innerText);
+        //        //    }
+        //        //}
+        //        //auto text = content[i].innerText;
+        //        //if (text) {
+        //        //    writefln("\t%s", text);
+        //        //}
+        //    }
+        //}
     } catch (CurlException e) {
         writefln("Couldn't fetch dept course page '%s' with url '%s'", dept, url);
     }
