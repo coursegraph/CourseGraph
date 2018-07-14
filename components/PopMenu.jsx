@@ -4,6 +4,14 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
+function match(query) {
+  let q = query.toUpperCase();
+  return function(value) {
+    return value.toUpperCase().indexOf(q) > -1;
+  };
+}
+
+
 
 class PopMenu extends React.Component {
   constructor(props) {
@@ -13,21 +21,30 @@ class PopMenu extends React.Component {
       unfiltered: props.unfilteredArray.slice(),
       filtered: props.unfilteredArray.slice(),
     };
-    console.log(`Props are: ${this.props}`);
-    console.log(`unfilteredArray? : ${props.unfilteredArray}`);
-    console.log(`filtered : ${this.state.filtered}`);
 
-    const hateThis = this.state.filtered.slice(0);
-    console.log(`HateThis: ${hateThis}`);
   }
 
-  changedArray = ['weheee!!', 'gibbergooble!', 'whaKAAKAKAKAKA!'];
+  //changedArray = ['weheee!!', 'gibbergooble!', 'whaKAAKAKAKAKA!'];
 
 
 
-  filter = () => {
+
+
+  filter = (event) => {
     //alert('BOOP!');
-    this.setState({filtered: this.changedArray });
+    console.log(`typed in: ${event.target.value}`);
+    let newArray = this.state.unfiltered.filter(match(event.target.value));
+    let result = newArray.join(', ');
+    console.log(`got result: ${result}`);
+    // let newArray = [];
+    // for (let i = 0; i < this.state.unfiltered.length; i++) {
+    //   if (this.state.unfiltered[i].toUpperCase().indexOf(event.target.value) > -1) {
+    //     console.log(`return: ${this.state.unfiltered[i].toUpperCase().indexOf(event.target.value)}`);
+    //     newArray.push(this.state.unfiltered[i]);
+    //     console.log(`newArray: ${newArray} i is ${i}`);
+    //   }
+    // }
+    this.setState({filtered: newArray });
     console.log(`filter filtered: ${this.state.filtered}`);
   }
 
@@ -49,17 +66,16 @@ class PopMenu extends React.Component {
         contentStyle={{padding: '0px', border: 'none'}}
         arrow={false}
       >
-        <div>safety!</div>
         <List>{this.state.filtered.map(value => (
-            <ListItem
-              key={value}
-              dense
-              divider
-              button
-            >
-              <ListItemText primary={value}/>
-            </ListItem>
-          )
+          <ListItem
+            key={value}
+            dense
+            divider
+            button
+          >
+            <ListItemText primary={value}/>
+          </ListItem>
+        )
         )
         }</List>
       </Popup>
