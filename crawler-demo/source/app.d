@@ -19,11 +19,20 @@ struct CourseEntry {
     string quartersOffered;
     string departmentTitle;
     string division;
+    string rawDescription;
     string description;
     string instructor;
     string prereqs;
     string coreqs;
-    
+    bool gradOnly = false;
+    bool requiresInstructorPermission = false;
+    bool mayBeRepeatedForCredit = false;
+    bool satisfiesAmericanHistoryReq = false;
+    string enrollmentRestrictions;
+    string geCategories;
+    string courseAlias;
+    int enrollLimit = 0;
+
 
     string toString () {
         return format(`
@@ -38,8 +47,17 @@ struct CourseEntry {
             "description": "%s",
             "prereqs": "%s",
             "coreqs": "%s",
-            "ge_categories": "%s"
-        },`, name, title, departmentTitle, credits, quartersOffered, division, instructor, description, prereqs, coreqs, "");
+            "enrollment_restrictions": "%s",
+            "requires_instructor_permission": "%s",
+            "repeatable_for_credit": "%s",
+            "satisfies_american_history_and_institutions_req": "%s",
+            "alias": "%s",
+            "ge_categories": "%s",
+            "enroll_limit": %d,
+            "raw_description": "%s",
+        },`, name, title, departmentTitle, credits, quartersOffered, division, instructor, description, 
+            prereqs, coreqs, enrollmentRestrictions, requiresInstructorPermission,
+            mayBeRepeatedForCredit, satisfiesAmericanHistoryReq, courseAlias, geCategories, enrollLimit, rawDescription);
     }
 }
 
@@ -128,7 +146,7 @@ void processRegistrarCoursePage (string dept) {
             } else {
                 //writefln("Could not find instructor field in '%s'", text);
             }
-            result.description = after;
+            result.rawDescription = result.description = after;
 
             // Get course number => course name (REQUIRED!)
             if (auto match = matchFirst(before, ctRegex!(`<strong>(\d+[A-Z]?)\.</strong>\s*`))) {
@@ -175,6 +193,43 @@ void processRegistrarCoursePage (string dept) {
                 writefln("Could not find course title field in '%s'\n\n\tfull:\n'%s'", before, text);
             }
             
+            //
+            // Further parse course description (in detail...)
+            //
+
+            if (auto match = matchFirst(result.description, ctRegex!(`\s*Enrollment limited to (\d+)\.?\s*`, "g"))) {
+                string str = match[1];
+                result.enrollLimit = parse!int(str);
+                result.description = match.pre ~ match.post;
+            }
+            if (auto match = matchFirst(result.description, ctRegex!(`\s*\(General Education Code\(s\): ([^\)]+)\.?\)\s*`, "g"))) {
+                result.geCategories = match[1];
+                result.description = match.pre ~ match.post;
+            }
+            if (auto match = matchFirst(result.description, ctRegex!(`\s*Enrollment (?:is )?(?:restricted|limited) to ([^\.]+)\.?\s*`, "g"))) {
+                result.enrollmentRestrictions = match[1];
+                result.description = match.pre ~ match.post;
+            }
+            if (auto match = matchFirst(result.description, ctRegex!(`\s*Prerequisite\(s\):\s+([^\.]+)\.?\s*`, "g"))) {
+                result.prereqs = match[1];
+                result.description = match.pre ~ match.post;
+            }
+            if (auto match = matchFirst(result.description, ctRegex!(`\s*Corequisite\(s\):\s+([^\.]+)\.?\s*`, "g"))) {
+                result.coreqs = match[1];
+                result.description = match.pre ~ match.post;
+            }
+            if (auto match = matchFirst(result.description, ctRegex!(`\s*May be repeated for credit\.?\s*`, "g"))) {
+                result.mayBeRepeatedForCredit = true;
+                result.description = match.pre ~ match.post;
+            }
+            if (auto match = matchFirst(result.description, ctRegex!(`\s*Enrollment by instructor consent only\.?\s*`, "g"))) {
+                result.requiresInstructorPermission = true;
+                result.description = match.pre ~ match.post;
+            }
+            if (auto match = matchFirst(result.description, ctRegex!(`\s*Satisfies American History and Institutions Requirement\.?\s*`, "g"))) {
+                result.satisfiesAmericanHistoryReq = true;
+                result.description = match.pre ~ match.post;
+            }
             writefln("%s", result);
         }
 
@@ -203,157 +258,6 @@ void processRegistrarCoursePage (string dept) {
                     }
             }
         }
-        
-
-
-
-
-
-
-
-        //size_t[] sectionIndices;
-        //size_t k = 0;
-        //for (; content[k]; ++k) {
-        //    if (content[k].tagName == "h2") {
-        //        sectionIndices ~= k;
-        //    }
-        //}
-        //sectionIndices ~= k;
-        //enforce(sectionIndices.length >= 2, 
-        //    format("Not enough section indices (expected 2+, got %s)",
-        //        sectionIndices.length));
-
-        //writefln("\nHeader section: (%s element(s))", sectionIndices[0]);
-        //foreach (i; 0 .. sectionIndices[0]) {
-        //    auto text = content[i].innerText;
-        //    if (text) {
-        //        writefln("\t%s", text);
-        //    }
-        //}
-        
-        //foreach (j; 1 .. sectionIndices.length) {
-        //    writefln("\nSection %s (%s element(s))", j, sectionIndices[j] - sectionIndices[j - 1]);
-        //    foreach (i; sectionIndices[j - 1] .. sectionIndices[j]) {
-        //        int status = 0;
-        //        CourseEntry result;
-        //        auto inner = content[i];
-        //        if (inner.tagName == "h2") {
-        //            auto text = inner.innerText;
-        //            auto match = matchFirst(text,
-        //                ctRegex!`([\w\-]+)\s+Courses`);
-        //            if (match) {
-        //                divisionName = match[1];
-        //            } else {
-        //                writefln("Invalid input for division name: '%s'", text);
-        //            }
-        //            continue;
-        //        }
-        //        bool touched = false;
-        //        for (size_t n = 0; inner[n]; ++n) {
-        //            writefln("%d: %s '%s'", status, inner[n].tagName, inner[n].innerHTML);
-        //            switch (status) {
-        //                case 0: {
-        //                    if (inner[n].tagName == "strong") {
-        //                        auto text = inner[n].innerText;
-        //                        auto match = matchFirst(text, ctRegex!`(\d+[A-Z]?)\.`);
-        //                        if (match) {
-        //                            result.name = coursePrefix ~ match[1];
-        //                            result.division = divisionName;
-        //                            touched = true;
-        //                            ++status;
-        //                        } else {
-        //                            writefln("Invalid input for course number: '%s'", text);
-        //                            status = -1;
-        //                        }
-        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-        //                    } else {
-        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-        //                    }
-        //                } break;
-        //                case 1: {
-        //                    if (inner[n].tagName == "strong") {
-        //                        result.title = inner[n].innerText.strip;
-        //                        ++status;
-        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-        //                    } else {
-        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-        //                    }
-        //                } break;
-        //                case 2: {
-        //                    if (inner[n].tagName == "strong") {
-        //                        auto text = inner[n].innerText.strip;
-        //                        if (text[0] == '(') {
-        //                            auto match = matchFirst(text, ctRegex!`\((\d+)\s+credits?|no credit\)`);
-        //                            if (match) {
-        //                                string str = match[1];
-        //                                if (!str.length) str = "-1";
-        //                                result.credits = parse!int(str);
-        //                            } else {
-        //                                writefln("Invalid input for credit field: '%s'", text);
-        //                            }
-        //                        } else {
-        //                            --n;
-        //                        }
-        //                        ++status;
-        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-        //                    } else {
-        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-        //                    }
-        //                } break;
-        //                case 3: {
-        //                    if (inner[n].tagName == "br") { ++status; --n; }
-        //                    else if (inner[n].tagName == "strong") {
-        //                        result.quartersOffered = inner[n].innerText.strip;
-        //                        ++status;
-        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-        //                    } else {
-        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-        //                    }
-        //                } break;
-        //                case 4: {
-        //                    if (inner[n].tagName == "br") {}
-        //                    else if (inner[n].tagName == "em") { ++status; --n; }
-        //                    else if (inner[n].tagName == "#text" && inner[n].innerText.length != 0) {
-        //                        ++status;
-        //                        result.description = inner[n].innerText.strip;
-        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-        //                    } else {
-        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-        //                    } 
-        //                } break;
-        //                case 5: {
-        //                    if (inner[n].tagName == "em") {
-        //                        result.instructor = inner[n].innerText.strip;
-        //                    } else if (inner[n].tagName == "#text" && inner[n].innerText.length == 0) {
-        //                    } else {
-        //                        writefln("Unexpected tag: '%s' %s", inner[n].tagName, inner[n].innerText);
-        //                    }
-        //                } break;
-        //                default: {
-        //                    writefln("unhandled element: '%s': '%s'",
-        //                        inner[n].tagName, inner[n].innerText);
-        //                }
-        //            }
-        //        }
-        //        if (touched) {
-        //            //writefln("\t%s", inner.innerText);
-        //            writefln("\t%s", result);
-        //        }
-
-        //        //for (size_t n = 0; inner[n]; ++n) {
-        //        //    writefln("\t%s => %s", inner[n].tagName, inner[n].innerText);
-        //        //}
-        //        //if (auto elems = content[i].selector("strong")) {
-        //        //    for (size_t k = 0; elems[k]; ++k) {
-        //        //        writefln("\t\t%s", elems[k].innerText);
-        //        //    }
-        //        //}
-        //        //auto text = content[i].innerText;
-        //        //if (text) {
-        //        //    writefln("\t%s", text);
-        //        //}
-        //    }
-        //}
     } catch (CurlException e) {
         writefln("Couldn't fetch dept course page '%s' with url '%s'", dept, url);
     }
