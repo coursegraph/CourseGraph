@@ -46,6 +46,7 @@
     "eslint-plugin-jsx-a11y": "^6.1.0",
     "eslint-plugin-react": "^7.10.0",
     "eslint-plugin-relay": "0.0.24",
+    "faker": "^4.1.0",
     "jest": "^23.3.0",
     "jsdoc": "^3.5.5",
     "react-addons-test-utils": "^15.6.2",

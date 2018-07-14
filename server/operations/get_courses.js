@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const data = fs.readFileSync('./data/course.json', 'utf8');
+const data = fs.readFileSync('./data/faker.json', 'utf8');
 const parsedData = JSON.parse(data);
 
 function getItem() {
