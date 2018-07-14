@@ -25,7 +25,7 @@ class Index extends React.Component {
   };
 
   static async getInitialProps() {
-    const res = await fetch('http://coursegraph.org/api/courses');
+    const res = await fetch('https://coursegraph.org/api/courses');
     const data = await res.json();
 
     console.log(`Show data fetched. Count: ${data.length}`);

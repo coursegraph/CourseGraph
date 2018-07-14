@@ -1,26 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-/**
- * @param course {object}
- * @return {Element}
- * @constructor
- */
-const Course = ({course}) => {
-  return (
-    <div className="Course">
-      <h3>
-        CMPS 115
-      </h3>
-      <p>
-        temp test text
-      </p>
-    </div>
-  );
-};
+class Course extends React.Component {
+  static propTypes = {
+    title: PropTypes.string.isRequired,
+  };
 
-Course.propTypes = {
-  title: PropTypes.string.isRequired,
-};
+  static defaultProps = {
+    title: 'Null',
+  };
+
+  render() {
+    return (
+      <div className="Course">
+        <h3>
+          {this.props.title}
+        </h3>
+      </div>
+    );
+  }
+}
 
 export default Course;
