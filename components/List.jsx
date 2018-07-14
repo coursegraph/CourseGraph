@@ -43,6 +43,8 @@ export default class List extends React.Component {
       loadingLabel,
     } = this.props;
 
+    console.log(isFetching);
+
     const isEmpty = items.length === 0;
     if (isEmpty && isFetching) {
       return <h2><i>{loadingLabel}</i></h2>;

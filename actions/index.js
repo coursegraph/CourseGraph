@@ -16,7 +16,7 @@ export const receiveCourses = (subreddit, json) => ({
   receivedAt: Date.now(),
 });
 
-const fetchCourses = (subreddit) => (dispatch) => {
+export const fetchCourses = (subreddit) => (dispatch) => {
   dispatch(requestCourses(subreddit));
   return fetch(`https://www.reddit.com/r/${subreddit}.json`)
     .then(response => response.json())

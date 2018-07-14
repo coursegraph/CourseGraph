@@ -6,11 +6,7 @@ const mongoose = require('mongoose');
 
 // temp ugly solution
 // const api = require('./operations/get-item');
-const classTime = require('./operations/get_class_time');
-const courseNumber = require('./operations/get_course_number');
-const courseTitle = require('./operations/get_course_title');
-const instructor = require('./operations/get_instructor');
-const location = require('./operations/get_location');
+const api = require('./operations/get_courses');
 
 const PORT = parseInt(process.env.PORT, 10) || 8080;
 const dev = process.env.NODE_ENV !== 'production';
@@ -61,28 +57,8 @@ app.prepare()
     /**
      * API routes.
      */
-    server.get('/api/time', (req, res) => {
-      const itemData = classTime.getItem();
-      res.json(itemData);
-    });
-
-    server.get('/api/number', (req, res) => {
-      const itemData = courseNumber.getItem();
-      res.json(itemData);
-    });
-
-    server.get('/api/title', (req, res) => {
-      const itemData = courseTitle.getItem();
-      res.json(itemData);
-    });
-
-    server.get('/api/instructor', (req, res) => {
-      const itemData = instructor.getItem();
-      res.json(itemData);
-    });
-
-    server.get('/api/location', (req, res) => {
-      const itemData = location.getItem();
+    server.get('/api/courses', (req, res) => {
+      const itemData = api.getItem();
       res.json(itemData);
     });
 
