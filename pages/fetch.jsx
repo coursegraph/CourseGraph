@@ -1,10 +1,15 @@
 import React from 'react';
-import Link from 'next/link';
+import PropTypes from 'prop-types';
 import fetch from 'isomorphic-unfetch';
 
 class Index extends React.Component {
+  static propTypes = {
+    courses: PropTypes.arrayOf(PropTypes.shape({
+      course_title: PropTypes.string.isRequired,
+    })),
+  };
+
   static getInitialProps = async () => {
-    // const res = await fetch('https://api.tvmaze.com/search/shows?q=batman');
     const res = await fetch('http://coursegraph.org/api/courses');
     const data = await res.json();
 
@@ -20,9 +25,9 @@ class Index extends React.Component {
       <div>
         <h1>UCSC Courses</h1>
         <ul>
-          {this.props.courses.map(({show}) => (
-            <li key={show.time}>
-              <a>{show.time}</a>
+          {this.props.courses.map(({course_title}) => (
+            <li key={course_title}>
+              <a>{course_title}</a>
             </li>
           ))}
         </ul>
