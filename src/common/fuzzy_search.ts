@@ -45,6 +45,29 @@ export interface IStringMatcher {
     newSpanifyResults (): SpanifyResults;
 }
 
+export interface IStringPrioritizer {
+    priority (value: String): Number;
+}
+export interface IStringSorter {
+    sort (values: String, prioritizer: IStringPrioritizer);
+}
+
+export class StringSearchFilterer {
+    private sorter:     IStringSorter;
+    private filterer:   IStringMatcher | null;
+    private spanResults: SpanifyResults | null;
+
+    constructor (sorter: IStringSorter, filterer: IStringMatcher | null) {
+        this.sorter = sorter;
+        this.filterer = filterer;
+        this.spanResults = null;
+    }
+}
+
+
+
+
+
 /** 
  * Implements a fuzzy string search algorithm that returns true if query is a strictly ordered subset of value.
  * 
@@ -79,12 +102,42 @@ export class FuzzyMatcher implements IStringMatcher {
     spanify (query: String, value: String, results: SpanifyResults): boolean {
         results.length = 0;
 
-        // TBD
-        results.push([ StringMatchType.MATCHED, value ]);
-        results.push([ StringMatchType.ERROR_UNMATCHED_QUERY, query ]);
-        return false;
+        // Initial spanify function.
+        // This code is probably wrong (have yet to test, b/c didn't bother getting
+        // typescript setup w/ npm...)
+
+        let i = 0, j = 0, n = value.length, m = query.length;
+        while (i < n && j < m) {
+            if (value[i] == query[j]) {
+                let i0 = i;
+                while (i < n && j < m && value[i] == query[j]) {
+                    ++i, ++j;
+                }
+                results.push([ StringMatchType.MATCHED, value.substr(i0, i - i0) ]);
+            } else {
+                let i0 = i, j0 = j;
+                while (i < n && value[i] != query[j0]) ++i;
+                while (j < m && value[i0] != query[j]) ++j;
+                if ((i - i0) < (j - j0)) {
+                    results.push([ StringMatchType.UNMATCHED, value.substr(i0, i - i0) ]);
+                    j = j0;
+                } else {
+                    results.push([ StringMatchType.ERROR_UNMATCHED_QUERY, query.substr(j0, j - j0) ]);
+                    i = i0;
+                }
+            }
+        }
+        return i == n && j == m;
     }
     newSpanifyResults (): SpanifyResults {
         return new Array<[StringMatchType, String]>();
     }
 }
+
+export class SubstringMatcher implements IStringMatcher {
+    match (query: String, value: String): boolean {
+        return false;
+    }
+}
+
+
