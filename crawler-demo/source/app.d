@@ -8,63 +8,16 @@ import std.string: toUpper, strip;
 import std.regex: matchFirst, ctRegex;
 import std.conv: parse;
 import arsd.dom;
+import course_data: CourseEntry;
 
 // regex: \n\s+(\d+\w?)\.\s+([\w+\s+\-:,/\'\"]+)(?:\s+\((\d+)\s+credits?|no credit\))?\.(?:\s+([FWS\*,]+))?\s+(.+)
 // replace: {\n\t"course_id": "$1",\n\t"course_title": "$2",\n\t"credit(s)": "$3",\n\t"offered term(s)": "$4",\n\t"description": "$5"\n},\n
 
-struct CourseEntry {
-    string name;
-    string title;
-    int credits;
-    string quartersOffered;
-    string departmentTitle;
-    string division;
-    string rawDescription;
-    string description;
-    string instructor;
-    string prereqs;
-    string coreqs;
-    bool gradOnly = false;
-    bool requiresInstructorPermission = false;
-    bool mayBeRepeatedForCredit = false;
-    bool satisfiesAmericanHistoryReq = false;
-    string enrollmentRestrictions;
-    string geCategories;
-    string courseAlias;
-    int enrollLimit = 0;
-
-
-    string toString () {
-        return format(`
-        {
-            "course_name": "%s",
-            "course_title": "%s",
-            "department": "%s",
-            "credits": "%d",
-            "terms": "%s",
-            "division": "%s",
-            "instructor": "%s",
-            "description": "%s",
-            "prereqs": "%s",
-            "coreqs": "%s",
-            "enrollment_restrictions": "%s",
-            "requires_instructor_permission": "%s",
-            "repeatable_for_credit": "%s",
-            "satisfies_american_history_and_institutions_req": "%s",
-            "alias": "%s",
-            "ge_categories": "%s",
-            "enroll_limit": %d,
-            "raw_description": "%s",
-        },`, name, title, departmentTitle, credits, quartersOffered, division, instructor, description, 
-            prereqs, coreqs, enrollmentRestrictions, requiresInstructorPermission,
-            mayBeRepeatedForCredit, satisfiesAmericanHistoryReq, courseAlias, geCategories, enrollLimit, rawDescription);
-    }
-}
 
 void processRegistrarCoursePage (string dept) {
     // Get URL for a department's course page
     string url = format(
-        "https://registrar.ucsc.edu/catalog/programs-courses/course-descriptions/%s.html",
+        "https://registrar.ucsc.edu/catalog/archive/17-18/programs-courses/course-descriptions/%s.html",
         dept);
 
     try {
@@ -230,7 +183,15 @@ void processRegistrarCoursePage (string dept) {
                 result.satisfiesAmericanHistoryReq = true;
                 result.description = match.pre ~ match.post;
             }
-            writefln("%s", result);
+            if (result.prereqs) {
+                writefln("%s prereqs: %s", result.name, result.prereqs);
+            }
+            if (result.coreqs) {
+                writefln("%s coreqs: %s", result.name, result.coreqs);
+            }
+
+
+            //writefln("%s", result);
         }
 
         for (; content[i]; ++i) {
