@@ -17,6 +17,11 @@ const defaultRequestHandler = app.getRequestHandler();
 const LOCAL_DB = 'test';
 const MONGODB_URI = process.env.MONGODB_URI || `mongodb://localhost:27017/${LOCAL_DB}`;
 
+/**
+ * API keys and Passport configuration.
+ */
+const passportConfig = require('./config/passport');
+
 app.prepare()
   .then(() => {
 
@@ -52,6 +57,10 @@ app.prepare()
 
     server.get('/posts/:id', (req, res) => {
       return app.render(req, res, '/posts', {id: req.params.id});
+    });
+
+    server.get('/foo', passportConfig.isAuthenticated, (req, res) => {
+      res.send('hello world');
     });
 
     /**

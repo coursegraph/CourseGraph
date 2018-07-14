@@ -9,7 +9,7 @@ class Index extends React.Component {
     })),
   };
 
-  static getInitialProps = async () => {
+  static async getInitialProps() {
     const res = await fetch('http://coursegraph.org/api/courses');
     const data = await res.json();
 
@@ -18,7 +18,7 @@ class Index extends React.Component {
     return {
       courses: data,
     };
-  };
+  }
 
   render() {
     return (
