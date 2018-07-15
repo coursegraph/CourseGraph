@@ -6,11 +6,8 @@ import ListItemText from '@material-ui/core/ListItemText';
 //import '../styles/PopMenu.css';
 
 const lStyle = {
-  margin: '30px',
-  border: '5px solid pink',
-  maxWidth: '30px',
-  paddingBottom: '30px',
-  height: '30px',
+  overflow: 'auto',
+  maxHeight: '400px',
 };
 
 const pStyle = {
@@ -38,7 +35,8 @@ class PopMenu extends React.Component {
 
     this.state = {
       unfiltered: props.unfilteredArray.slice(),
-      filtered: props.unfilteredArray.slice(0, 10),
+      filtered: props.unfilteredArray.slice(),
+      //filtered: props.unfilteredArray.slice(0, 10),
     };
 
   }
@@ -50,10 +48,10 @@ class PopMenu extends React.Component {
     //alert('BOOP!');
     console.log(`typed in: ${event.target.value}`);
     let newArray = this.state.unfiltered.filter(match(event.target.value));
-    let shrunkArray = newArray.slice(0, 10);
-    let result = shrunkArray.join(', ');
-    console.log(`got result: ${result}`);
-    result = newArray.join(', ');
+    //let shrunkArray = newArray.slice(0, 10);
+    //let result = shrunkArray.join(', ');
+    //console.log(`got result: ${result}`);
+    let result = newArray.join(', ');
     console.log(`full results: ${result} `);
     // let newArray = [];
     // for (let i = 0; i < this.state.unfiltered.length; i++) {
@@ -63,7 +61,7 @@ class PopMenu extends React.Component {
     //     console.log(`newArray: ${newArray} i is ${i}`);
     //   }
     // }
-    this.setState({filtered: shrunkArray});
+    this.setState({filtered: newArray});
     console.log(`filter filtered: ${this.state.filtered}`);
   }
 
@@ -85,7 +83,7 @@ class PopMenu extends React.Component {
           contentStyle={{padding: '0px', border: 'none'}}
           arrow={false}
         >
-          <List>{this.state.filtered.map(value => (
+          <List style={lStyle}>{this.state.filtered.map(value => (
             <ListItem
               style={pStyle}
               key={value}
