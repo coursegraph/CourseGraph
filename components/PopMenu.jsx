@@ -42,20 +42,20 @@ class PopMenu extends React.Component {
 
 
   filter = (event) => {
-    let stringArray = new Array(this.state.filtered.length);
-    for (let i = 0; i < this.state.filtered.length; i++) {
-      stringArray[i] = JSON.stringify(this.state.filtered[i].course_title.toUpperCase());
+    let stringArray = new Array(this.state.unfiltered.length);
+    for (let i = 0; i < this.state.unfiltered.length; i++) {
+      stringArray[i] = JSON.stringify(this.state.unfiltered[i].course_title.toUpperCase());
     }
     //console.log(`get stringArray: ${stringArray}`);
     let indices = [];
     let newArray = [];
-    for (let i = 0; i < this.state.filtered.length; i++) {
+    for (let i = 0; i < this.state.unfiltered.length; i++) {
       if (stringArray[i].indexOf(event.target.value.toUpperCase() ) > -1 )  {
         indices.push(i);
       }
     }
     for (let i = 0; i < indices.length; i++){
-      newArray.push(this.state.filtered[indices[i]]);
+      newArray.push(this.state.unfiltered[indices[i]]);
     }
     //let shrunkArray = newArray.slice(0, 10);
     //let result = shrunkArray.join(', ');
@@ -69,6 +69,8 @@ class PopMenu extends React.Component {
 
 
   render() {
+    const data = this.state.filtered.slice(0, 15);
+    let n = 0;
     //console.log(`in Render, filtered: ${this.state.filtered}`);
 
     return (
@@ -85,10 +87,10 @@ class PopMenu extends React.Component {
           contentStyle={{padding: '0px', border: 'none'}}
           arrow={false}
         >
-          <List style={lStyle}>{this.state.filtered.map(({course_title}) => (
+          <List style={lStyle}>{data.map(({course_title}) => (
             <ListItem
               style={pStyle}
-              key={course_title}
+              key={course_title + `${n++}`}
               dense
               divider
               button
