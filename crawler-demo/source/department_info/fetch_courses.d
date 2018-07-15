@@ -47,7 +47,12 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
                 //size_t i = 0;
                 //writefln("%d: %s\n", ++i, text);
                 auto courseNumber = matchFirst(text, ctRegex!`(\d+[A-Z]?)\.(?:\s+|$)`);
-                enforce(courseNumber, format("Could not match course number in '%s'", text));
+                //enforce(courseNumber, format("Could not match course number in '%s'", text));
+                if (!courseNumber) {
+                    writefln("Could not match course number in '%s'", text);
+                    continue;
+                }
+
 
                 string name = dept.departmentId ~ " " ~ courseNumber[1];
                 text = courseNumber.post;
