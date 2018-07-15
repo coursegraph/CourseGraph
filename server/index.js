@@ -82,7 +82,17 @@ app.prepare()
           return console.error(err);
         }
 
-        res.json(course);
+        return res.json(course);
+      });
+    });
+
+    server.get('/api/courses/', (req, res) => {
+      Course.find().lean().exec((err, course) => {
+        if (err) {
+          return console.error(err);
+        }
+
+        return res.json(course);
       });
     });
 
