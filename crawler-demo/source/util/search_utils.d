@@ -82,6 +82,7 @@ struct ElementRange {
                 } else {
                     prevHeader = it.front;
                     top = it;
+                    ++top.current;
                 }
             }
         }
