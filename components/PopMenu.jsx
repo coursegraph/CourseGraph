@@ -46,13 +46,13 @@ class PopMenu extends React.Component {
 
   filter = (event) => {
     //alert('BOOP!');
-    console.log(`typed in: ${event.target.value}`);
+    //console.log(`typed in: ${event.target.value}`);
     let newArray = this.state.unfiltered.filter(match(event.target.value));
     //let shrunkArray = newArray.slice(0, 10);
     //let result = shrunkArray.join(', ');
     //console.log(`got result: ${result}`);
     let result = newArray.join(', ');
-    console.log(`full results: ${result} `);
+    //console.log(`full results: ${result} `);
     // let newArray = [];
     // for (let i = 0; i < this.state.unfiltered.length; i++) {
     //   if (this.state.unfiltered[i].toUpperCase().indexOf(event.target.value) > -1) {
@@ -62,12 +62,12 @@ class PopMenu extends React.Component {
     //   }
     // }
     this.setState({filtered: newArray});
-    console.log(`filter filtered: ${this.state.filtered}`);
+    //console.log(`filter filtered: ${this.state.filtered}`);
   }
 
 
   render() {
-    console.log(`in Render, filtered: ${this.state.filtered}`);
+    //console.log(`in Render, filtered: ${this.state.filtered}`);
 
     return (
       <div>
