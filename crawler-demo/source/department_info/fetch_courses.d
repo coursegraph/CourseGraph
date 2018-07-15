@@ -23,6 +23,10 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
             .innerText;
 
         auto content = main.requireSelector("div[class~=content]");
+        import std.file;
+        append("raw_courses_html.txt", format("\n%s\n%s\n", dept.coursesUrl, content.innerHTML));
+        append("raw_courses_text.txt", format("\n%s\n%s\n", dept.coursesUrl, content.innerText));
+
         auto sections = content.childRange
             .splitSectionsByHeaders;
 
