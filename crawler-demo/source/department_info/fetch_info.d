@@ -18,8 +18,8 @@ DepartmentInfo fetchInfo (DepartmentInfo dept) {
             .requireSelector("h1[id=title]")
             .innerText;
 
-        auto content = main.requireSelector("div[class~=content]")
-            .childRange
+        auto content = main.requireSelector("div[class~=content]");
+        auto sections = content.childRange
             .requireSeq((child) { 
                 return child.tagName == "p" &&
                     child.regexMatch!`(\d+\-\d+ General Catalog)`(dept.catalogVersion); 
@@ -30,15 +30,19 @@ DepartmentInfo fetchInfo (DepartmentInfo dept) {
             })
             .requireSeq((child) { 
                 return child.tagName == "hr";
-            });
+            })
+            .splitSectionsByHeaders;
 
-        while (!content.empty) {
-            for (; !content.empty && content.front.tagName != "h1" && content.front.tagName != "h2"; content.popFront) {}
-            if (content.empty) break;
-
-            string section = content.moveFront.innerText;
-            writefln("Got section: '%s'", section);
+        foreach (k, v; sections) {
+            writefln("Got section: %s\t\n%s", k, v.innerHTML);
         }
+        //while (!content.empty) {
+        //    for (; !content.empty && content.front.tagName != "h1" && content.front.tagName != "h2"; content.popFront) {}
+        //    if (content.empty) break;
+
+        //    string section = content.moveFront.innerText;
+        //    writefln("Got section: '%s'", section);
+        //}
     });
     return dept;
 }

@@ -19,6 +19,10 @@ bool regexMatch (string regex, Args...)(Element elem, ref Args args) {
     return true;
 }
 
+
+
+
+
 struct ElementRange {
     private Element head;
     private size_t start, stop, current;
@@ -63,5 +67,51 @@ struct ElementRange {
         static assert(isForwardRange!ElementRange);
         static assert(isBidirectionalRange!ElementRange);
         static assert(isRandomAccessRange!ElementRange);
+    }
+
+    ref ElementRange processSectionsSplitBy (
+        bool delegate (Element) headerPredicate,
+        void delegate (Element, ElementRange) handleSection
+    ) {
+        ElementRange top = save;
+        Element prevHeader = null;
+        ElementRange[string] sections;
+        for (auto it = save; true; it.popFront) {
+            if (it.empty || headerPredicate(it.front)) {
+                top.stop = it.current;
+                handleSection(prevHeader, top);
+                if (it.empty) {
+                    break;
+                } else {
+                    prevHeader = it.front;
+                    top = it;
+                }
+            }
+        }
+        return this;
+    }
+    ElementRange[string] splitSectionsByHeaders () {
+        ElementRange[string] sections;
+        processSectionsSplitBy(
+            (Element e) { return e.tagName == "h1" || e.tagName == "h2" || e.tagName == "h3"; },
+            (Element header, ElementRange section) {
+                sections[header ? header.innerText : ""] = section.save;
+            }
+        );
+        return sections;
+    }
+    string innerText () {
+        string text = "";
+        for (size_t i = current; i != stop; ++i) {
+            text ~= head[i].innerText;
+        }
+        return text;
+    }
+    string innerHTML () {
+        string text = "";
+        for (size_t i = current; i != stop; ++i) {
+            text ~= head[i].innerHTML;
+        }
+        return text;
     }
 }
