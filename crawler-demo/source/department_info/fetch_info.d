@@ -22,25 +22,31 @@ DepartmentInfo fetchInfo (DepartmentInfo dept) {
             .innerText;
 
         auto content = main.requireSelector("div[class~=content]");
-        auto sections = content.childRange
-            .requireSeq((child) { 
-                return child.tagName == "p" && child.regexMatch!`(\d+\-\d+ General Catalog)`(dept.catalogVersion);
-            })
-            .requireSeq((child) {
-                //writefln("Got <%s>: %s", child.tagName, child.innerText);
-                if (!(child.tagName == "p" && child.innerText.strip() != "" && child.regexMatch!`(.[^\n]+)`(dept.departmentAddress))) {
-                    return false;
-                }
-                auto match = matchFirst(child.innerText, ctRegex!(`([\(\)\d\-\s]+)[\n\s]+(http.+)`, "g"));
-                enforce(match, format("Could not find contact info in '%s'", child.innerText));
-                dept.departmentPhoneNumber = match[1].strip();
-                dept.departmentUrl = match[2];
-                return true;
-            })
-            .requireSeq((child) { 
-                return child.tagName == "hr";
-            })
-            .splitSectionsByHeaders;
+        try {
+            auto sections = content.childRange
+                .requireSeq((child) { 
+                    return child.tagName == "p" && child.regexMatch!`(\d+\-\d+ General Catalog)`(dept.catalogVersion);
+                })
+                .requireSeq((child) {
+                    //writefln("Got <%s>: %s", child.tagName, child.innerText);
+                    if (!(child.tagName == "p" && child.innerText.strip() != "" && child.regexMatch!`(.[^\n]+)`(dept.departmentAddress))) {
+                        return false;
+                    }
+                    auto match = matchFirst(child.innerText, ctRegex!(`(?:([\(\)\d\-\s]+)[\n\s]+)?(http.+)`, "g"));
+                    enforce(match, format("Could not find contact info in '%s'", child.innerText));
+                    dept.departmentPhoneNumber = match[1].strip();
+                    dept.departmentUrl = match[2];
+                    return true;
+                })
+                .requireSeq((child) { 
+                    return child.tagName == "hr";
+                })
+                .splitSectionsByHeaders;
+        } catch (Throwable e) {
+            writefln("\u001b[36mError parsing document.\n\u001b[31m%s\n\n"~
+                "\u001b[33mContent dump:\n%s\n\u001b[0m",
+                e, content.innerHTML);
+        }
     });
     return dept;
 }

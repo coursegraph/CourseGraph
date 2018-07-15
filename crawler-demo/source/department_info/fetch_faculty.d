@@ -34,7 +34,11 @@ DepartmentInfo fetchFaculty (DepartmentInfo dept) {
             writefln("Section %s:", section);
             foreach (item; items) {
                 auto text = item.innerText.strip();
-                if (text == "") { continue; }
+                if (text == "" || matchFirst(text, ctRegex!`(\* Not offered in|\[Return to top\]|♦ ♦ ♦)`)) { continue; }
+                if (auto match = matchFirst(text, ctRegex!`Revised:\s+([^\n]+)`)) {
+                    dept.lastCourseRevisionDate = match[1];
+                    continue;
+                }
                 auto match = matchFirst(text, ctRegex!`(\w+\s+(?:\w\.\s+)?\w+)\s*([^\n]+)?`);
                 enforce(match, format("Could not match professor listing...? '%s'", text));
                 auto name = match[1].strip();

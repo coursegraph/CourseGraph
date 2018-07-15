@@ -49,7 +49,7 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
 
                 size_t i = 0;
                 writefln("%d: %s\n", ++i, text);
-                auto courseNumber = matchFirst(text, ctRegex!`(\d+[A-Z]?)\.\s+`);
+                auto courseNumber = matchFirst(text, ctRegex!`(\d+[A-Z]?)\.(?:\s+|$)`);
                 enforce(courseNumber, format("Could not match course number in '%s'", text));
 
                 string name = dept.departmentId ~ " " ~ courseNumber[1];
@@ -59,7 +59,7 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
                 text = text.replace("U.S.", "US");
 
                 writefln("%d: %s\n", ++i, text);
-                auto courseTitleAndUnits = matchFirst(text, ctRegex!`([^\.]+)(?:\s+\((\d+)\s+units?\))?\.\s+`);
+                auto courseTitleAndUnits = matchFirst(text, ctRegex!`([^\.]+)(?:\s+\((\d+)\s+units?\))?\.(?:\s+|$)`);
                 enforce(courseTitleAndUnits, format("Could not match course title in '%s'", text));
                 string title = courseTitleAndUnits[1];
                 string units = courseTitleAndUnits[2] ? courseTitleAndUnits[2] : "-1";
@@ -81,17 +81,24 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
                 }
 
                 //auto instructorMatch = matchFirst(text, ctRegex!`(?:\.\)?\s+|^)([^\.]+)\.?\s*$`);
-                auto instructorMatch = matchFirst(text, ctRegex!`(?:\.\s+|^)([^\.]+)\.?\s*$`);
-                enforce(instructorMatch, format("Could not match instructor in '%s'", text));
-                string instructor = instructorMatch[1];
-                text = instructorMatch.pre;
-                writefln("%d: %s\n", ++i, text);
+                string instructor = null;
+                if (text && text.length) {
 
+                    // see this stupid thing here? 
+                    //    \.["\)]?
+                    // blame english style guides (or lack thereof...). (ie. `(fubar.) `"Baz."` etc...)
+
+                    auto instructorMatch = matchFirst(text, ctRegex!`(?:\.["\)]?\s+|^)([^\.]+)\.?\s*$`);
+                    enforce(instructorMatch, format("Could not match instructor in '%s'", text));
+                    instructor = instructorMatch[1];
+                    text = instructorMatch.pre;
+                    writefln("%d: %s\n", ++i, text);
+                }
                 //writefln("\t%s '%s' (%s units). '%s'. '%s'. %s", name, title, units, instructor, terms, text);
 
                 enforce(name !in dept.courses, format("'%s' already exists in dept.courses", name));
                 dept.courses[name] = DepartmentInfo.CourseListing(
-                    name, title, section, terms, instructor, text
+                    name, title, section, terms, instructor, text, geCodes
                 );
             }
         }

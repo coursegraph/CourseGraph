@@ -40,6 +40,7 @@ public:
         string terms;
         string instructor;
         string description;
+        string geCategories;
     }
 
     this (string baseUrl, string departmentId) {
