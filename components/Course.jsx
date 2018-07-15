@@ -1,6 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+/**
+ * @inheritDoc
+ */
 class Course extends React.Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
@@ -10,6 +13,9 @@ class Course extends React.Component {
     title: 'Null',
   };
 
+  /**
+   * @return {Element}
+   */
   render() {
     return (
       <div className="Course">
