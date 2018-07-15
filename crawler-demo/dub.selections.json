@@ -6,6 +6,7 @@
 		"botan-math": "1.0.3",
 		"diet-ng": "1.5.0",
 		"eventcore": "0.8.35",
+		"jsonizer": "0.7.6",
 		"libasync": "0.8.3",
 		"libevent": "2.0.2+2.0.16",
 		"memutils": "0.4.11",
