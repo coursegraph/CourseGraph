@@ -25,7 +25,7 @@ DepartmentInfo fetchInfo (DepartmentInfo dept) {
         try {
             auto sections = content.childRange
                 .requireSeq((child) { 
-                    return child.tagName == "p" && child.regexMatch!`(\d+\-\d+ General Catalog)`(dept.catalogVersion);
+                    return child.tagName == "p" && child.regexMatch!`(\d+\-\d+ (?:General )?Catalog)`(dept.catalogVersion);
                 })
                 .requireSeq((child) {
                     //writefln("Got <%s>: %s", child.tagName, child.innerText);
@@ -44,9 +44,10 @@ DepartmentInfo fetchInfo (DepartmentInfo dept) {
                 //.splitSectionsByHeaders
             ;
         } catch (Throwable e) {
-            writefln("\u001b[36mError parsing document.\n\u001b[31m%s\n\n"~
-                "\u001b[33mContent dump:\n%s\n\u001b[0m",
-                e, content.innerHTML);
+            writefln("Error parsing deparment page: \u001b[31m%s\u001b[0m", e);
+            //writefln("\u001b[36mError parsing document.\n\u001b[31m%s\n\n"~
+            //    "\u001b[33mContent dump:\n%s\n\u001b[0m",
+            //    e, content.innerHTML);
         }
     });
     return dept;

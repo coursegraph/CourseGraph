@@ -28,7 +28,7 @@ DepartmentInfo fetchFaculty (DepartmentInfo dept) {
         foreach (section, items; sections) {
             if (section == "♦ ♦ ♦" || section == "") continue;
 
-            writefln("Section %s:", section);
+            //writefln("Section %s:", section);
             foreach (item; items) {
                 auto text = item.innerText.strip();
                 if (!text.length || matchFirst(text, ctRegex!`(\* Not offered in|\[Return to top\]|♦ ♦ ♦|Revised:[^\n]+)`)) { continue; }
