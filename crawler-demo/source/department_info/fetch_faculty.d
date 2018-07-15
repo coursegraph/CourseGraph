@@ -23,9 +23,6 @@ DepartmentInfo fetchFaculty (DepartmentInfo dept) {
 
         auto content = main.requireSelector("div[class~=content]");
         auto sections = content.childRange
-            .requireSeq((child) { 
-                return child.tagName == "hr";
-            })
             .splitSectionsByHeaders;
 
         foreach (section, items; sections) {
@@ -34,16 +31,20 @@ DepartmentInfo fetchFaculty (DepartmentInfo dept) {
             writefln("Section %s:", section);
             foreach (item; items) {
                 auto text = item.innerText.strip();
-                if (text == "" || matchFirst(text, ctRegex!`(\* Not offered in|\[Return to top\]|♦ ♦ ♦)`)) { continue; }
-                if (auto match = matchFirst(text, ctRegex!`Revised:\s+([^\n]+)`)) {
-                    dept.lastCourseRevisionDate = match[1];
-                    continue;
-                }
+                if (!text.length || matchFirst(text, ctRegex!`(\* Not offered in|\[Return to top\]|♦ ♦ ♦|Revised:[^\n]+)`)) { continue; }
+                //if (auto match = matchFirst(text, ctRegex!`Revised:\s+([^\n]+)`)) {
+                //    dept.lastCourseRevisionDate = match[1];
+                //    continue;
+                //}
                 auto match = matchFirst(text, ctRegex!`(\w+\s+(?:\w\.\s+)?\w+)\s*([^\n]+)?`);
                 enforce(match, format("Could not match professor listing...? '%s'", text));
                 auto name = match[1].strip();
                 auto description = match[2].strip();
-                enforce(name !in dept.faculty, format("'%s' already exists in dept.faculty", name));
+
+                //enforce(name !in dept.faculty, format("'%s' already exists in dept.faculty", name));
+                if (name in dept.faculty) {
+                    writefln("'%s' already exists in dept.faculty!", name);
+                }
                 dept.faculty[name] = DepartmentInfo.FacultyListing(
                     name, section, dept.departmentId, description
                 );

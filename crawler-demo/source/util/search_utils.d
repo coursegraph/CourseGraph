@@ -47,13 +47,13 @@ struct ElementRange {
     Element opIndex (size_t i) { assert(start + i < length); return head[start + i]; }
 
     ref ElementRange requireSeq (bool delegate (Element elem) predicate) {
-        auto start = save();
+        auto saved = save();
         //writefln("Range empty? %s", empty);
         while (!empty && !predicate(front)) {
             //writefln("Did not match '%s'", front);
             popFront;
         }
-        enforce(!empty, format("Failed to find sequence, starting at %s", save.front.innerHTML));
+        enforce(!empty, format("Failed to find sequence, starting at %s", saved.front.innerHTML));
         popFront;
         //writefln("Matched! %s", front);
         return this;

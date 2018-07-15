@@ -38,10 +38,11 @@ DepartmentInfo fetchInfo (DepartmentInfo dept) {
                     dept.departmentUrl = match[2];
                     return true;
                 })
-                .requireSeq((child) { 
-                    return child.tagName == "hr";
-                })
-                .splitSectionsByHeaders;
+                //.requireSeq((child) { 
+                //    return child.tagName == "hr"
+                //});
+                //.splitSectionsByHeaders
+            ;
         } catch (Throwable e) {
             writefln("\u001b[36mError parsing document.\n\u001b[31m%s\n\n"~
                 "\u001b[33mContent dump:\n%s\n\u001b[0m",

@@ -24,9 +24,6 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
 
         auto content = main.requireSelector("div[class~=content]");
         auto sections = content.childRange
-            .requireSeq((child) { 
-                return child.tagName == "hr";
-            })
             .splitSectionsByHeaders;
 
         foreach (section, items; sections) {
@@ -37,7 +34,7 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
                 continue;
             }
     
-            writefln("Section %s:", section);
+            //writefln("Section %s:", section);
             foreach (item; items) {
                 //writefln("\t%s", item.innerText);
                 auto text = item.innerText.strip();
@@ -47,39 +44,45 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
                     continue;
                 }
 
-                size_t i = 0;
-                writefln("%d: %s\n", ++i, text);
+                //size_t i = 0;
+                //writefln("%d: %s\n", ++i, text);
                 auto courseNumber = matchFirst(text, ctRegex!`(\d+[A-Z]?)\.(?:\s+|$)`);
                 enforce(courseNumber, format("Could not match course number in '%s'", text));
 
                 string name = dept.departmentId ~ " " ~ courseNumber[1];
                 text = courseNumber.post;
 
-                writefln("%d: %s\n", ++i, text);
+                //writefln("%d: %s\n", ++i, text);
                 text = text.replace("U.S.", "US");
 
-                writefln("%d: %s\n", ++i, text);
-                auto courseTitleAndUnits = matchFirst(text, ctRegex!`([^\.]+)(?:\s+\((\d+)\s+units?\))?\.(?:\s+|$)`);
-                enforce(courseTitleAndUnits, format("Could not match course title in '%s'", text));
-                string title = courseTitleAndUnits[1];
-                string units = courseTitleAndUnits[2] ? courseTitleAndUnits[2] : "-1";
-                text = courseTitleAndUnits.post;
+                //writefln("%d: %s\n", ++i, text);
+                string title, units, terms;
+                if (text.length) {
+                    auto match = matchFirst(text, ctRegex!`([^\.]+)(?:\s+\((\d+)\s+units?\))?\.(?:\s+|$)`);
+                    if (!match && ((match = matchFirst(text, ctRegex!`([FWS](?:,[FWS])*|\*)?\s*`)))) {
+                        terms = match[1].replace(",","");
+                        text = match.post;
+                    } else {
+                        enforce(match, format("Could not match course title in '%s'", text));
+                        title = match[1];
+                        units = match[2] ? match[2] : "-1";
+                        text = match.post;
 
-                writefln("%d: %s\n", ++i, text);
-                auto termsMatch = matchFirst(text, ctRegex!`([FWS](?:,[FWS])*|\*)?\s+`);
-                string terms = termsMatch[1].replace(",","");
-                text = termsMatch.post;
+                        //writefln("%d: %s\n", ++i, text);
+                        if (!!(match = matchFirst(text, ctRegex!`([FWS](?:,[FWS])*|\*)?\s*`))) {
+                            terms = match[1].replace(",","");
+                            text = match.post;
+                        }
+                    }
+                }
 
-                writefln("%d: %s\n", ++i, text);
+                //writefln("%d: %s\n", ++i, text);
                 string geCodes = null;
                 if (auto match = matchFirst(text, ctRegex!(`\s+\(General Education Code\(s\):\s+([^\.\)]+)[\.\)]+`, "g"))) {
                     geCodes = match[1];
-                    writefln("\nGot GE Codes: '%s'", geCodes);
-                    writefln("before text: %s\n", text);
                     text = match.pre ~ match.post;
-                    writefln("after text: %s\n", text);
                 }
-
+                //writefln("%d: %s\n", ++i, text);
                 //auto instructorMatch = matchFirst(text, ctRegex!`(?:\.\)?\s+|^)([^\.]+)\.?\s*$`);
                 string instructor = null;
                 if (text && text.length) {
@@ -92,11 +95,13 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
                     enforce(instructorMatch, format("Could not match instructor in '%s'", text));
                     instructor = instructorMatch[1];
                     text = instructorMatch.pre;
-                    writefln("%d: %s\n", ++i, text);
+                    //writefln("%d: %s\n", ++i, text);
                 }
                 //writefln("\t%s '%s' (%s units). '%s'. '%s'. %s", name, title, units, instructor, terms, text);
 
-                enforce(name !in dept.courses, format("'%s' already exists in dept.courses", name));
+                if (name in dept.courses) {
+                    writefln("'%s' already exists in deps.courses!", name);
+                }
                 dept.courses[name] = DepartmentInfo.CourseListing(
                     name, title, section, terms, instructor, text, geCodes
                 );
