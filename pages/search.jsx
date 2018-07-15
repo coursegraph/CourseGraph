@@ -26,7 +26,7 @@ export default class extends React.Component {
     resultsState: PropTypes.object,
     searchState: PropTypes.object,
   };
-  
+
   onSearchStateChange = searchState => {
     clearTimeout(this.debouncedSetState);
     this.debouncedSetState = setTimeout(() => {
@@ -48,13 +48,6 @@ export default class extends React.Component {
       params.asPath.substring(params.asPath.indexOf('?') + 1)
     );
     const resultsState = await findResultsState(App, {searchState});
-
-
-    let hits = resultsState.content.hits;
-
-    hits.forEach((hit) => {
-      console.log(hit);
-    });
 
     return {resultsState, searchState};
   }

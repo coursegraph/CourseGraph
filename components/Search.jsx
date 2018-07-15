@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Configure, Hits, SearchBox } from 'react-instantsearch/dom';
+import { Configure, Highlight, Hits, SearchBox } from 'react-instantsearch/dom';
 import { InstantSearch } from './Instantsearch';
 
 /**
@@ -13,7 +13,8 @@ import { InstantSearch } from './Instantsearch';
 const HitComponent = ({hit}) => (
   <div className="hit">
     <div className="hit-content">
-      {hit.name}
+      {/*{hit.name}*/}
+      <Highlight attribute="name" hit={hit}/>
     </div>
   </div>
 );
