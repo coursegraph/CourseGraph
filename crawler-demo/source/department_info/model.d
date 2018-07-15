@@ -1,5 +1,6 @@
 module department_info.model;
 public import std.format: format;
+import std.string: toUpper, toLower;
 
 
 class DepartmentInfo {
@@ -41,8 +42,9 @@ public:
     }
 
     this (string baseUrl, string departmentId) {
-        this.departmentId = departmentId;
-        this.departmentUrl = format("%s/program-statements/%s.html", baseUrl, departmentId);
+        departmentId = departmentId.toLower;
+        this.departmentId = departmentId.toUpper;
+        this.programUrl = format("%s/program-statements/%s.html", baseUrl, departmentId);
         this.coursesUrl = format("%s/course-descriptions/%s.html", baseUrl, departmentId);
         this.facultyUrl = format("%s/faculty/%s.html", baseUrl, departmentId);
     }

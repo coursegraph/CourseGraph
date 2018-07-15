@@ -14,7 +14,7 @@ DepartmentInfo fetchDepartment (string baseUrl, string departmentId) {
 }
 
 unittest {
-    auto dept = fetchDepartment("https://registrar.ucsc.edu/catalog/archive/17-18/programs-courses/", "math");
+    auto dept = fetchDepartment("https://registrar.ucsc.edu/catalog/archive/17-18/programs-courses", "math");
     assert(dept.departmentId == "MATH", 
         format("Expected department id = 'MATH', not '%s'", dept.departmentId));
     assert(dept.programUrl == "https://registrar.ucsc.edu/catalog/archive/17-18/programs-courses/program-statements/math.html",
