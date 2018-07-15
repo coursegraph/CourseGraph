@@ -47,30 +47,51 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
                     continue;
                 }
 
+                size_t i = 0;
+                writefln("%d: %s\n", ++i, text);
                 auto courseNumber = matchFirst(text, ctRegex!`(\d+[A-Z]?)\.\s+`);
                 enforce(courseNumber, format("Could not match course number in '%s'", text));
 
                 string name = dept.departmentId ~ " " ~ courseNumber[1];
                 text = courseNumber.post;
 
+                writefln("%d: %s\n", ++i, text);
                 text = text.replace("U.S.", "US");
+
+                writefln("%d: %s\n", ++i, text);
                 auto courseTitleAndUnits = matchFirst(text, ctRegex!`([^\.]+)(?:\s+\((\d+)\s+units?\))?\.\s+`);
                 enforce(courseTitleAndUnits, format("Could not match course title in '%s'", text));
                 string title = courseTitleAndUnits[1];
                 string units = courseTitleAndUnits[2] ? courseTitleAndUnits[2] : "-1";
                 text = courseTitleAndUnits.post;
 
+                writefln("%d: %s\n", ++i, text);
+                auto termsMatch = matchFirst(text, ctRegex!`([FWS](?:,[FWS])*|\*)?\s+`);
+                string terms = termsMatch[1].replace(",","");
+                text = termsMatch.post;
 
-                auto instructorMatch = matchFirst(text, ctRegex!`\.\)?\s+([^\.]+)\.?\s*$`);
+                writefln("%d: %s\n", ++i, text);
+                string geCodes = null;
+                if (auto match = matchFirst(text, ctRegex!(`\s+\(General Education Code\(s\):\s+([^\.\)]+)[\.\)]+`, "g"))) {
+                    geCodes = match[1];
+                    writefln("\nGot GE Codes: '%s'", geCodes);
+                    writefln("before text: %s\n", text);
+                    text = match.pre ~ match.post;
+                    writefln("after text: %s\n", text);
+                }
+
+                //auto instructorMatch = matchFirst(text, ctRegex!`(?:\.\)?\s+|^)([^\.]+)\.?\s*$`);
+                auto instructorMatch = matchFirst(text, ctRegex!`(?:\.\s+|^)([^\.]+)\.?\s*$`);
                 enforce(instructorMatch, format("Could not match instructor in '%s'", text));
                 string instructor = instructorMatch[1];
                 text = instructorMatch.pre;
+                writefln("%d: %s\n", ++i, text);
 
-                writefln("\t%s '%s' (%s units). '%s'. %s", name, title, units, instructor, text);
+                //writefln("\t%s '%s' (%s units). '%s'. '%s'. %s", name, title, units, instructor, terms, text);
 
                 enforce(name !in dept.courses, format("'%s' already exists in dept.courses", name));
                 dept.courses[name] = DepartmentInfo.CourseListing(
-                    name, title, section, instructor, text
+                    name, title, section, terms, instructor, text
                 );
             }
         }

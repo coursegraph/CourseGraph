@@ -60,15 +60,14 @@ unittest {
         "exam score of 3 or higher, or IB Mathematics Higher Level exam score of 5 of higher");
 
     expect(dept.courses).toContain("MATH 249B");
-    expect(dept.courses["MATH 19B"].name).toEqual("MATH 249B");
-    expect(dept.courses["MATH 19B"].title).toEqual("Mechanics II");
-    expect(dept.courses["MATH 19B"].division).toEqual("graduate");
-    expect(dept.courses["MATH 19B"].terms).toEqual("*");
-    expect(dept.courses["MATH 19B"].instructor).toEqual("The Staff");
-    expect(dept.courses["MATH 19B"].description).toEqual(
-        "Covers symplectic geometry and classical Hamiltonian dynamics. Some of the key subjects are the Darboux "~
-        "theorem, Poisson brackets, Hamiltonian and Langrangian systems, Legendre transformations, variational "~
-        "principles, Hamilton-Jacobi theory, godesic equations, and an introduction to Poisson geometry. Courses "~
-        "208 and 209 are recommended as preparation. Courses 208 and 209 recommended as preparation. Enrollment "~
+    expect(dept.courses["MATH 249B"].name).toEqual("MATH 249B");
+    expect(dept.courses["MATH 249B"].title).toEqual("Mechanics II");
+    expect(dept.courses["MATH 249B"].division).toEqual("graduate");
+    expect(dept.courses["MATH 249B"].terms).toEqual("*");
+    expect(dept.courses["MATH 249B"].instructor).toEqual("The Staff");
+    expect(dept.courses["MATH 249B"].description).toEqual(
+        "Hamiltonian dynamics with symmetry. Key topics center around the momentum map and the theory of "~
+        "reduction in both the symplectic and Poisson context. Applications are taken from geometry, rigid "~
+        "body dynamics, and continuum mechanics. Course 249A is recommended as preparation. Enrollment "~
         "restricted to graduate students");
 }
