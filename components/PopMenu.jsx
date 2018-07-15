@@ -3,6 +3,25 @@ import Popup from 'reactjs-popup';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+//import '../styles/PopMenu.css';
+
+const lStyle = {
+  margin: '30px',
+  border: '5px solid pink',
+  maxWidth: '30px',
+  paddingBottom: '30px',
+  height: '30px',
+};
+
+const pStyle = {
+  fontSize: '14px',
+  textAlign: 'left',
+};
+
+const inStyle = {
+  width: '300px',
+  fontSize: '14px',
+}
 
 function match(query) {
   let q = query.toUpperCase();
@@ -19,15 +38,12 @@ class PopMenu extends React.Component {
 
     this.state = {
       unfiltered: props.unfilteredArray.slice(),
-      filtered: props.unfilteredArray.slice(0 ,10),
+      filtered: props.unfilteredArray.slice(0, 10),
     };
 
   }
 
   //changedArray = ['weheee!!', 'gibbergooble!', 'whaKAAKAKAKAKA!'];
-
-
-
 
 
   filter = (event) => {
@@ -47,43 +63,47 @@ class PopMenu extends React.Component {
     //     console.log(`newArray: ${newArray} i is ${i}`);
     //   }
     // }
-    this.setState({filtered: shrunkArray });
+    this.setState({filtered: shrunkArray});
     console.log(`filter filtered: ${this.state.filtered}`);
   }
-
 
 
   render() {
     console.log(`in Render, filtered: ${this.state.filtered}`);
 
-    return <div>
-      <Popup
-        trigger={<div className="menu-item">
-          <input onChange={this.filter} type="text" placeholder="YAY!"/>
-        </div>}
-        position="right top"
-        on="click"
-        closeOnDocumentClick
-        mouseLeaveDelay={300}
-        mouseEnterDelay={0}
-        contentStyle={{padding: '0px', border: 'none'}}
-        arrow={false}
-      >
-        <List>{this.state.filtered.map(value => (
-          <ListItem
-            key={value}
-            dense
-            divider
-            button
-          >
-            <ListItemText primary={value}/>
-          </ListItem>
-        )
-        )
-        }</List>
-      </Popup>
-    </div>;
+    return (
+      <div>
+        <Popup
+          trigger={<div>
+            <input style={inStyle} onChange={this.filter} type="text" placeholder="YAY!"/>
+          </div>}
+          position="bottom left"
+          on="click"
+          closeOnDocumentClick
+          mouseLeaveDelay={300}
+          mouseEnterDelay={0}
+          contentStyle={{padding: '0px', border: 'none'}}
+          arrow={false}
+        >
+          <List>{this.state.filtered.map(value => (
+            <ListItem
+              style={pStyle}
+              key={value}
+              dense
+              divider
+              button
+            >
+              <ListItemText primary={value}/>
+            </ListItem>
+          )
+          )
+          }</List>
+        </Popup>
+      </div>
+    );
   }
 }
 
+
 export default PopMenu;
+
