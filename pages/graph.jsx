@@ -13,14 +13,43 @@ const data = {
 // the graph configuration, you only need to pass down properties
 // that you want to override, otherwise default ones will be used
 const myConfig = {
-  nodeHighlightBehavior: true,
-  node: {
-    color: 'lightgreen',
-    size: 120,
-    highlightStrokeColor: 'blue',
+  'automaticRearrangeAfterDropNode': true,
+  'height': 800,
+  'highlightDegree': 1,
+  'highlightOpacity': 1,
+  'linkHighlightBehavior': false,
+  'maxZoom': 8,
+  'minZoom': 0.1,
+  'nodeHighlightBehavior': true,
+  'panAndZoom': false,
+  'staticGraph': true,
+  'width': 800,
+  'node': {
+    'color': '#d3d3d3',
+    'fontColor': 'black',
+    'fontSize': 8,
+    'fontWeight': 'normal',
+    'highlightColor': 'SAME',
+    'highlightFontSize': 8,
+    'highlightFontWeight': 'normal',
+    'highlightStrokeColor': 'SAME',
+    'highlightStrokeWidth': 1.5,
+    'labelProperty': 'id',
+    'mouseCursor': 'pointer',
+    'opacity': 1,
+    'renderLabel': true,
+    'size': 200,
+    'strokeColor': 'none',
+    'strokeWidth': 1.5,
+    'svg': '',
+    'symbolType': 'square',
   },
-  link: {
-    highlightColor: 'lightblue',
+  'link': {
+    'color': '#d3d3d3',
+    'opacity': 1,
+    'semanticStrokeWidth': false,
+    'strokeWidth': 1.5,
+    'highlightColor': '#d3d3d3',
   },
 };
 
