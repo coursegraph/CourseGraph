@@ -19,10 +19,6 @@ bool regexMatch (string regex, Args...)(Element elem, ref Args args) {
     return true;
 }
 
-
-
-
-
 struct ElementRange {
     private Element head;
     private size_t start, stop, current;
@@ -58,6 +54,7 @@ struct ElementRange {
             popFront;
         }
         enforce(!empty, format("Failed to find sequence, starting at %s", save.front.innerHTML));
+        popFront;
         //writefln("Matched! %s", front);
         return this;
     }

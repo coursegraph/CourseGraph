@@ -3,6 +3,9 @@ import department_info.model;
 import util.fetch_html: fetchHtml;
 import util.search_utils: childRange, regexMatch;
 import std.stdio;
+import std.regex;
+import std.exception: enforce;
+import std.string: strip;
 import arsd.dom;
 
 DepartmentInfo fetchInfo (DepartmentInfo dept) {
@@ -21,28 +24,23 @@ DepartmentInfo fetchInfo (DepartmentInfo dept) {
         auto content = main.requireSelector("div[class~=content]");
         auto sections = content.childRange
             .requireSeq((child) { 
-                return child.tagName == "p" &&
-                    child.regexMatch!`(\d+\-\d+ General Catalog)`(dept.catalogVersion); 
+                return child.tagName == "p" && child.regexMatch!`(\d+\-\d+ General Catalog)`(dept.catalogVersion);
             })
             .requireSeq((child) {
-                return child.tagName == "p" &&
-                    child.regexMatch!`([\s.]+)`(dept.departmentAddress);
+                //writefln("Got <%s>: %s", child.tagName, child.innerText);
+                if (!(child.tagName == "p" && child.innerText.strip() != "" && child.regexMatch!`(.[^\n]+)`(dept.departmentAddress))) {
+                    return false;
+                }
+                auto match = matchFirst(child.innerText, ctRegex!(`([\(\)\d\-\s]+)[\n\s]+(http.+)`, "g"));
+                enforce(match, format("Could not find contact info in '%s'", child.innerText));
+                dept.departmentPhoneNumber = match[1].strip();
+                dept.departmentUrl = match[2];
+                return true;
             })
             .requireSeq((child) { 
                 return child.tagName == "hr";
             })
             .splitSectionsByHeaders;
-
-        foreach (k, v; sections) {
-            writefln("Got section: %s\t\n%s", k, v.innerHTML);
-        }
-        //while (!content.empty) {
-        //    for (; !content.empty && content.front.tagName != "h1" && content.front.tagName != "h2"; content.popFront) {}
-        //    if (content.empty) break;
-
-        //    string section = content.moveFront.innerText;
-        //    writefln("Got section: '%s'", section);
-        //}
     });
     return dept;
 }

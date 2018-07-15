@@ -29,14 +29,14 @@ private struct Expectation (T) {
         }
     }
     void toContain (K)(K key) {
-        if (key in value) {
-            throw new AssertError(format("expected item to contain key '%s'; does not: '%s')",
+        if (key !in value) {
+            throw new AssertError(format("expected item to contain key '%s': '%s')",
                 key, value), file, line);
         }
     }
     void toNotContain (K)(K key) {
-        if (key !in value) {
-            throw new AssertError(format("expected item not to contain key '%s'; does: '%s')",
+        if (key in value) {
+            throw new AssertError(format("expected item not to contain key '%s': '%s')",
                 key, value), file, line);
         }
     }
