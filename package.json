@@ -30,7 +30,6 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-instantsearch": "beta",
-    "react-instantsearch-theme-algolia": "beta",
     "react-jss": "^8.6.1",
     "react-redux": "5.0.7",
     "reactjs-popup": "^1.1.1",
