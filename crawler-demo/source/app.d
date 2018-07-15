@@ -8,11 +8,11 @@ import std.string: toUpper, strip;
 import std.regex: matchFirst, ctRegex;
 import std.conv: parse;
 import arsd.dom;
+import arsd.htmltotext: htmlToText;
 import course_data: CourseEntry;
 
 // regex: \n\s+(\d+\w?)\.\s+([\w+\s+\-:,/\'\"]+)(?:\s+\((\d+)\s+credits?|no credit\))?\.(?:\s+([FWS\*,]+))?\s+(.+)
 // replace: {\n\t"course_id": "$1",\n\t"course_title": "$2",\n\t"credit(s)": "$3",\n\t"offered term(s)": "$4",\n\t"description": "$5"\n},\n
-
 
 void processRegistrarCoursePage (string dept) {
     // Get URL for a department's course page
@@ -46,6 +46,9 @@ void processRegistrarCoursePage (string dept) {
         auto content = main
             .requireSelector("div[class~=content]");
 
+        writefln("%s\n", htmlToText(content.innerHTML, false, 2000));
+        /+
+
         // Iterate over all children.
         // This part is a bit tricky, as it has lots of stuff glommed
         // together under the same div -_-
@@ -76,6 +79,8 @@ void processRegistrarCoursePage (string dept) {
         string coursePrefix = dept.toUpper; coursePrefix ~= ' ';
         string divisionName = "N/A";
         void parseCourseInfo (Element elem) {
+            //writefln("%s\n", htmlToText(elem.innerHTML));
+
             auto text = elem.innerHTML;
             CourseEntry result;
 
@@ -183,12 +188,12 @@ void processRegistrarCoursePage (string dept) {
                 result.satisfiesAmericanHistoryReq = true;
                 result.description = match.pre ~ match.post;
             }
-            if (result.prereqs) {
-                writefln("%s prereqs: %s", result.name, result.prereqs);
-            }
-            if (result.coreqs) {
-                writefln("%s coreqs: %s", result.name, result.coreqs);
-            }
+            //if (result.prereqs) {
+            //    writefln("%s prereqs: %s", result.name, result.prereqs);
+            //}
+            //if (result.coreqs) {
+            //    writefln("%s coreqs: %s", result.name, result.coreqs);
+            //}
 
 
             //writefln("%s", result);
@@ -218,7 +223,8 @@ void processRegistrarCoursePage (string dept) {
                             content[i].tagName, content[i].innerHTML);
                     }
             }
-        }
+
+        }+/
     } catch (CurlException e) {
         writefln("Couldn't fetch dept course page '%s' with url '%s'", dept, url);
     }
