@@ -16,6 +16,7 @@ public:
     string departmentUrl;
     string departmentAddress;
     string departmentPhoneNumber;
+    string lastCourseRevisionDate;
 
     string rawProgramStatement;
 
