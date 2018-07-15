@@ -6,16 +6,27 @@ import qs from 'qs';
 import App from '../components/Search';
 import { findResultsState } from '../components/Instantsearch';
 
+/**
+ * @type {number}
+ */
 const updateAfter = 700;
 
+/**
+ * @param searchState
+ * @return {string} the url
+ */
 const searchStateToUrl = searchState =>
   searchState ? `${window.location.pathname}?${qs.stringify(searchState)}` : '';
 
+/**
+ * Search Page
+ */
 export default class extends React.Component {
   static propTypes = {
     resultsState: PropTypes.object,
     searchState: PropTypes.object,
   };
+  
   onSearchStateChange = searchState => {
     clearTimeout(this.debouncedSetState);
     this.debouncedSetState = setTimeout(() => {

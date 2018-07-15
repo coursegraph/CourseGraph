@@ -1,26 +1,47 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Configure, Hits, SearchBox, } from 'react-instantsearch/dom';
+import { Configure, Hits, SearchBox } from 'react-instantsearch/dom';
 import { InstantSearch } from './Instantsearch';
 
-const HitComponent = ({hit}) =>
+/**
+ * The display component of the result of a search.
+ * @param hit {object} The hit object contains properties of a Course.
+ * @param hit.name {String} name of the Course. E.g. "CMPS 101"
+ * @return {Element}
+ * @constructor
+ */
+const HitComponent = ({hit}) => (
   <div className="hit">
     <div className="hit-content">
       {hit.name}
     </div>
-  </div>;
+  </div>
+);
 
+/**
+ * @type {{hit: shim}}
+ */
 HitComponent.propTypes = {
   hit: PropTypes.object,
 };
 
-export default class extends React.Component {
+/**
+ * @inheritDoc
+ */
+class Search extends React.Component {
+
+  /**
+   * @type {{searchState: shim, resultsState, onSearchStateChange: shim}}
+   */
   static propTypes = {
     searchState: PropTypes.object,
     resultsState: PropTypes.oneOfType([PropTypes.object, PropTypes.array]),
     onSearchStateChange: PropTypes.func,
   };
 
+  /**
+   * @return {Element}
+   */
   render() {
     return (
       <InstantSearch
@@ -45,3 +66,5 @@ export default class extends React.Component {
     );
   }
 }
+
+export default Search;

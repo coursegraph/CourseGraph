@@ -2,14 +2,20 @@ import React from 'react';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
+/**
+ * Login Component that provide text fields and submit button.
+ * @inheritDoc
+ */
 class Login extends React.Component {
   static propTypes = {
     // classes: PropTypes.object.isRequired,
   };
+
   state = {
     email: 'email here',
     password: '',
   };
+
   handleChange = (email, password) => (event) => {
     this.setState({
       [email]: event.target.value,
@@ -17,6 +23,9 @@ class Login extends React.Component {
     });
   };
 
+  /**
+   * @return {Element}
+   */
   render() {
     return (<div>
       <form className="login-form">

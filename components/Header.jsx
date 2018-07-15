@@ -7,9 +7,14 @@ Router.onRouteChangeStart = (url) => {
   console.log(`Loading: ${url}`);
   NProgress.start();
 };
+
 Router.onRouteChangeComplete = () => NProgress.done();
 Router.onRouteChangeError = () => NProgress.done();
 
+/**
+ * A header Component that provide Progress bar
+ * @return {*}
+ */
 export default () => (
   <div style={{marginBottom: 20}}>
     <Head>
