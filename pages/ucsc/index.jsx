@@ -5,6 +5,7 @@ import qs from 'qs';
 
 import App from '../../components/Search';
 import { findResultsState } from '../../components/Instantsearch';
+import Header from '../../components/Header';
 
 /**
  * @type {number}
@@ -63,6 +64,12 @@ export default class extends React.Component {
   render() {
     return (
       <div>
+        <Header/>
+        <link
+          rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/instantsearch.css@7.0.0/themes/algolia-min.css"
+        />
+        <link rel="stylesheet" href="../static/instantsearch.css"/>
         <h1> Search </h1>
         <div>
           <App

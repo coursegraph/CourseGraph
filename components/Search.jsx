@@ -63,7 +63,7 @@ class Search extends React.Component {
         onSearchStateChange={this.props.onSearchStateChange}
         searchState={this.props.searchState}
       >
-        <Configure hitsPerPage={10}/>
+        <Configure hitsPerPage={12}/>
         <header>
           <h1>UCSC Courses</h1>
           <SearchBox/>
