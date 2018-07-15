@@ -4,6 +4,8 @@ const compression = require('compression');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
+const LRUCache = require('lru-cache');
+
 // temp ugly solution
 // const api = require('./operations/get_courses');
 const api = require('./operations/get_course_db');
@@ -22,6 +24,15 @@ const MONGODB_URI = process.env.MONGODB_URI || `mongodb://localhost:27017/${LOCA
  * API keys and Passport configuration.
  */
 const passportConfig = require('./config/passport');
+
+/**
+ * This is where we cache our rendered HTML pages
+ * @type {LRUCache}
+ */
+const ssrCache = new LRUCache({
+  max: 100,
+  maxAge: 1000 * 60 * 60, // 1hour
+});
 
 app.prepare()
   .then(() => {
@@ -92,3 +103,49 @@ app.prepare()
       console.log(`> Ready on http://localhost:${PORT}`);
     });
   }).catch(error => console.error(error.stack));
+
+
+/**
+ * @param req
+ * @return {string}
+ */
+function getCacheKey(req) {
+  return `${req.url}`;
+}
+
+/**
+ * @param req
+ * @param res
+ * @param pagePath
+ * @param queryParams
+ * @return {Promise<void>}
+ */
+async function renderAndCache(req, res, pagePath, queryParams) {
+  const key = getCacheKey(req);
+
+  // If we have a page in the cache, let's serve it
+  if (ssrCache.has(key)) {
+    res.setHeader('x-cache', 'HIT');
+    res.send(ssrCache.get(key));
+    return;
+  }
+
+  try {
+    // If not let's render the page into HTML
+    const html = await app.renderToHTML(req, res, pagePath, queryParams);
+
+    // Something is wrong with the request, let's skip the cache
+    if (res.statusCode !== 200) {
+      res.send(html);
+      return;
+    }
+
+    // Let's cache this page
+    ssrCache.set(key, html);
+
+    res.setHeader('x-cache', 'MISS');
+    res.send(html);
+  } catch (err) {
+    app.renderError(err, req, res, pagePath, queryParams);
+  }
+}
