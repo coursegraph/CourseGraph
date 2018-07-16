@@ -1,6 +1,9 @@
 import React from 'react';
 import Graph from 'react-graph-vis';
 
+import { SearchBox } from 'react-instantsearch/dom';
+import { InstantSearch } from '../components/Instantsearch';
+
 const graph = {
   nodes: [
     {id: 1, label: 'Node 1'},
@@ -41,6 +44,13 @@ const events = {
 
 export default () => {
   return (<div>
+    <InstantSearch
+      appId="FCQTNAVIWA"
+      apiKey="c8a69c0f0dace8e66ba72fa55e730685"
+      indexName="courses"
+    >
+      <SearchBox/>
+    </InstantSearch>
     <Graph graph={graph}
            options={options}
            events={events}

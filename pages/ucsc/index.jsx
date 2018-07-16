@@ -28,7 +28,7 @@ export default class extends React.Component {
     searchState: PropTypes.object,
   };
 
-  onSearchStateChange = searchState => {
+  onSearchStateChange = (searchState) => {
     clearTimeout(this.debouncedSetState);
     this.debouncedSetState = setTimeout(() => {
       const href = searchStateToUrl(searchState);
@@ -51,14 +51,6 @@ export default class extends React.Component {
     const resultsState = await findResultsState(App, {searchState});
 
     return {resultsState, searchState};
-  }
-
-  componentDidMount() {
-    this.setState({searchState: qs.parse(window.location.search.slice(1))});
-  }
-
-  componentWillReceiveProps() {
-    this.setState({searchState: qs.parse(window.location.search.slice(1))});
   }
 
   render() {
