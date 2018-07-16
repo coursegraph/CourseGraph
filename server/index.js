@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 const LRUCache = require('lru-cache');
 
 // temp ugly solution
-// const api = require('./operations/get_courses');
 const api = require('./operations/get_course_db');
 const Course = require('./models/course');
 
@@ -17,7 +16,7 @@ const dev = process.env.NODE_ENV !== 'production';
 const app = next({dev});
 const defaultRequestHandler = app.getRequestHandler();
 
-const LOCAL_DB = 'faker';
+const LOCAL_DB = 'courses';
 const MONGODB_URI = process.env.MONGODB_URI || `mongodb://localhost:27017/${LOCAL_DB}`;
 
 /**
@@ -87,11 +86,10 @@ app.prepare()
     });
 
     server.get('/api/courses/', (req, res) => {
-      Course.find().lean().exec((err, course) => {
+      Course.find({}).lean().exec((err, course) => {
         if (err) {
           return console.error(err);
         }
-
         return res.json(course);
       });
     });
