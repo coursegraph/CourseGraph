@@ -1,39 +1,31 @@
 import React from 'react';
 import Popup from 'reactjs-popup';
+//import PopMenu from 'PopMenu';
 
 class Popups extends React.Component {
 
-  //static async getInitialProps = async function() {
-  //const res = await fetch('http://coursegraph.org/...')
-  //const data = await res.json()
-
-  //return {
-  //list: ({
-  //course_title: " "
-  //})
-  //}
-  //}
-
-
   static defaultProps = {
-    list: ({
-      course_id: 'CMPS115',
-      course_title: 'CMPS115 - Software Engineering',
-      course_description: 'asffodfi',
-      course_instructor: 'Richard',
+    myLists: ({
+      course_title: 'Software Engineering',
+      course_number: '123',
+      instructor: 'Richard',
+      time: 'MW 9:00-12:30AM',
+      location: 'LEC Annix 101',
     }),
-  }
+  };
+
 
   render() {
     return <div>
-      <Popup trigger={<a className="button">{this.props.list.course_id}</a>} modal>
+      <Popup trigger={<a className="button">{this.props.myLists.course_title}</a>} modal>
         {close => (
           <div className="modal">
             <a className="close" onClick={close}>&times;</a>
-            <div className="header">{this.props.list.course_title}</div>
+            <div className="header">{this.props.myLists.course_number}</div>
             <div className={'content'}>
-              <p>{'Course Description: '}{this.props.list.course_description}</p>
-              <p>{'Instructor: '}{this.props.list.course_instructor}</p>
+              <p>{'Instructor: '}{this.props.myLists.instructor}</p>
+              <p>{'Time: '}{this.props.myLists.time}</p>
+              <p>{'Location: '}{this.props.myLists.location}</p>
             </div>
           </div>
         )}

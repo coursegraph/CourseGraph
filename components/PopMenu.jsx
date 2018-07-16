@@ -4,6 +4,7 @@ import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 
+
 const lStyle = {
   overflow: 'auto',
   maxHeight: '400px',
@@ -54,18 +55,19 @@ class PopMenu extends React.Component {
         indices.push(i);
       }
     }
-    for (let i = 0; i < indices.length; i++){
+    for (let i = 0; i < indices.length; i++) {
       newArray.push(this.state.unfiltered[indices[i]]);
     }
     //let shrunkArray = newArray.slice(0, 10);
     //let result = shrunkArray.join(', ');
     //console.log(`got result: ${result}`);
-    let result = newArray.join(', ');
-    console.log(`got result: ${result}`);
+    //let result = newArray.join(', ');
+    //console.log(`got result: ${result}`);
 
     this.setState({filtered: newArray});
     //console.log(`filter filtered: ${this.state.filtered}`);
   }
+
 
 
   render() {
@@ -73,21 +75,22 @@ class PopMenu extends React.Component {
     let n = 0;
     //console.log(`in Render, filtered: ${this.state.filtered}`);
 
-    return (
-      <div>
-        <Popup
-          trigger={<div>
-            <input style={inStyle} onChange={this.filter} type="text" placeholder="YAY!"/>
-          </div>}
-          position="bottom left"
-          on="click"
-          closeOnDocumentClick
-          mouseLeaveDelay={300}
-          mouseEnterDelay={0}
-          contentStyle={{padding: '0px', border: 'none'}}
-          arrow={false}
-        >
-          <List style={lStyle}>{data.map(({course_title}) => (
+    return <div>
+      <Popup
+        trigger={<div>
+          <input style={inStyle} onChange={this.filter} type="text" placeholder="YAY!"/>
+        </div>}
+        position="bottom left"
+        on="click"
+        closeOnDocumentClick
+        mouseLeaveDelay={300}
+        mouseEnterDelay={0}
+        contentStyle={{padding: '0px', border: 'none'}}
+        arrow={false}
+      >
+        <List style={lStyle}>{data.map(({course_title, course_number, instructor, time, location}) => (
+
+          <Popup trigger={
             <ListItem
               style={pStyle}
               key={course_title + `${n++}`}
@@ -97,12 +100,25 @@ class PopMenu extends React.Component {
             >
               <ListItemText primary={course_title}/>
             </ListItem>
-          )
-          )
-          }</List>
-        </Popup>
-      </div>
-    );
+          } modal>
+            {close => (
+              <div className="modal">
+                <a className="close" onClick={close}>&times;</a>
+                <div className="header">
+                  {course_number}
+                </div>
+                <div className={'content'}>
+                  <p>{'Instructor: '}{instructor}</p>
+                  <p>{'Time: '}{time}</p>
+                  <p>{'Location: '}{location}</p>
+                </div>
+              </div>
+            )}
+          </Popup>
+        ))}
+        </List>
+      </Popup>
+    </div>;
   }
 }
 
