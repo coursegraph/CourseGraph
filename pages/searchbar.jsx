@@ -21,7 +21,7 @@ const styles = theme => ({
 class Index extends React.Component {
   static propTypes = {
     courses: PropTypes.arrayOf(PropTypes.shape({
-      course_title: PropTypes.string.isRequired,
+      title: PropTypes.string.isRequired,
     })),
   };
 

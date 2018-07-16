@@ -35,8 +35,8 @@ class PopMenu extends React.Component {
 
     this.state = {
       unfiltered: props.unfilteredArray.slice(),
-      //filtered: props.unfilteredArray.slice(),
-      filtered: props.unfilteredArray.slice(0, 10),
+      filtered: props.unfilteredArray.slice(),
+      visibleElements: 15,
     };
 
   }
@@ -45,7 +45,10 @@ class PopMenu extends React.Component {
   filter = (event) => {
     let stringArray = new Array(this.state.unfiltered.length);
     for (let i = 0; i < this.state.unfiltered.length; i++) {
-      stringArray[i] = JSON.stringify(this.state.unfiltered[i].course_title.toUpperCase());
+      stringArray[i] =
+        JSON.stringify(this.state.unfiltered[i].name.toUpperCase())
+        + JSON.stringify(this.state.unfiltered[i].title.toUpperCase())
+        + JSON.stringify(this.state.unfiltered[i].instructor.toUpperCase());
     }
     //console.log(`get stringArray: ${stringArray}`);
     let indices = [];
@@ -64,14 +67,32 @@ class PopMenu extends React.Component {
     //let result = newArray.join(', ');
     //console.log(`got result: ${result}`);
 
-    this.setState({filtered: newArray});
+    this.setState({
+      filtered: newArray,
+      visibleElements: 15,
+    });
     //console.log(`filter filtered: ${this.state.filtered}`);
-  }
+  };
+
+  onListScroll = (event) => {
+    const el = document.getElementById('listDiv');
+    const max = el.scrollHeight;
+    const scrolled = el.scrollTop;
+    let newVisibleElements = this.state.visibleElements + 15;
+
+    if ( (max - scrolled) < 410 ) {
+      this.setState({
+        visibleElements: newVisibleElements});
+    }
+
+    //console.log(`max scroll height % : ${max}`);
+    //console.log(`amount scrolled? : ${scrolled}`);
+  };
 
 
 
   render() {
-    const data = this.state.filtered.slice(0, 15);
+    const data = this.state.filtered.slice(0, this.state.visibleElements);
     let n = 0;
     //console.log(`in Render, filtered: ${this.state.filtered}`);
 
@@ -88,35 +109,39 @@ class PopMenu extends React.Component {
         contentStyle={{padding: '0px', border: 'none'}}
         arrow={false}
       >
-        <List style={lStyle}>{data.map(({course_title, course_number, instructor, time, location}) => (
+        <div style={lStyle} id="listDiv" onScroll={this.onListScroll}>
+          <List>{data.map(({name, title, instructor, terms, description, geCategories, division}) => (
 
-          <Popup trigger={
-            <ListItem
-              style={pStyle}
-              key={course_title + `${n++}`}
-              dense
-              divider
-              button
-            >
-              <ListItemText primary={course_title}/>
-            </ListItem>
-          } modal>
-            {close => (
-              <div className="modal">
-                <a className="close" onClick={close}>&times;</a>
-                <div className="header">
-                  {course_number}
+            <Popup trigger={
+              <ListItem
+                style={pStyle}
+                key={name + `${n++}`}
+                dense
+                divider
+                button
+              >
+                <ListItemText primary={name + ' ' + title} secondary={`Instr: ${instructor}`}/>
+              </ListItem>
+            } modal>
+              {close => (
+                <div className="modal">
+                  <a className="close" onClick={close}>&times;</a>
+                  <div className="header">
+                    {`${name} ${title}`}
+                  </div>
+                  <div className={'content'}>
+                    <p>{`Instructor: ${instructor}`}</p>
+                    <p>{`Terms: ${terms}`}</p>
+                    <p>{`GE: ${geCategories}`}</p>
+                    <p>{`Division: ${division}`}</p>
+                    <p>{`Description: ${description}`}</p>
+                  </div>
                 </div>
-                <div className={'content'}>
-                  <p>{'Instructor: '}{instructor}</p>
-                  <p>{'Time: '}{time}</p>
-                  <p>{'Location: '}{location}</p>
-                </div>
-              </div>
-            )}
-          </Popup>
-        ))}
-        </List>
+              )}
+            </Popup>
+          ))}
+          </List>
+        </div>
       </Popup>
     </div>;
   }
