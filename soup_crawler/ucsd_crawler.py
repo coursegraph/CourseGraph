@@ -173,9 +173,10 @@ def get_page_courses (dept, item, output):
             # if prereqs:
             #     print(original)
             #     print("\t'%s'"%prereqs)
-        return { 'name': name, 'title': title, 'description': descr, 'prereqs': list(prereq_requirements) }
+        return { 'name': name, 'dept': name.split()[0], 'title': title, 'description': descr, 'prereqs': list(prereq_requirements) }
 
     def process (soup):
+        num_courses = 0
         for a in soup.find_all('a'):
             try:
                 match = re.match(course_regex, a.attrs['id'])
@@ -199,17 +200,31 @@ def get_page_courses (dept, item, output):
                     name, rest = header, ''
                 course = process_course(name, rest, descrip)
                 if course:
+                    num_courses += 1
                     output['courses'][course['name']] = course              
             except KeyError:
                 continue
+        print("%d / %d: Parsed '%s': %s courses"%(
+            item['item_index'], item['total_items'], item['url'], num_courses))
     return fetch_html(item['url'], process)
 
 if __name__ == '__main__':
-    course_pages = get_catalog_course_pages('http://ucsd.edu/catalog')
+    out_file = 'ucsd_courses.json'
+    base_url = 'http://ucsd.edu/catalog'
+
+    print("Fetching course pages...")
+    course_pages = get_catalog_course_pages(base_url)
+    print("Got %d pages from %s"%(len(course_pages), base_url))
+
+    for i, (k, x) in enumerate(course_pages.iteritems()):
+        course_pages[k]['item_index'] = i
+        course_pages[k]['total_items'] = len(course_pages)
 
     output = { 'courses': {} }
     for k, x in course_pages.iteritems():
         get_page_courses(k, x, output)
-    pprint(output)
-    # get_page_courses(course_pages)
-    # pprint(course_pages)
+
+    import json
+    with open(out_file, 'w') as f:
+        json.dump(output, f)
+    print("Wrote %d courses to '%s'"%(len(output['courses']), out_file))
