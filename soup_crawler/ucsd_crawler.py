@@ -205,12 +205,18 @@ def get_page_courses (dept, item, output):
             except KeyError:
                 continue
         print("%d / %d: Parsed '%s': %s courses"%(
-            item['item_index'], item['total_items'], item['url'], num_courses))
+            item['item_index'] + 1, item['total_items'], item['url'], num_courses))
     return fetch_html(item['url'], process)
+
+def do_work (x):
+    get_page_courses(x['work_item']['dept'], x['work_item'], x)
+    return x['courses']
 
 if __name__ == '__main__':
     out_file = 'ucsd_courses.json'
     base_url = 'http://ucsd.edu/catalog'
+    parallel = True
+    processes = 16
 
     print("Fetching course pages...")
     course_pages = get_catalog_course_pages(base_url)
@@ -219,10 +225,20 @@ if __name__ == '__main__':
     for i, (k, x) in enumerate(course_pages.iteritems()):
         course_pages[k]['item_index'] = i
         course_pages[k]['total_items'] = len(course_pages)
+        course_pages[k]['dept'] = k
 
     output = { 'courses': {} }
-    for k, x in course_pages.iteritems():
-        get_page_courses(k, x, output)
+    if parallel:
+        from multiprocessing import Pool
+        # with Pool(processes) as pool:
+        pool = Pool(processes)
+        items = [ { 'courses': {}, 'work_item': item } for k, item in course_pages.iteritems() ]
+        courses = pool.map(do_work, items)
+        for result in courses:
+            output['courses'].update(result)
+    else:
+        for k, x in course_pages.iteritems():
+            get_page_courses(k, x, output)
 
     import json
     with open(out_file, 'w') as f:
