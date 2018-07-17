@@ -4,24 +4,58 @@ import utils.expect: expect;
 import std.regex;
 import std.string;
 import std.conv: parse;
+import std.stdio;
 
 
-public string fixSentences (ref string s) {
+public string fixSentencePeriods (ref string s) {
     return s = s.replaceAll(ctRegex!`\.(["\)]+)`, "$1.");
 }
-public string fixSentences (string s) {
-    return fixSentences(s);
+public string fixSentencePeriods (string s) {
+    return fixSentencePeriods(s);
 }
 unittest {
-    expect(fixSentences("")).toEqual("");
-    expect(fixSentences(".)")).toEqual(").");
-    expect(fixSentences(`."`)).toEqual(`".`);
-    expect(fixSentences(`.)"`)).toEqual(`)".`);
-    expect(fixSentences(`.")`)).toEqual(`").`);
-    expect(fixSentences("(Hello).")).toEqual("(Hello).");
-    expect(fixSentences("Hello. (World!). \"Hello\". World")).toEqual("Hello. (World!). \"Hello\". World");
-    expect(fixSentences("(Hello.) \"World.\" Hello.")).toEqual("(Hello). \"World\". Hello.");
+    expect(fixSentencePeriods("")).toEqual("");
+    expect(fixSentencePeriods(".)")).toEqual(").");
+    expect(fixSentencePeriods(`."`)).toEqual(`".`);
+    expect(fixSentencePeriods(`.)"`)).toEqual(`)".`);
+    expect(fixSentencePeriods(`.")`)).toEqual(`").`);
+    expect(fixSentencePeriods("(Hello).")).toEqual("(Hello).");
+    expect(fixSentencePeriods("Hello. (World!). \"Hello\". World")).toEqual("Hello. (World!). \"Hello\". World");
+    expect(fixSentencePeriods("(Hello.) \"World.\" Hello.")).toEqual("(Hello). \"World\". Hello.");
 }
+
+public string fixAbbreviations (ref string s) {
+    writefln("Attempting match... '%s'", s);
+    return s = replaceAll!((Captures!string match) {
+        writefln("Matched: '%s'", match[1]);
+        return match[1];
+    })(s, ctRegex!(`([A-Z][a-z]*)\.($|[A-Z]|\s+[a-z])`, "g"));
+
+
+    //ctRegex!(`([A-Z][a-z]*\.)+(\s+[a-z]|\s+[a-zA-Z]+[^\.]|[A-Z][a-z]*\.(?:\s+[A-Z])|\s*$)`, "g"));
+}
+public string fixAbbreviations (string s) {
+    return fixAbbreviations(s);
+}
+unittest {
+    //writefln("Testing...");
+    //fixAbbreviations("U.S. Asdf");
+    //fixAbbreviations("U.S. asdf");
+    //fixAbbreviations("U.S.");
+    //fixAbbreviations("U.S. A");
+    //fixAbbreviations("U. St");
+    //fixAbbreviations("U.S Ta");
+
+
+    expect(fixAbbreviations("U.S.")).toEqual("US");
+    expect(fixAbbreviations("Ph.D.")).toEqual("PhD");
+    expect(fixAbbreviations("U.S. stuff. B. A")).toEqual("US stuff. B. A");
+    expect(fixAbbreviations("Ph.D. fubar. Baz.")).toEqual("PhD fubar. Baz.");
+    expect(fixAbbreviations("Ph.D fubar. Baz.")).toEqual("PhD fubar. Baz.");
+    expect(fixAbbreviations("Ph.D. Fubar. Baz.")).toEqual("PhD. Fubar. Baz.");
+    expect(fixAbbreviations("Fubar. Bar Ph.D. fubar. Baz.")).toEqual("Fubar. Bar PhD fubar. Baz.");
+}
+
 
 public bool parseCourseNumber (DepartmentInfo context, ref string s, out string result) {
     if (auto match = matchFirst(s, ctRegex!(`^(\d+[A-Z]?)\.(?:\s+|$)`))) {

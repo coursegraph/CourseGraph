@@ -1,5 +1,6 @@
 module department_info.fetch_courses;
 import department_info.model;
+import department_info.parse_utils;
 import util.fetch_html: fetchHtml;
 import util.search_utils: childRange, regexMatch;
 import std.stdio;
@@ -23,6 +24,10 @@ DepartmentInfo fetchCourses (DepartmentInfo dept) {
             .innerText;
 
         auto content = main.requireSelector("div[class~=content]");
+        
+        auto text = content.innerText;
+
+
         import std.file;
         append("raw_courses_html.txt", format("\n%s\n%s\n", dept.coursesUrl, content.innerHTML));
         append("raw_courses_text.txt", format("\n%s\n%s\n", dept.coursesUrl, content.innerText));
