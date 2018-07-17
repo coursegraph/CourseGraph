@@ -101,7 +101,8 @@ def get_page_courses (dept, item):
                 dept, prefix, suffix, suffixes))
 
         def parse_fucking_ridiculous_everything_case (match):
-            print("GOT RIDICULOUS CASE: '%s' '%s'"%(match.group(1), match.group(2)))
+            pass
+            # print("GOT RIDICULOUS CASE: '%s' '%s'"%(match.group(1), match.group(2)))
 
         replace_cases = [
             (r'none', ''),
@@ -112,29 +113,54 @@ def get_page_courses (dept, item):
             (r'([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*|[A-Z]+)\s+((?:\d+[A-Z\-]*(?:,\s+|,?\s+(?:or|and)\s+))*\d+[A-Z\-]*)', parse_fucking_ridiculous_everything_case),
             # (r'([A-Z]\w+) ((\d\w+), )or (\d+\w+)', course_case_multiple_or),
             
-            (r'(graduate standing( required)?|for graduate students|graduate student status)', requirement('GRADUATE_STANDING')),
+            (r'[Ll]imited to BMS graduate students except by consent of instructor', requirement("GRADUATE_STANDING", "BMS_STUDENTS_ONLY", "INSTRUCTOR_CONSENT")),
+            (r'[Ll]imited to senior undergraduates, graduate students, and medical students', requirement('GRADUATE_STANDING', 'SENIOR_STANDING', 'MEDICAL_STUDENT')),
+            (r'graduate standing in bioengineering', requirement('GRADUATE_STANDING', 'BIOENGINEERING_OR_BIOTECH_MAJORS_ONLY')),
+            (r'standard undergraduate biology courses', requirement('BICD 1', 'BICD 2', 'BICD 3', 'BICD 4')),
+            (r'admission to Skaggs School of Pharmacy and Pharmaceutical Sciences or BMS Program \(major Code BS75\)', requirement('ADMITTED_SKAGGS_SCHOOL', 'BMS_STUDENT')),
+            (r'MAS program or permission of department', requirement('ADMITTED_MAS_CLINICAL_RESEARCH_PROGRAM', 'DEPARTMENT_APPROVAL')),
+            (r'(graduate (student )?standing( required)?|for graduate students|graduate student status)', requirement('GRADUATE_STANDING')),
             (r'(Undergraduates must be seniors)', requirement('SENIOR_STANDING')),
-            (r'upper-division standing( required)?', requirement('UPPER_DIVISION_STANDING')),
-            (r'lower-division standing( required)?', requirement('LOWER_DIVISION_STANDING')),
+            (r'upper\-division standing( required)?', requirement('UPPER_DIVISION_STANDING')),
+            (r'lower\-division standing( required)?', requirement('LOWER_DIVISION_STANDING')),
             (r'completion of college writing', requirement('COMPLETED_COLLEGE_WRITING')),
             (r'admission to the MAS Clinical Research Program', requirement("ADMITTED_MAS_CLINICAL_RESEARCH_PROGRAM")),
             (r'admission to (the )?MFA theatre program', requirement("ADMITTED_MFA_THEATRE_PROGRAM")),
+
             (r'admission to PhD program in theatre', requirement("ADMITTED_PHD_THEATRE_PROGRAM")),
             (r'Enrollment restricted to biological sciences graduate students', requirement("GRADUATE_STANDING", "BIOLOGICAL_SCIENCES_STUDENTS_ONLY")),
-            (r'limited to BMS graduate students except by consent of instructor', requirement("GRADUATE_STANDING", "BMS_STUDENTS_ONLY", "INSTRUCTOR_CONSENT")),
             (r'second- or third-year design students only', requirement("SOPHOMORE_STANDING", "JUNIOR_STANDING", "DESIGN_STUDENTS_ONLY")),
-            (r'consent of instruct(or)?', requirement('INSTRUCTOR_CONSENT')),
-            (r'(consent of department|department approval( required)?)', requirement('DEPARTMENT_CONSENT')),
-            (r'grade of C\- or better in ', ''),
+            (r'(consent of (the ))?[Dd]epartment(al)? (stamp|approval|chair)?( required)?', requirement('DEPARTMENT_APPROVAL')),
+
+            (r'consent of instruct(or)?', requirement('INSTRUCTOR_APPROVAL')),
+            (r'(program approval)', requirement('PROGRAM_APPROVAL')),
+            (r'(by |through )?audition( required)?', requirement('REQUIRES_AUDITION')),
+            (r'((status or )?consent of graduate program director)', requirement('REQUIRES_GRADUATE_PROGRAM_DIRECTOR_APPROVAL')),
+            (r'(upper\-division or graduate courses in molecular and cell biology)', requirement('UPPER_DIV_OR_GRADUATE_MCB_COURSES')),
+            (r'Restricted to students within the DS25 major', requirement("REQUIRES_DS25_MAJOR")),
+            (r'All other students will be allowed as space permits', requirement("OTHER_STUDENTS_ALLOWABLE_AS_SPACE_PERMITS")),
+            (r'enrollment in Science Studies Program', requirement("ENROLLED_IN_SCIENCES_STUDY_PROGRAM")),
+            (r'open to Revelle College freshman students only', requirement("REVELLE_COLLEGE", "FRESHMAN_STUDENTS_ONLY")),
+            (r'open to Revelle College transfer students only', requirement("REVELLE_COLLEGE", "TRANSFER_STUDENTS_ONLY")),
+            (r'open to Revelle College undergraduate students only', requirement("REVELLE_COLLEGE", "UNDERGRADUATE_STUDENTS_ONLY")),
+            (r'Bioengineering or Bioengineering: Biotechnology majors only', requirement("BIOENGINEERING_OR_BIOTECH_MAJORS_ONLY")),
+            (r'by invitation only', requirement("BY_INVITATION_ONLY")),
+            (r'MDE students only', requirement("MDE_STUDENTS_ONLY")),
+            (r'(with a )?grade of [A-Z–]+( or better)?(, or equivalent)?',''),
+            (r'(or enrolled in|and the department|or equivalent|successful completion of)', ''),
+            (r'(in music)', ''),
+            (r'Enrollment by completion of prerequisites or by', ''),
+            (r'\(S/U grades? (permitted|(option )?only)\.\)', ''),
             (r'\([FWS](,[FWS])*\)', ''),
-            # (r'^\s*((and|or|[,;\.|])\s*)+$', ''),
+            (r'^\s*((and|or|for|[,;\.\(\)])\s*)+$', ''),
         ]
         if prereqs:
-            print(prereqs)
+            original = prereqs
             for r, s in replace_cases:
                 prereqs = re.sub(r, s, prereqs).strip()
-            # if prereqs:
-            print("\t'%s'"%prereqs)
+            if prereqs:
+                print(original)
+                print("\t'%s'"%prereqs)
 
     def process (soup):
         for a in soup.find_all('a'):
