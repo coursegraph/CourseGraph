@@ -101,8 +101,26 @@ def get_page_courses (dept, item):
                 dept, prefix, suffix, suffixes))
 
         def parse_fucking_ridiculous_everything_case (match):
-            pass
-            # print("GOT RIDICULOUS CASE: '%s' '%s'"%(match.group(1), match.group(2)))
+            print("GOT RIDICULOUS CASE: '%s' '%s'"%(match.group(1), match.group(2)))
+            initial_string = match.group(0)
+            dept, courses = match.group(1, 2)
+            courses = re.sub(r'(and|or|[,;\-/])', ' ', courses).strip().split()
+            def splitCourseNumber (course):
+                match = re.match(r'(\d*)([A-Z]*)', course)
+                enforce(match, "Invalid course number: '%s' (for dept '%s', iniital string '%s'", 
+                    course, dept, initial_string)
+                return match.group(1, 2)
+            prevNumber = None
+            dept += ' '
+            for i, course in enumerate(courses):
+                n, a = splitCourseNumber(course)
+                if n:
+                    prevNumber = n
+                else:
+                    n = prevNumber
+                courses[i] = dept + n + a
+            print(courses)
+
 
         replace_cases = [
             (r'none', ''),
@@ -173,9 +191,10 @@ def get_page_courses (dept, item):
             original = prereqs
             for r, s in replace_cases:
                 prereqs = re.sub(r, s, prereqs).strip()
-            if prereqs:
-                print(original)
-                print("\t'%s'"%prereqs)
+            # if prereqs:
+            #     print(original)
+            #     print("\t'%s'"%prereqs)
+
 
     def process (soup):
         for a in soup.find_all('a'):
