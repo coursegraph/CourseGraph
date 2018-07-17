@@ -213,10 +213,16 @@ def do_work (x):
     return x['courses']
 
 if __name__ == '__main__':
-    out_file = 'ucsd_courses.json'
+    import argparse
+    parser = argparse.ArgumentParser(description='Fetches course data from the UCSD course catalog')
+    parser.add_argument('-o', '--out', type=str, help='output file', nargs='?', default='ucsd_courses.json')
+    parser.add_argument('-n', '--parallel', type=int, nargs='?', default=1)
+    args = parser.parse_args()
+
     base_url = 'http://ucsd.edu/catalog'
-    parallel = True
-    processes = 16
+    out_file  = args.out
+    processes = max(args.parallel, 1)
+    parallel  = processes > 1
 
     print("Fetching course pages...")
     course_pages = get_catalog_course_pages(base_url)
