@@ -42,6 +42,29 @@ def get_page_courses (dept, item):
             x = x.next
         return text
 
+    def process_course (name, title, descr):
+        if not name or len(name) == 0:
+            enforce(not title and not descr, "Empty name '%s' for '%s', '%s'", name, title, descr)
+            return
+
+        # if '/' in name: # handle eg. "BIMM/CSE/ETC 187B"
+        #     depts, number = name.split(' ')
+        #     if '/' in depts:
+        #         for d in depts.split('/'):
+        #             process_course('%s %s'%(d, number), title, descr)
+        #     elif '/' in number:
+        #         for n in number.split('/'):
+        #             if not n.isnumeric():
+        #                 continue
+        #             process_course('%s %s'%(depts, n), title, descr)
+        #     return
+
+        # if not re.match(r'[A-Z][A-Za-z]+\s+\d+[A-Z]*', name):
+        #     raise Exception("Invalid course name: '%s'", name)
+        print('\t'+name)
+        print('\t'+title)
+        print('\t'+descr)
+
     def process (soup):
         for a in soup.find_all('a'):
             try:
@@ -64,9 +87,7 @@ def get_page_courses (dept, item):
                     rest = '.'.join(items[1:]).strip()
                 else:
                     name, rest = header, ''
-                print('\t'+name)
-                print('\t'+rest)
-                print('\t'+descrip)
+                process_course(name, rest, descrip)                
             except KeyError:
                 continue
     return fetch_html(item['url'], process)
