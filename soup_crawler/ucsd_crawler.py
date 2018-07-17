@@ -27,7 +27,7 @@ def get_catalog_course_pages (base_url):
         return courses
     return fetch_html(index_url, process)
 
-def get_page_courses (dept, item):
+def get_page_courses (dept, item, output):
     dept_lower = dept.lower()
     course_regex = re.compile(r'([a-z]+)(\d+[a-z]?)')
 
@@ -45,30 +45,10 @@ def get_page_courses (dept, item):
     def process_course (name, title, descr):
         if not name or len(name) == 0:
             enforce(not title and not descr, "Empty name '%s' for '%s', '%s'", name, title, descr)
-            return
-
-        # if '/' in name: # handle eg. "BIMM/CSE/ETC 187B"
-        #     depts, number = name.split(' ')
-        #     if '/' in depts:
-        #         for d in depts.split('/'):
-        #             process_course('%s %s'%(d, number), title, descr)
-        #     elif '/' in number:
-        #         for n in number.split('/'):
-        #             if not n.isnumeric():
-        #                 continue
-        #             process_course('%s %s'%(depts, n), title, descr)
-        #     return
-
-        # if not re.match(r'[A-Z][A-Za-z]+\s+\d+[A-Z]*', name):
-        #     raise Exception("Invalid course name: '%s'", name)
-        # print('\t'+name)
-        # print('\t'+title)
-        # print('\t'+descr)
+            return None
         hits = descr.split("Prerequisites:")
         prereqs = ". ".join(hits[1:]).strip().strip('.')
         descr = hits[0]
-        # print(descr)
-
         prereq_requirements = set()
         def requirement (*reqs):
             def sub (stuff):
@@ -101,7 +81,7 @@ def get_page_courses (dept, item):
                 dept, prefix, suffix, suffixes))
 
         def parse_fucking_ridiculous_everything_case (match):
-            print("GOT RIDICULOUS CASE: '%s' '%s'"%(match.group(1), match.group(2)))
+            # print("GOT RIDICULOUS CASE: '%s' '%s'"%(match.group(1), match.group(2)))
             initial_string = match.group(0)
             dept, courses = match.group(1, 2)
             courses = re.sub(r'(and|or|[,;\-/])', ' ', courses).strip().split()
@@ -112,14 +92,13 @@ def get_page_courses (dept, item):
                 return match.group(1, 2)
             prevNumber = None
             dept += ' '
-            for i, course in enumerate(courses):
+            for course in courses:
                 n, a = splitCourseNumber(course)
                 if n:
                     prevNumber = n
                 else:
                     n = prevNumber
-                courses[i] = dept + n + a
-            print(courses)
+                prereq_requirements.add(dept + n + a)
 
 
         replace_cases = [
@@ -194,7 +173,7 @@ def get_page_courses (dept, item):
             # if prereqs:
             #     print(original)
             #     print("\t'%s'"%prereqs)
-
+        return { 'name': name, 'title': title, 'description': descr, 'prereqs': list(prereq_requirements) }
 
     def process (soup):
         for a in soup.find_all('a'):
@@ -218,14 +197,19 @@ def get_page_courses (dept, item):
                     rest = '.'.join(items[1:]).strip()
                 else:
                     name, rest = header, ''
-                process_course(name, rest, descrip)                
+                course = process_course(name, rest, descrip)
+                if course:
+                    output['courses'][course['name']] = course              
             except KeyError:
                 continue
     return fetch_html(item['url'], process)
 
 if __name__ == '__main__':
     course_pages = get_catalog_course_pages('http://ucsd.edu/catalog')
+
+    output = { 'courses': {} }
     for k, x in course_pages.iteritems():
-        get_page_courses(k, x)
+        get_page_courses(k, x, output)
+    pprint(output)
     # get_page_courses(course_pages)
     # pprint(course_pages)
