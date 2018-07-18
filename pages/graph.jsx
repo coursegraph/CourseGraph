@@ -3,14 +3,16 @@ import Graph from 'react-graph-vis';
 
 import { SearchBox } from 'react-instantsearch/dom';
 import { InstantSearch } from '../components/Instantsearch';
+import fetch from 'isomorphic-unfetch';
 
 const graph = {
   nodes: [
-    {id: 1, label: 'Node 1'},
-    {id: 2, label: 'Node 2'},
-    {id: 3, label: 'Node 3'},
-    {id: 4, label: 'Node 4'},
-    {id: 5, label: 'Node 5'},
+    {id: 0, label: 'CSE 105'},
+    {id: 1, label: 'CSE 12'},
+    {id: 2, label: 'CSE 21'},
+    {id: 3, label: 'CSE 20'},
+    {id: 4, label: 'Math 184'},
+    {id: 5, label: 'SENIOR_STANDING'},
   ],
   edges: [
     {from: 1, to: 2},
@@ -22,7 +24,9 @@ const graph = {
 
 const options = {
   layout: {
-    hierarchical: false,
+    hierarchical: {
+      enabled: false,
+    },
   },
   edges: {
     color: '#000000',
@@ -34,6 +38,18 @@ const options = {
     shape: 'box',
     color: '#89C4F4',
   },
+  physics: {
+    barnesHut: {
+      avoidOverlap: 0.75,
+    },
+    stabilization: {
+      enabled: true,
+      iterations: 1000,
+      updateInterval: 100,
+      onlyDynamicEdges: false,
+      fit: true,
+    },
+  },
 };
 
 const events = {
@@ -42,18 +58,34 @@ const events = {
   },
 };
 
-export default () => {
-  return (<div>
-    <InstantSearch
-      appId="FCQTNAVIWA"
-      apiKey="c8a69c0f0dace8e66ba72fa55e730685"
-      indexName="courses"
-    >
-      <SearchBox/>
-    </InstantSearch>
-    <Graph graph={graph}
-           options={options}
-           events={events}
-    />
-  </div>);
-};
+class GraphPage extends React.Component {
+  static async getInitialProps() {
+    const res = await fetch('https://raw.githubusercontent.com/coursegraph/coursegraph-data/master/ucsd/ucsd_graph_data_100.json');
+    const data = await res.json();
+
+    console.log(`Show data fetched. Count: ${data.nodes.length}`);
+    console.log(`Show data fetched. Count: ${data.edges.length}`);
+
+    return {
+      graph: data,
+    };
+  }
+
+  render() {
+    return (<div>
+      <InstantSearch
+        appId="FCQTNAVIWA"
+        apiKey="c8a69c0f0dace8e66ba72fa55e730685"
+        indexName="courses"
+      >
+        <SearchBox/>
+      </InstantSearch>
+      <Graph graph={this.props.graph}
+             options={options}
+             events={events}
+      />
+    </div>);
+  }
+}
+
+export default GraphPage;
