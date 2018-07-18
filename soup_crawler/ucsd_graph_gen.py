@@ -48,12 +48,12 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Generates vizjs graph data from the ucsd course catalog')
     parser.add_argument('-i', '--input', type=str, help='input file', nargs='?', default='ucsd_courses.json')
     parser.add_argument('-o', '--out', type=str, help='output file', nargs='?', default='ucsd_graph_data.json')
-    parser.add_argument('-r', '--rebuild', type=bool, nargs='?', default=False)
+    parser.add_argument('-r', '--rebuild', default=False, action='store_true')
     parser.add_argument('-l', '--limit', type=int, default=-1)
     parser.add_argument('-n', '--parallel', type=int, nargs='?', default=16)
     parser.add_argument('--indent', type=int, nargs='?', default=0)
     parser.add_argument('--sort_keys', type=bool, nargs='?', default=True)
-    parser.add_argument('-p', '--_print', type=bool, nargs='?', default=False)
+    parser.add_argument('-p', '--_print', default=False, action='store_true')
     args = parser.parse_args()
 
     if args.rebuild:

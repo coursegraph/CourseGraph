@@ -27,6 +27,8 @@ def get_catalog_course_pages (base_url):
         return courses
     return fetch_html(index_url, process)
 
+dept_set = set()
+
 def get_page_courses (dept, item, output):
     dept_lower = dept.lower()
     course_regex = re.compile(r'([a-z]+)(\d+[a-z]?)')
@@ -52,8 +54,8 @@ def get_page_courses (dept, item, output):
         prereq_requirements = set()
         def requirement (*reqs):
             def sub (stuff):
-                for req in reqs:
-                    prereq_requirements.add(req)
+                # for req in reqs:
+                #     prereq_requirements.add(req)
                 return ''
             return sub
 
@@ -90,6 +92,40 @@ def get_page_courses (dept, item, output):
                 enforce(match, "Invalid course number: '%s' (for dept '%s', iniital string '%s'", 
                     course, dept, initial_string)
                 return match.group(1, 2)
+
+            dept_set.add(dept)
+            if not re.match(r'[A-Z]{2,}', dept):
+                try:
+                    dept = {
+                        'Calculus': 'MATH',
+                        'Chem': 'CHEM',
+                        'Chemistry': 'CHEM',
+                        'Cog Sci': 'COGS',
+                        'Cognitive Science': 'COGS',
+                        'Economics': 'ECON',
+                        'Econ': 'ECON',
+                        'Enrollment Special Studies Courses': 'ESSC',
+                        'Hum': 'HUM',
+                        'Math': 'MATH',
+                        'Math Level': 'Math Level',
+                        'Mathematics': 'MATH',
+                        'Neurology': 'NEU',
+                        'Neurosci': 'NEU',
+                        'Neurosciences': 'NEU',
+                        'Pharm': 'PHARM',
+                        'Philosophy': 'PHIL',
+                        'Phys': 'PHYS',
+                        'Physics': 'PHYS',
+                        'Poli Sci': 'POLI',
+                        'Psyc': 'PSYC',
+                        'Psych': 'PSYC',
+                        'Psychology': 'PSYC',
+                        'Science': '??? Science',
+                        'Special Studies Courses': 'SSC',
+                        'G': 'G ???'
+                    }[dept]
+                except KeyError:
+                    enforce(False, "Unrecognized department '%s'", dept)
             prevNumber = None
             dept += ' '
             for course in courses:
@@ -216,7 +252,7 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description='Fetches course data from the UCSD course catalog')
     parser.add_argument('-o', '--out', type=str, help='output file', nargs='?', default='ucsd_courses.json')
-    parser.add_argument('-n', '--parallel', type=int, nargs='?', default=1)
+    parser.add_argument('-n', '--parallel', type=int, nargs='?', default=16)
     args = parser.parse_args()
 
     base_url = 'http://ucsd.edu/catalog'
@@ -245,6 +281,8 @@ if __name__ == '__main__':
     else:
         for k, x in course_pages.iteritems():
             get_page_courses(k, x, output)
+
+    # print(sorted(dept_set))
 
     import json
     with open(out_file, 'w') as f:
