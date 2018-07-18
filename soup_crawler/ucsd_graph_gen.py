@@ -33,7 +33,7 @@ def generate_graph_data (courses, limit = -1):
             limit -= 1
         self = lookup(course, info)
         for node in map(lookup, info['prereqs']):
-            edges += [{ 'from': self, 'to': node }]
+            edges += [{ 'from': node, 'to': self }]
             data[self]['edges_from'].add(node)
             data[node]['edges_to'].add(self)
 
