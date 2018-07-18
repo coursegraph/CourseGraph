@@ -1,6 +1,6 @@
 import json
 
-def generate_graph_data (courses):
+def generate_graph_data (courses, limit = -1):
     edges = []
     nodes = []
     data  = []
@@ -27,6 +27,10 @@ def generate_graph_data (courses):
         return lookup_table[name]
 
     for course, info in courses.iteritems():
+        if limit >= 0:
+            if limit == 0:
+                break
+            limit -= 1
         self = lookup(course, info)
         for node in map(lookup, info['prereqs']):
             edges += [{ 'from': self, 'to': node }]
@@ -36,21 +40,46 @@ def generate_graph_data (courses):
     for i, _ in enumerate(data):
         data[i]['edges_from'] = list(data[i]['edges_from'])
         data[i]['edges_to'] = list(data[i]['edges_to'])
-    return { 'edges': edges, 'nodes': nodes, 'data': data }
+    # return { 'edges': edges, 'nodes': nodes, 'data': data }
+    return { 'edges': edges, 'nodes': nodes }
 
 if __name__ == '__main__':
-    with open('ucsd_courses.json', 'r') as f:
+    import argparse
+    parser = argparse.ArgumentParser(description='Generates vizjs graph data from the ucsd course catalog')
+    parser.add_argument('-i', '--input', type=str, help='input file', nargs='?', default='ucsd_courses.json')
+    parser.add_argument('-o', '--out', type=str, help='output file', nargs='?', default='ucsd_graph_data.json')
+    parser.add_argument('-r', '--rebuild', type=bool, nargs='?', default=False)
+    parser.add_argument('-l', '--limit', type=int, default=-1)
+    parser.add_argument('-n', '--parallel', type=int, nargs='?', default=16)
+    parser.add_argument('--indent', type=int, nargs='?', default=0)
+    parser.add_argument('--sort_keys', type=bool, nargs='?', default=True)
+    parser.add_argument('-p', '--_print', type=bool, nargs='?', default=False)
+    args = parser.parse_args()
+
+    if args.rebuild:
+        from subprocess import call
+        call(['python', 'ucsd_crawler.py', '--out', str(args.input), '--parallel', str(args.parallel)])
+
+    with open(args.input, 'r') as f:
         content = json.loads(f.read())
-        print(len(content['courses']))
+        # print(len(content['courses']))
         courses = content['courses']
 
-    with open('ucsd_graph_data.json', 'w') as f:
-        data = generate_graph_data(courses)
-        print(len(data))
-        print(len(data['nodes']))
-        print(len(data['edges']))
-        print(len(data['data']))
-        json.dump(data, f)
+    with open(args.out, 'w') as f:
+        data = generate_graph_data(courses, limit=args.limit)
+        # print(len(data))
+        # print(len(data['nodes']))
+        # print(len(data['edges']))
+        # print(len(data['data']))
+        if args.indent:
+            json.dump(data, f, indent=args.indent, sort_keys=args.sort_keys)
+        else:
+            json.dump(data, f, sort_keys=args.sort_keys)
+        if args._print:
+            if args.indent:
+                print(json.dumps(data, indent=args.indent, sort_keys=args.sort_keys))
+            else:
+                print(json.dumps(data, sort_keys=args.sort_keys))
 
     missing_references = {}
     resolved_references = {}
