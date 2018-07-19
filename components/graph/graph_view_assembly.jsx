@@ -4,6 +4,8 @@ import Draggable from 'react-draggable';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Drawer from '@material-ui/core/Drawer';
+import Button from '@material-ui/core/Button';
 
 
 class Searchbar extends React.Component {
@@ -143,11 +145,38 @@ class SearchbarAssembly extends React.Component {
   }
 }
 
+class SearchbarDrawer extends React.Component{
+  constructor(props){
+    super(props);
+    this.state = {
+      isOpen : false,
+    };
+  }
+  toggleDrawer = (open) => () => {
+    this.setState({
+      isOpen: open,
+    });
+  };
+
+  render() {
+    const contents = this.props.courses;
+
+    return (
+      <div>
+        <Button onClick={this.toggleDrawer(true)}>Open Search Bar</Button>
+        <Drawer anchor='left' open={this.state.isOpen} onClose={this.toggleDrawer(false)}>
+          <SearchbarAssembly courses={contents}/>
+        </Drawer>
+      </div>
+    );
+  }
+}
+
 export default class GraphViewAssembly extends React.Component {
   render() {
     return (
       <div>
-        <SearchbarAssembly courses={this.props.data.nodes} />
+        <SearchbarDrawer courses={this.props.data.nodes} />
         {/*<GraphView data={this.props.data} />*/}
       </div>
     );
