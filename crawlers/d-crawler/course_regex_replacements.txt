@@ -1,0 +1,71 @@
+// Detect unmatched text:
+\n[^"][^\n]+\n
+
+// Remove parentheses
+\.([\)"]+)
+$1\.
+
+// Detect abbreviations
+([A-Z][a-z]*\.\s*)+[a-z]
+// then remove w/ result.replace(".","")
+
+// Simple abbreviation remover:
+([A-Z][a-z]*\.\s*)+([a-z])
+$2
+
+https?://[\w\d\-\/\.]+/([a-z]+).html
+"dept"="$1"
+
+\n(?:\[Return to top\])
+N/A
+
+\*\s+Not offered in \d+\-\d+\n
+N/A
+
+\nRevised:\s+(\d+/\d+/\d+)\n
+\n"revision_date" = "$1"
+
+\n\s*(\d+\-\d+\s+(?:General\s+)?Catalog)
+\n"catalog_version" = "$1"
+
+\n([A-Za-z\-\s]+)\s+Courses\n
+\n"division"="$1"\n
+
+\n(?:Department of (?:the\s+)?([A-Za-z]+(?:\s+[A-Za-z]+)*))?\s*([^\n]+)\n(?:(?:Faculty|Program Statement|[\s\w]*Courses?[\s\w]+)|\s*\|\s*)+\n
+\n"department_title" = "$1"\n"contact_info"="$2"\n
+
+\n(\d+[A-Z]?)\.\s+
+\n"course_id" = "$1"\n
+
+"\n([^\.]+)\.\s+
+"\n"course_title" = "$1"\n
+
+"\n([FWS](?:,[FWS])*|\*)\s+
+"\n"course_terms" = "$1"\n
+
+\s*((?:[A-Z](?:\.|[a-z]+,?)(?:\s+|\-))+[A-Z][a-z]*)\n
+\n"course_instructor" = "$1"\n
+
+\s*\(General Education Code\(s\):\s+([A-Z\-,\s]+)\)\.\n
+\n"ge" = "$1"\n
+
+\s*Offered in alternate academic years.\n
+\n"offered_in_alt_academic_years" = "true"\n
+
+\s*May be repeated for credit.\n
+\n"is_repeatable_for_credit" = "true"\n
+
+\s+Enrollment limited to (\d+)\.\n
+\n"enroll_limit" = $1\n
+
+\s*Enrollment (?:is )?restricted to ([^\.]+)\.\n
+\n"enroll_restrict" = "$1"\n
+
+Concurrent enrollment in ([^\.(?:is)]+)\s+(?:is required|required)\.\n
+\n"concurrent_req" = "$1"\n
+
+\s*Prerequisite\(?s?\)?:\s+([^\.]+)\.\s*\n
+\n"prereqs" = "$1"\n
+
+\n([^"][^\n]+)\n
+\n"course_description = "$1"\n
