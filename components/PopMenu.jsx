@@ -30,6 +30,26 @@ const inStyle = {
   fontSize: '14px',
 };
 
+class CourseDetailsWindow extends React.Component {
+  render () {
+    const course = this.props.course;
+    return (
+      <div className="modal">
+        <a className="close" onClick={this.props.onClose}>&times;</a>
+        <div className="header">
+          {`${course.name} ${course.title}`}
+        </div>
+        <div className={'content'}>
+          <p>{`Instructor: ${course.instructor}`}</p>
+          <p>{`Terms: ${course.terms}`}</p>
+          <p>{`GE: ${course.geCategories}`}</p>
+          <p>{`Division: ${course.division}`}</p>
+          <p>{`Description: ${course.description}`}</p>
+        </div>
+      </div>
+    );
+  }
+}
 
 class PopMenu extends React.Component {
   constructor(props) {
@@ -123,21 +143,9 @@ class PopMenu extends React.Component {
                                       secondary={`Instr: ${instructor}`}/>
                       </ListItem>
                     } modal>
-                      {close => (
-                        <div className="modal">
-                          <a className="close" onClick={close}>&times;</a>
-                          <div className="header">
-                            {`${name} ${title}`}
-                          </div>
-                          <div className={'content'}>
-                            <p>{`Instructor: ${instructor}`}</p>
-                            <p>{`Terms: ${terms}`}</p>
-                            <p>{`GE: ${geCategories}`}</p>
-                            <p>{`Division: ${division}`}</p>
-                            <p>{`Description: ${description}`}</p>
-                          </div>
-                        </div>
-                      )}
+                      {close =>
+                        <CourseDetailsWindow course={course} onClose={close} />
+                      }
                     </Popup>
                   </div>
                 ))}
