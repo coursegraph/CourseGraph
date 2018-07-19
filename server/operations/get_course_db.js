@@ -1,19 +1,20 @@
 const Course = require('../models/course');
 
 /**
- * @param title {string}
  * @return {Array.<Course>}
  */
-function get(title) {
+function get() {
   let arr = [];
 
-  Course.find({}, (err, course) => {
+  Course.find({}).lean().exec((err, course) => {
     if (err) {
-      return console.error(err);
+      console.error(err);
+      return;
     }
 
     arr.push(course);
   });
+
 
   return arr;
 }
