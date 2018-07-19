@@ -51,9 +51,10 @@ class PopMenu extends React.Component {
     const scrolled = el.scrollTop;
     let newVisibleElements = this.state.visibleElements + 15;
 
-    if ( (max - scrolled) < 410 ) {
+    if ((max - scrolled) < 410) {
       this.setState({
-        visibleElements: newVisibleElements});
+        visibleElements: newVisibleElements,
+      });
     }
 
     //console.log(`max scroll height % : ${max}`);
@@ -93,7 +94,8 @@ class PopMenu extends React.Component {
       <Draggable enableUserSelectHack={false}>
         <div>
           <Popup
-            trigger={<input style={inStyle} onChange={this.handleFilterCall} type="text" placeholder="YAY!"/>}
+            trigger={<input style={inStyle} onChange={this.handleFilterCall}
+                            type="text" placeholder="YAY!"/>}
             position="bottom left"
             onOpen={this.handleClick}
             //on="click"
@@ -104,8 +106,10 @@ class PopMenu extends React.Component {
             arrow={false}
           >
             {this.state.popupVisible && (
-              <div ref={node => { this.node = node; }} style={lStyle} id="listDiv" onScroll={this.onListScroll}>
-                <List >{data.map(({name, title, instructor, terms, description, geCategories, division}) => (
+              <div ref={node => {
+                this.node = node;
+              }} style={lStyle} id="listDiv" onScroll={this.onListScroll}>
+                <List>{data.map(({name, title, instructor, terms, description, geCategories, division}) => (
                   <div ref={this.setWrapperRef}>
                     <Popup trigger={
                       <ListItem
@@ -115,7 +119,8 @@ class PopMenu extends React.Component {
                         divider
                         button
                       >
-                        <ListItemText  primary={name + ' ' + title} secondary={`Instr: ${instructor}`}/>
+                        <ListItemText primary={name + ' ' + title}
+                                      secondary={`Instr: ${instructor}`}/>
                       </ListItem>
                     } modal>
                       {close => (

@@ -10,6 +10,7 @@ const options = {
     hierarchical: {
       enabled: false,
     },
+    improvedLayout: true,
   },
   edges: {
     color: '#000000',
@@ -20,9 +21,6 @@ const options = {
   nodes: {
     shape: 'box',
     color: '#89C4F4',
-  },
-  layout: {
-    improvedLayout: true,
   },
   physics: {
     solver: 'forceAtlas2Based',

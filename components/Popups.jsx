@@ -8,7 +8,7 @@ class Popups extends React.Component {
     this.handleClick = this.handleClick.bind(this);
     this.state = {
       tags: [] || props.tags,
-    }
+    };
   }
 
   static defaultProps = {
