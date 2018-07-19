@@ -54,8 +54,8 @@ def get_page_courses (dept, item, output):
         prereq_requirements = set()
         def requirement (*reqs):
             def sub (stuff):
-                # for req in reqs:
-                #     prereq_requirements.add(req)
+                for req in reqs:
+                    prereq_requirements.add(req)
                 return ''
             return sub
 

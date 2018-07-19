@@ -3,18 +3,14 @@ import json
 def generate_graph_data (courses, limit = -1):
     edges = []
     nodes = []
-    data  = []
     lookup_table = {}
 
     def insert_entity (name, info):
         id = lookup_table[name] = len(nodes)
         nodes.append({
-            'id': id,
-            'label': name
-        })
-        data.append({
             'id': len(nodes),
-            'name': name,
+            'label': name,
+            'title': info['title'] if 'title' in info else '',
             'dept': info['dept'] if 'dept' in info else name.strip().split()[0],
             'desc': info['desc'] if 'desc' in info else '',
             'edges_from': set(),
@@ -34,13 +30,12 @@ def generate_graph_data (courses, limit = -1):
         self = lookup(course, info)
         for node in map(lookup, info['prereqs']):
             edges += [{ 'from': node, 'to': self }]
-            data[self]['edges_from'].add(node)
-            data[node]['edges_to'].add(self)
+            nodes[self]['edges_from'].add(node)
+            nodes[node]['edges_to'].add(self)
 
-    for i, _ in enumerate(data):
-        data[i]['edges_from'] = list(data[i]['edges_from'])
-        data[i]['edges_to'] = list(data[i]['edges_to'])
-    # return { 'edges': edges, 'nodes': nodes, 'data': data }
+    for i, _ in enumerate(nodes):
+        nodes[i]['edges_from'] = list(nodes[i]['edges_from'])
+        nodes[i]['edges_to'] = list(nodes[i]['edges_to'])
     return { 'edges': edges, 'nodes': nodes }
 
 if __name__ == '__main__':
