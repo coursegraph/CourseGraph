@@ -129,12 +129,12 @@ class PopMenu extends React.Component {
               <div ref={node => {
                 this.node = node;
               }} style={lStyle} id="listDiv" onScroll={this.onListScroll}>
-                <List>{data.map(({name, title, instructor, terms, description, geCategories, division}) => (
+                <List>{data.map((course) => (
                   <div ref={this.setWrapperRef}>
                     <Popup trigger={
                       <ListItem
                         style={pStyle}
-                        key={name + `${n++}`}
+                        key={course.name + `${n++}`}
                         dense
                         divider
                         button
