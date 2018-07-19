@@ -1,6 +1,5 @@
 import React from 'react';
-import { GraphView } from '../graph/graph_view'
-// import 'isomorphic-fetch'
+import { GraphViewAssembly } from '../graph/graph_view_assembly'
 
 class LoadingMessage extends React.Component {
   render () {
@@ -24,7 +23,7 @@ class LoadErrorMessage extends React.Component {
   }
 }
 
-export class GraphViewApp extends React.Component {
+export class GraphViewLoader extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -70,15 +69,11 @@ export class GraphViewApp extends React.Component {
     if (this.state.dataLoadError) {
       return <LoadErrorMessage 
         url={this.state.jsonDataUrl} 
-        error={this.state.dataLoadError} />
+        error={this.state.dataLoadError} />;
     }
-    return (
-      <div>
-      {this.state.data
-          ? <GraphView data={this.state.data} /> 
-          : <LoadingMessage url={this.state.jsonDataUrl} />
-      }
-      </div>
-    );
+    if (!this.state.data) {
+      return <LoadingMessage url={this.state.jsonDataUrl} />;
+    }
+    return <GraphViewAssembly data={this.state.data} />;
   }
 }
