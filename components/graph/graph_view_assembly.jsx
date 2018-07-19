@@ -1,8 +1,8 @@
 import React from 'react';
-import { GraphView } from '../graph/graph_view'
+import GraphView from '../graph/graph_view'
 
 
-export class GraphViewAssembly extends React.Component {
+export default class GraphViewAssembly extends React.Component {
   render () {
     return (
       <div>

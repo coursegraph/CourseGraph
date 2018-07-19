@@ -1,5 +1,5 @@
 import React from 'react';
-import { GraphViewAssembly } from '../graph/graph_view_assembly'
+import GraphViewAssembly from '../graph/graph_view_assembly'
 
 class LoadingMessage extends React.Component {
   render () {
@@ -23,7 +23,7 @@ class LoadErrorMessage extends React.Component {
   }
 }
 
-export class GraphViewLoader extends React.Component {
+export default class GraphViewLoader extends React.Component {
   constructor(props) {
     super(props);
     this.state = {

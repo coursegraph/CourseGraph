@@ -40,7 +40,7 @@ const events = {
   },
 };
 
-export class GraphView extends React.Component {
+export default class GraphView extends React.Component {
   render () {
     return (
       <Graph graph={this.props.data}
