@@ -1,6 +1,5 @@
 import React from 'react';
 import Graph from 'react-graph-vis';
-import fetch from 'isomorphic-unfetch';
 
 const options = {
   layout: {
@@ -45,8 +44,8 @@ export class GraphView extends React.Component {
   render () {
     return (
       <Graph graph={this.props.data}
-           options={options}
-           events={events}
+            options={options}
+            events={events}
       />
     );
   }
