@@ -3,6 +3,7 @@ import Popup from 'reactjs-popup';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+import Draggable from 'react-draggable';
 
 /**
  * Required Props:
@@ -67,7 +68,9 @@ class PopMenu extends React.Component {
     let n = 0;
     //console.log(`in Render, filtered: ${this.state.filtered}`);
 
-    return <div>
+    return (
+      <Draggable enableUserSelectHack={false}>
+    <div>
       <Popup
         trigger={<div>
           <input style={inStyle} onChange={this.handleFilterCall} type="text" placeholder="YAY!"/>
@@ -114,7 +117,9 @@ class PopMenu extends React.Component {
           </List>
         </div>
       </Popup>
-    </div>;
+    </div>
+      </Draggable>
+    );
   }
 }
 
