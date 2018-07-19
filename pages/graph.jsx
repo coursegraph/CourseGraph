@@ -5,23 +5,6 @@ import { SearchBox } from 'react-instantsearch/dom';
 import { InstantSearch } from '../components/Instantsearch';
 import fetch from 'isomorphic-unfetch';
 
-const graph = {
-  nodes: [
-    {id: 0, label: 'CSE 105'},
-    {id: 1, label: 'CSE 12'},
-    {id: 2, label: 'CSE 21'},
-    {id: 3, label: 'CSE 20'},
-    {id: 4, label: 'Math 184'},
-    {id: 5, label: 'SENIOR_STANDING'},
-  ],
-  edges: [
-    {from: 1, to: 2},
-    {from: 1, to: 3},
-    {from: 2, to: 4},
-    {from: 2, to: 5},
-  ],
-};
-
 const options = {
   layout: {
     hierarchical: {
@@ -38,13 +21,18 @@ const options = {
     shape: 'box',
     color: '#89C4F4',
   },
+  layout: {
+    improvedLayout: true,
+  },
   physics: {
-    barnesHut: {
-      avoidOverlap: 0.75,
-    },
+    solver: 'forceAtlas2Based',
+    adaptiveTimestep: true,
+    // barnesHut: {
+    //   avoidOverlap: 0.75,
+    // },
     stabilization: {
       enabled: true,
-      iterations: 1000,
+      iterations: 100,
       updateInterval: 100,
       onlyDynamicEdges: false,
       fit: true,
