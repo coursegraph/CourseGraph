@@ -1,48 +1,9 @@
 import React from 'react';
-import Graph from 'react-graph-vis';
-
+import { GraphView } from '../components/graph/graph_view'
 import { SearchBox } from 'react-instantsearch/dom';
 import { InstantSearch } from '../components/Instantsearch';
 import fetch from 'isomorphic-unfetch';
 
-const options = {
-  layout: {
-    hierarchical: {
-      enabled: false,
-    },
-    improvedLayout: true,
-  },
-  edges: {
-    color: '#000000',
-  },
-  width: '100%',
-  height: '800px',
-  autoResize: true,
-  nodes: {
-    shape: 'box',
-    color: '#89C4F4',
-  },
-  physics: {
-    solver: 'forceAtlas2Based',
-    adaptiveTimestep: true,
-    // barnesHut: {
-    //   avoidOverlap: 0.75,
-    // },
-    stabilization: {
-      enabled: true,
-      iterations: 100,
-      updateInterval: 100,
-      onlyDynamicEdges: false,
-      fit: true,
-    },
-  },
-};
-
-const events = {
-  select: (event) => {
-    let {nodes, edges} = event;
-  },
-};
 
 class GraphPage extends React.Component {
   static async getInitialProps() {
@@ -66,10 +27,7 @@ class GraphPage extends React.Component {
       >
         <SearchBox/>
       </InstantSearch>
-      <Graph graph={this.props.graph}
-             options={options}
-             events={events}
-      />
+      <GraphView data={this.props.graph} />
     </div>);
   }
 }
