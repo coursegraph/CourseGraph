@@ -37,6 +37,9 @@ class SearchResultList extends React.Component {
         </ListItem>
       ))}</List>
     );
+
+    // <ListItemText primary={`${course.priority} ${course.label} ${course.title}`} />
+
   }
 }
 
@@ -51,13 +54,47 @@ function fuzzyMatch (q, s) {
   }
   return j == 0;
 }
+function levenshtein (q, s, A, B) {
+  let n = q.length;
+  let m = s.length;
+
+  A.length = n + 1;
+  B.length = n + 1;
+  for (let i = n + 1; i --> 0; ) {
+    A[i] = i;
+    B[i] = 0;
+  }
+  for (let j = 0; j < m; ++j) {
+    let x = j;
+    for (let i = 0; i < n; ++i) {
+      x = B[i+1] = Math.min(
+        Math.min(x, A[i+1]) + 1,
+        q[i] != s[j] ? A[i] + 1 : 0);
+    }
+    let C = A; A = B; B = C;
+  }
+  return A[n];
+}
+// def lev (a, b):
+//     n, m = len(a), len(b)
+//     row, prev = [0] * (n + 1), [0] * (n + 1)
+//     for i in range(n):
+//         prev[i] = i
+//     for j in range(m):
+//         x = j
+//         for i in range(n):
+//             x = row[i + 1] = min(
+//                 min(x, prev[i + 1]) + 1, 
+//                 prev[i] + 1 if a[i] != b[j] else 0)
+//         row, prev = prev, row
+//     return prev[n]
+
 function match (q) {
   return (course) => {
-    return fuzzyMatch(q.toLowerCase(), (course.label + course.title + course.descr).toLowerCase());
+    course.searchString = (course.label + course.title + course.descr).toLowerCase();
+    return fuzzyMatch(q.toLowerCase(), course.searchString);
   };
 }
-
-
 
 class SearchbarAssembly extends React.Component {
   constructor (props) {
@@ -65,6 +102,8 @@ class SearchbarAssembly extends React.Component {
     this.state = {
       searchQuery: ''
     };
+    this.tempArrayA = [];
+    this.tempArrayB = [];
   }
   updateSearch (search) {
     this.setState({
@@ -74,7 +113,20 @@ class SearchbarAssembly extends React.Component {
   render () {
     const courses = this.props.courses;
     const searchQuery = this.state.searchQuery;
-    const filteredData = courses.filter(match(searchQuery));
+    let filteredData = courses.filter(match(searchQuery));
+    filteredData.forEach((course) => {
+      course.priority 
+        = levenshtein(searchQuery.toLowerCase(), course.searchString.toLowerCase(), this.tempArrayA, this.tempArrayB);
+        // = levenshtein(course.searchString.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB);
+        // = levenshtein(course.label.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB) * 10
+        // + levenshtein(course.title.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB) * 3
+        // = levenshtein(searchQuery.toLowerCase(), course.label.toLowerCase(), this.tempArrayA, this.tempArrayB) * 10
+        // + levenshtein(searchQuery.toLowerCase(), course.title.toLowerCase(), this.tempArrayA, this.tempArrayB) * 3
+      ;
+
+    });
+    filteredData.sort((a, b) => a.priority > b.priority);
+
     return (
       //<Draggable>
         <div>

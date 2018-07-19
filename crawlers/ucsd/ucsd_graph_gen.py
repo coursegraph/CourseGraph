@@ -12,7 +12,7 @@ def generate_graph_data (courses, limit = -1):
             'label': name,
             'title': info['title'] if 'title' in info else '',
             'dept': info['dept'] if 'dept' in info else name.strip().split()[0],
-            'desc': info['desc'] if 'desc' in info else '',
+            'description': info['description'] if 'description' in info else '',
             'edges_from': set(),
             'edges_to': set()
         })
