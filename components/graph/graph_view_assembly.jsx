@@ -1,5 +1,5 @@
 import React from 'react';
-import GraphView from '../graph/graph_view'
+import GraphView from '../graph/graph_view';
 import Draggable from 'react-draggable';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -7,31 +7,33 @@ import ListItemText from '@material-ui/core/ListItemText';
 
 
 class Searchbar extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
-      value: ""
+      value: '',
     };
     this.onChange = this.onChange.bind(this);
   }
-  onChange (event) {
+
+  onChange(event) {
     this.setState({ value: event.target.value });
     this.props.onChange(event.target.value);
   }
-  render () {
+
+  render() {
     return (
-        <input type="search" 
-          value={this.value} 
-          onChange={this.onChange}
-        />
+      <input type="search"
+             value={this.value}
+             onChange={this.onChange}
+      />
     );
   }
 }
 class SearchResultList extends React.Component {
-  render () {
+  render() {
     let courses = this.props.courses;
     return (
-      <List>{courses.slice(0,100).map((course) => (
+      <List>{courses.slice(0, 100).map((course) => (
         <ListItem key={course.id}>
           <ListItemText primary={`${course.label} ${course.title}`} />
         </ListItem>
@@ -43,32 +45,33 @@ class SearchResultList extends React.Component {
   }
 }
 
-function fuzzyMatch (q, s) {
+function fuzzyMatch(q, s) {
   let i = s.length;
   let j = q.length;
   while (j != 0 && i >= j) {
-    if (s[i-1] == q[j-1]) {
+    if (s[i - 1] == q[j - 1]) {
       --j;
     }
     --i;
   }
   return j == 0;
 }
-function levenshtein (q, s, A, B) {
+
+function levenshtein(q, s, A, B) {
   let n = q.length;
   let m = s.length;
 
   A.length = n + 1;
   B.length = n + 1;
-  for (let i = n + 1; i --> 0; ) {
+  for (let i = n + 1; i-- > 0;) {
     A[i] = i;
     B[i] = 0;
   }
   for (let j = 0; j < m; ++j) {
     let x = j;
     for (let i = 0; i < n; ++i) {
-      x = B[i+1] = Math.min(
-        Math.min(x, A[i+1]) + 1,
+      x = B[i + 1] = Math.min(
+        Math.min(x, A[i + 1]) + 1,
         q[i] != s[j] ? A[i] + 1 : 0);
     }
     let C = A; A = B; B = C;
@@ -84,12 +87,12 @@ function levenshtein (q, s, A, B) {
 //         x = j
 //         for i in range(n):
 //             x = row[i + 1] = min(
-//                 min(x, prev[i + 1]) + 1, 
+//                 min(x, prev[i + 1]) + 1,
 //                 prev[i] + 1 if a[i] != b[j] else 0)
 //         row, prev = prev, row
 //     return prev[n]
 
-function match (q) {
+function match(q) {
   return (course) => {
     course.searchString = (course.label + course.title + course.descr).toLowerCase();
     return fuzzyMatch(q.toLowerCase(), course.searchString);
@@ -97,49 +100,51 @@ function match (q) {
 }
 
 class SearchbarAssembly extends React.Component {
-  constructor (props) {
+  constructor(props) {
     super(props);
     this.state = {
-      searchQuery: ''
+      searchQuery: '',
     };
     this.tempArrayA = [];
     this.tempArrayB = [];
   }
-  updateSearch (search) {
+
+  updateSearch(search) {
     this.setState({
-      searchQuery: search
+      searchQuery: search,
     });
   }
-  render () {
+
+  render() {
     const courses = this.props.courses;
     const searchQuery = this.state.searchQuery;
     let filteredData = courses.filter(match(searchQuery));
     filteredData.forEach((course) => {
-      course.priority 
+      course.priority
         = levenshtein(searchQuery.toLowerCase(), course.searchString.toLowerCase(), this.tempArrayA, this.tempArrayB);
-        // = levenshtein(course.searchString.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB);
-        // = levenshtein(course.label.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB) * 10
-        // + levenshtein(course.title.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB) * 3
-        // = levenshtein(searchQuery.toLowerCase(), course.label.toLowerCase(), this.tempArrayA, this.tempArrayB) * 10
-        // + levenshtein(searchQuery.toLowerCase(), course.title.toLowerCase(), this.tempArrayA, this.tempArrayB) * 3
-      ;
+      // = levenshtein(course.searchString.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB);
+      // = levenshtein(course.label.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB) * 10
+      // + levenshtein(course.title.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB) * 3
+      // = levenshtein(searchQuery.toLowerCase(), course.label.toLowerCase(), this.tempArrayA, this.tempArrayB) * 10
+      // + levenshtein(searchQuery.toLowerCase(), course.title.toLowerCase(), this.tempArrayA, this.tempArrayB) * 3
+
 
     });
     filteredData.sort((a, b) => a.priority > b.priority);
 
     return (
       //<Draggable>
-        <div>
-          <Searchbar onChange={(search) => this.updateSearch(search)} />
-          <SearchResultList courses={filteredData} />
-        </div>
+      <div>
+        <Searchbar onChange={(search) => this.updateSearch(search)}/>
+        <SearchResultList courses={filteredData}/>
+      </div>
       // </Draggable>
     );
   }
 }
 
 export default class GraphViewAssembly extends React.Component {
-  render () {
+  render() {
     return (
       <div>
         <SearchbarAssembly courses={this.props.data.nodes} />

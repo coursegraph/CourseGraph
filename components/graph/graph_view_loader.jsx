@@ -1,8 +1,8 @@
 import React from 'react';
-import GraphViewAssembly from '../graph/graph_view_assembly'
+import GraphViewAssembly from '../graph/graph_view_assembly';
 
 class LoadingMessage extends React.Component {
-  render () {
+  render() {
     return (
       <div>
         <h2>Loading...</h2>
@@ -12,12 +12,12 @@ class LoadingMessage extends React.Component {
   }
 }
 class LoadErrorMessage extends React.Component {
-  render () {
+  render() {
     return (
       <div>
         <h2>Failed to load data from:</h2>
-        <a href={""+this.props.url}>{this.props.url}</a>
-        <p>{""+this.props.error}</p>
+        <a href={'' + this.props.url}>{this.props.url}</a>
+        <p>{'' + this.props.error}</p>
       </div>
     );
   }
@@ -31,7 +31,8 @@ export default class GraphViewLoader extends React.Component {
       dataLoadError: null,
     };
   }
-  setData (data) {
+
+  setData(data) {
     this.setState({
       data: {
         nodes: data.nodes,
@@ -39,36 +40,39 @@ export default class GraphViewLoader extends React.Component {
       },
     });
   }
-  setDataError (error) {
+
+  setDataError(error) {
     this.setState({
       data: null,
       dataLoadError: error,
     });
     // alert(error);
   }
-  componentDidMount () {
-    console.log("Fetching data...");
+
+  componentDidMount() {
+    console.log('Fetching data...');
     fetch(this.props.jsonDataUrl)
-    .then((response) => {
-      if (!response.ok) {
-        throw Error(response.statusText);
-      }
-      console.log("Got response");
-      return response.json();
-    })
-    .then((data) => {
-      console.log("Got json data");
-      this.setData(data);
-    })
-    .catch((error) => {
-      console.log("Got error: "+error);
-      this.setDataError(error);
-    });
+      .then((response) => {
+        if (!response.ok) {
+          throw Error(response.statusText);
+        }
+        console.log('Got response');
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Got json data');
+        this.setData(data);
+      })
+      .catch((error) => {
+        console.log('Got error: ' + error);
+        this.setDataError(error);
+      });
   }
-  render () {
+
+  render() {
     if (this.state.dataLoadError) {
-      return <LoadErrorMessage 
-        url={this.state.jsonDataUrl} 
+      return <LoadErrorMessage
+        url={this.state.jsonDataUrl}
         error={this.state.dataLoadError} />;
     }
     if (!this.state.data) {

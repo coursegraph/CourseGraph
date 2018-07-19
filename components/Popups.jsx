@@ -2,7 +2,7 @@ import React from 'react';
 import Popup from 'reactjs-popup';
 
 class CourseDetailsPanel extends React.Component {
-  render () {
+  render() {
     const course = this.props.course;
     return (
       <div className={'content'}>
@@ -15,7 +15,7 @@ class CourseDetailsPanel extends React.Component {
 }
 
 class CourseDetailsWindow extends React.Component {
-  render () {
+  render() {
     const course = this.props.course;
     return (
       <div className="modal">

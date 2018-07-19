@@ -41,11 +41,11 @@ const events = {
 };
 
 export default class GraphView extends React.Component {
-  render () {
+  render() {
     return (
       <Graph graph={this.props.data}
-            options={options}
-            events={events}
+             options={options}
+             events={events}
       />
     );
   }

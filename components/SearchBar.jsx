@@ -14,7 +14,7 @@ class SearchBar extends React.Component {
       <div>
         <PopMenu/>
       </div>
-    )
+    );
   }
 
 

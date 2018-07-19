@@ -31,7 +31,7 @@ const inStyle = {
 };
 
 class CourseDetailsWindow extends React.Component {
-  render () {
+  render() {
     const course = this.props.course;
     return (
       <div className="modal">
@@ -139,8 +139,8 @@ class PopMenu extends React.Component {
                         divider
                         button
                       >
-                        <ListItemText primary={name + ' ' + title}
-                                      secondary={`Instr: ${instructor}`}/>
+                        <ListItemText primary={name + ' ' + this.props.title}
+                                      secondary={`Instr: ${this.props.instructor}`}/>
                       </ListItem>
                     } modal>
                       {close =>
