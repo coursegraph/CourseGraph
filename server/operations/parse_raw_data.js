@@ -42,10 +42,12 @@ function parseCourse(data) {
   }
 }
 
+let count = 0;
 for (const pair of Object.entries(data)) {
   let key = pair[0];
   let courses = pair[1].courses;
 
+  count++;
   if (courses) {
     console.log(`${key}: ${Object.keys(courses).length}`);
 
@@ -54,6 +56,7 @@ for (const pair of Object.entries(data)) {
     console.log(`${key}`);
   }
 }
+console.log(count);
 
 fs.writeFile('../../data/courses.json', JSON.stringify(arr), (err) => {
   if (err) {
