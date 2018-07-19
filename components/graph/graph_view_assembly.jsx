@@ -31,7 +31,7 @@ class SearchResultList extends React.Component {
   render () {
     let courses = this.props.courses;
     return (
-      <List>{courses.map((course) => (
+      <List>{courses.slice(0,100).map((course) => (
         <ListItem key={course.id}>
           <ListItemText primary={`${course.label} ${course.title}`} />
         </ListItem>
@@ -91,7 +91,7 @@ export default class GraphViewAssembly extends React.Component {
     return (
       <div>
         <SearchbarAssembly courses={this.props.data.nodes} />
-        <GraphView data={this.props.data} />
+        {/*<GraphView data={this.props.data} />*/}
       </div>
     );
   }
