@@ -2,14 +2,14 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 class Tooltip extends React.Component {
-  static PropTypes = {
+  static propTypes = {
     content: PropTypes.string,
     name: PropTypes.object,
-  }
+  };
 
   static defaultProps = {
     content: '',
-    name: [],
+    name: '',
   };
 
   constructor(props) {
@@ -17,6 +17,7 @@ class Tooltip extends React.Component {
     this.handleMouseOver = this.handleMouseOver.bind(this);
     this.handleMouseOut = this.handleMouseOut.bind(this);
     this.handleFocus = this.handleFocus.bind(this);
+    this.handleChange = this.handleChange.bind(this);
     this.state = {
       visible: false,
     };
@@ -31,8 +32,12 @@ class Tooltip extends React.Component {
   };
 
   handleFocus = () => {
-    this.setState({visible: false});
+    this.setState({visible: true});
   };
+
+  handleChange = () => {
+    this.setState({visible: false});
+  }
 
   render() {
     return <div>
@@ -40,6 +45,7 @@ class Tooltip extends React.Component {
         onMouseOver={this.handleMouseOver}
         onMouseOut={this.handleMouseOut}
         onFocus={this.handleFocus}
+        onChange={this.handleChange}
       >
         {this.props.name}
       </div>
