@@ -8,7 +8,8 @@ const LRUCache = require('lru-cache');
 
 // temp ugly solution
 const api = require('./operations/get_course_db');
-const Course = require('./models/course');
+
+const Courses = require('./controllers/courses');
 
 const PORT = parseInt(process.env.PORT, 10) || 8080;
 const dev = process.env.NODE_ENV !== 'production';
@@ -75,24 +76,7 @@ app.prepare()
     /**
      * API routes.
      */
-    server.get('/api/courses/:id', (req, res) => {
-      Course.find({course_title: req.params.id}).lean().exec((err, course) => {
-        if (err) {
-          return console.error(err);
-        }
-
-        return res.json(course);
-      });
-    });
-
-    server.get('/api/courses/', (req, res) => {
-      Course.find({}).lean().exec((err, course) => {
-        if (err) {
-          return console.error(err);
-        }
-        return res.json(course);
-      });
-    });
+    server.get('/api/courses/:id', Courses.getCourses);
 
     /**
      * Fall-back on other next.js assets.

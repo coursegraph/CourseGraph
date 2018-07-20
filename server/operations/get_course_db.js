@@ -1,4 +1,4 @@
-const Course = require('../models/course');
+const Course = require('../models/ucsc_course');
 
 /**
  * @return {Array.<Course>}
