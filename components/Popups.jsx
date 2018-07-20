@@ -20,9 +20,9 @@ class CourseDetailsWindow extends React.Component {
     return (
       <div className="modal">
         <a className="close" onClick={this.props.onClose}>&times;</a>
-        <button onClick={this.props.onSelectTag('N/A')}>N/A</button>
-        <button onClick={this.props.onSelectTag('In Progress')}>In Progress</button>
-        <button onClick={this.props.onSelectTag('Finished')}>Finished</button>
+        <button onClick={this.props.onSelectDefTag('N/A')}>N/A</button>
+        <button onClick={this.props.onSelectDefTag('In Progress')}>In Progress</button>
+        <button onClick={this.props.onSelectDefTag('Finished')}>Finished</button>
         <div className="header">{course.course_number}</div>
         <CourseDetailsPanel course={course} />
       </div>
@@ -33,8 +33,10 @@ class CourseDetailsWindow extends React.Component {
 class Popups extends React.Component {
   constructor(props) {
     super(props);
+    this.removeDefTags = this.removeDefTags.bind(this);
+    this.selectDefTag = this.selectDefTag.bind(this);
     this.state = {
-      tags: [] || props.tags,
+      deftags: [] || props.tags,
     };
   }
 
@@ -48,27 +50,36 @@ class Popups extends React.Component {
     }),
   };
 
-  selectTag(e) {
+  removeDefTags() {
+    if(this.state.deftags === 'N/A'
+      || this.state.deftags === 'In Progress'
+      || this.state.deftags === 'Finished') {
+      this.state.deftags = '';
+    }
+  }
+
+  selectDefTag(e) {
+    this.removeDefTags();
     if (e === 'N/A') {
-      this.state.tags = 'N/A';
+      this.state.deftags = 'N/A';
     }
     if (e === 'In Progress') {
-      this.state.tags = 'In Progress';
+      this.state.deftags = 'In Progress';
     }
     if (e === 'Finished') {
-      this.state.tags = 'Finished';
+      this.state.deftags = 'Finished';
     }
-    console.log(`get tags: ${this.state.tags}`);
   }
+
   render() {
     return <div>
-      <Popup 
+      <Popup
         trigger={<a className="button">{this.props.myLists.course_title}</a>} modal>
-        {close => 
-          <CourseDetailsWindow 
+        {close =>
+          <CourseDetailsWindow
             course={this.props.myLists}
             onClose={close}
-            onSelectTag={(tag) => this.selectTag(tag)} />
+            onSelectDefTag={(tag) => this.selectDefTag(tag)} />
         }
       </Popup>
     </div>;

@@ -6,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
-
+import Tooltip from "../Tooltip";
 
 class Searchbar extends React.Component {
   constructor(props) {
@@ -23,24 +23,31 @@ class Searchbar extends React.Component {
   }
 
   render() {
-    return (
-      <input type="search"
-             value={this.value}
-             onChange={this.onChange}
-      />
+    return (<input type="search" value={this.value} onChange={this.onChange}/>
     );
   }
 }
 class SearchResultList extends React.Component {
   render() {
     let courses = this.props.courses;
-    return (
-      <List>{courses.slice(0, 100).map((course) => (
-        <ListItem key={course.id}>
-          <ListItemText primary={`${course.label} ${course.title}`} />
-        </ListItem>
-      ))}</List>
-    );
+    return <List>{courses.slice(0, 100).map((course) => (
+      <Tooltip
+        trigger={
+          <ListItem key={course.id}>
+            <ListItemText primary={`${course.label} ${course.title}`}/>
+          </ListItem>}
+        content={
+          <div>
+            <h3>{`${course.title}`}</h3>
+            <p>{`Instructor: ${course.instructor}`}</p>
+            <p>{`Terms: ${course.terms}`}</p>
+            <p>{`GE: ${course.geCategories}`}</p>
+            <p>{`Division: ${course.division}`}</p>
+            <p>{`Description: ${course.description}`}</p>
+          </div>
+        }
+      />
+    ))}</List>;
 
     // <ListItemText primary={`${course.priority} ${course.label} ${course.title}`} />
 
@@ -145,8 +152,8 @@ class SearchbarAssembly extends React.Component {
   }
 }
 
-class SearchbarDrawer extends React.Component{
-  constructor(props){
+class SearchbarDrawer extends React.Component {
+  constructor(props) {
     super(props);
     this.state = {
       isOpen : false,
@@ -164,7 +171,7 @@ class SearchbarDrawer extends React.Component{
     return (
       <div>
         <Button onClick={this.toggleDrawer(true)}>Open Search Bar</Button>
-        <Drawer anchor='left' open={this.state.isOpen} onClose={this.toggleDrawer(false)}>
+        <Drawer anchor="left" open={this.state.isOpen} onClose={this.toggleDrawer(false)}>
           <SearchbarAssembly courses={contents}/>
         </Drawer>
       </div>
