@@ -69,7 +69,15 @@ if __name__ == '__main__':
     courses = content['courses']
 
     with open(args.out, 'w') as f:
-        data = generate_graph_data(courses, limit=args.limit)
+        graph_data = generate_graph_data(courses, limit=args.limit)
+        data = {
+            'course_info': {
+                'ucsd': {
+                    'courses': content['courses'],
+                    'vizjs': graph_data
+                }
+            }
+        }
         # print(len(data))
         # print(len(data['nodes']))
         # print(len(data['edges']))
