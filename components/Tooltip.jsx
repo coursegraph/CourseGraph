@@ -1,35 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class CourseDetailsPanel extends React.Component {
-  render() {
-    const course = this.props.course;
-    return (
-      <div className={'content'}>
-        <p>{`Instructor: ${course.instructor}`}</p>
-        <p>{`Terms: ${course.terms}`}</p>
-        <p>{`GE: ${course.geCategories}`}</p>
-        <p>{`Division: ${course.division}`}</p>
-        <p>{`Description: ${course.description}`}</p>
-      </div>
-    );
-  }
-}
-
-class CourseDetailsWindow extends React.Component {
-  render() {
-    const course = this.props.course;
-    return (
-      <div className="modal">
-        <button onClick={this.props.onSelectDefTag('N/A')}>N/A</button>
-        <button onClick={this.props.onSelectDefTag('In Progress')}>In Progress</button>
-        <button onClick={this.props.onSelectDefTag('Finished')}>Finished</button>
-        <div className="header">{course.course_number}</div>
-        <CourseDetailsPanel course={course} />
-      </div>
-    );
-  }
-}
+// The modal "window"
+const modalStyle = {
+  backgroundColor: '#fff',
+  borderRadius: 5,
+  maxWidth: 500,
+  minHeight: 300,
+  margin: '0 auto',
+  padding: 30,
+};
 
 class Tooltip extends React.Component {
   static propTypes = {
@@ -61,24 +41,24 @@ class Tooltip extends React.Component {
     this.setState({isOpen: false});
   };
 
-  handleClick() {
+  handleClick = () => {
     if (!this.state.isOpen) {
       document.addEventListener('click', this.handleOutsideClick, false);
     } else {
       document.removeEventListener('click', this.handleOutsideClick, false);
     }
+    this.setState({
+      isOpen: this.state.isOpen,
+    });
+  };
 
-    this.setState(prevState => ({
-      isOpen: !prevState.isOpen,
-    }));
-  }
-
-  handleOutsideClick(e) {
+  handleOutsideClick = (e) => {
     if (this.node.contains(e.target)) {
       return;
     }
     this.handleClick();
-  }
+  };
+
 
   render() {
     return (
@@ -87,10 +67,17 @@ class Tooltip extends React.Component {
           onMouseOver={this.handleMouseOver}
           onMouseOut={this.handleMouseOut}
           onClick={this.handleClick}
+          onClose={this.handleOutsideClick}
         >
           {this.props.trigger}
         </div>
-        {this.state.isOpen && this.props.content}
+        <div>
+          {this.state.isOpen &&
+            <div style={modalStyle}>
+              {this.props.content}
+            </div>
+          }
+        </div>
       </div>
     );
   }

@@ -4,7 +4,6 @@ import Tooltip from '../components/Tooltip';
 
 export default () => (
   <div>
-    <Tooltip content="This is a Tooltip"
-             name={<input placeholder="Hover me"/>}/>
+    <Popups/>
   </div>
 );

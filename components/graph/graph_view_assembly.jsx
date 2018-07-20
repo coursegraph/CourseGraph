@@ -6,7 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
-import Tooltip from "../Tooltip";
+import Tooltip from '../Tooltip';
 
 class Searchbar extends React.Component {
   constructor(props) {
