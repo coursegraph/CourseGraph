@@ -8,6 +8,17 @@ import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
 import Tooltip from '../Tooltip';
 
+const lStyle = {
+  overflow: 'auto',
+  maxHeight: '800px',
+  maxWidth: '300px',
+};
+
+const inStyle = {
+  width: '250px',
+  fontSize: '20px',
+};
+
 class Searchbar extends React.Component {
   constructor(props) {
     super(props);
@@ -23,20 +34,49 @@ class Searchbar extends React.Component {
   }
 
   render() {
-    return (<input type="search" value={this.value} onChange={this.onChange}/>
+    return (<input style={inStyle} type="search" value={this.value} onChange={this.onChange} placeholder="Search for Classes"/>
     );
   }
 }
+
+
+
 class SearchResultList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visibleElements: 40,
+    };
+  }
+
+  onListScroll = (event) => {
+    const el = document.getElementById('listDiv');
+
+    if ( (el.scrollHeight - el.scrollTop) < 810 ) {
+      let newVisibleElements = this.state.visibleElements + 40;
+      this.setState({
+        visibleElements: newVisibleElements});
+    }
+    //console.log(`max scroll height : ${el.scrollHeight}`);
+    //console.log(`amount scrolled? : ${el.scrollTop}`);
+  };
+
+
   render() {
-    let courses = this.props.courses;
-    return <List>{courses.slice(0, 100).map((course) => (
-      <Tooltip
-        trigger={
-          <ListItem key={course.id}>
+    let courses = this.props.courses.slice(0, this.state.visibleElements);
+    return (
+      <div id='listDiv' style={lStyle} onScroll={this.onListScroll} >
+        <List >{courses.map((course) => (
+        //<Tooltip
+        //trigger={
+          <ListItem
+            key={course.id}
+            button
+            onClick={this.props.click.bind(this, course.id)}
+          >
             <ListItemText primary={`${course.label} ${course.title}`}/>
-          </ListItem>}
-        content={
+          </ListItem> //}
+        /*content={
           <div>
             <h3>{`${course.title}`}</h3>
             <p>{`Instructor: ${course.instructor}`}</p>
@@ -46,11 +86,11 @@ class SearchResultList extends React.Component {
             <p>{`Description: ${course.description}`}</p>
           </div>
         }
-      />
-    ))}</List>;
-
+      /> */
+        ))}</List>
+      </div>
+    );
     // <ListItemText primary={`${course.priority} ${course.label} ${course.title}`} />
-
   }
 }
 
@@ -145,7 +185,7 @@ class SearchbarAssembly extends React.Component {
       //<Draggable>
       <div>
         <Searchbar onChange={(search) => this.updateSearch(search)}/>
-        <SearchResultList courses={filteredData}/>
+        <SearchResultList courses={filteredData} click={(event, id) => this.props.click(event, id)}/>
       </div>
       // </Draggable>
     );
@@ -172,7 +212,7 @@ class SearchbarDrawer extends React.Component {
       <div>
         <Button onClick={this.toggleDrawer(true)}>Open Search Bar</Button>
         <Drawer anchor="left" open={this.state.isOpen} onClose={this.toggleDrawer(false)}>
-          <SearchbarAssembly courses={contents}/>
+          <SearchbarAssembly courses={contents} click={ (event, id) => this.props.click(event, id)}/>
         </Drawer>
       </div>
     );
@@ -180,10 +220,15 @@ class SearchbarDrawer extends React.Component {
 }
 
 export default class GraphViewAssembly extends React.Component {
+  handleItemClick(id, event) {
+    alert(`repace with filtering function. course ID: ${id}`);
+  }
+
+
   render() {
     return (
       <div>
-        <SearchbarDrawer courses={this.props.data.nodes} />
+        <SearchbarDrawer courses={this.props.data.nodes} click={ (event, id) => this.handleItemClick(event, id)}/>
         {/*<GraphView data={this.props.data} />*/}
       </div>
     );
