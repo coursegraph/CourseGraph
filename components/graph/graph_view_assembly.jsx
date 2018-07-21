@@ -221,7 +221,7 @@ class SearchbarDrawer extends React.Component {
 
 export default class GraphViewAssembly extends React.Component {
   handleItemClick(id, event) {
-    alert(`repace with filtering function. course ID: ${id}`);
+    alert(`replace with filtering function. course ID: ${id}`);
   }
 
 
@@ -229,7 +229,7 @@ export default class GraphViewAssembly extends React.Component {
     return (
       <div>
         <SearchbarDrawer courses={this.props.data.nodes} click={ (event, id) => this.handleItemClick(event, id)}/>
-        {/*<GraphView data={this.props.data} />*/}
+        {<GraphView data={this.props.data}/>}
       </div>
     );
   }
