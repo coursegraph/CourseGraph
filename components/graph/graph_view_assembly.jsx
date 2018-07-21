@@ -7,6 +7,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
 import Tooltip from '../Tooltip';
+import filteredGraph from '../utils/filterAlgortithm';
 
 const lStyle = {
   overflow: 'auto',
@@ -220,8 +221,20 @@ class SearchbarDrawer extends React.Component {
 }
 
 export default class GraphViewAssembly extends React.Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      graphData: {"nodes" : [], "edges" : []},
+    }
+  }
+
+
   handleItemClick(id, event) {
-    alert(`replace with filtering function. course ID: ${id}`);
+    console.log(`course ID: ${id}`);
+    const newGraph = filteredGraph(this.props.data.nodes, id);
+    this.setState({
+      graphData: newGraph,
+    });
   }
 
 
@@ -229,7 +242,7 @@ export default class GraphViewAssembly extends React.Component {
     return (
       <div>
         <SearchbarDrawer courses={this.props.data.nodes} click={ (event, id) => this.handleItemClick(event, id)}/>
-        {<GraphView data={this.props.data}/>}
+        {<GraphView data={this.state.graphData}/>}
       </div>
     );
   }

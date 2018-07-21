@@ -52,7 +52,9 @@ const nodes = [
   {
     'dept': 'PD',
     'description': 'You are not that important, accept it',
-    'edges_from': [],
+    'edges_from': [
+      8,
+    ],
     'edges_to': [
       0,
     ],
@@ -77,7 +79,9 @@ const nodes = [
   {
     'dept': 'HS',
     'description': 'seeing how terrible people, especially kids, are',
-    'edges_from': [],
+    'edges_from': [
+      8,
+    ],
     'edges_to': [
       5,
     ],
@@ -87,7 +91,7 @@ const nodes = [
   },
   {
     'dept': 'PD',
-    'description': 'the essential stge of life that is childhood',
+    'description': 'the essential stage of life that is childhood',
     'edges_from': [],
     'edges_to': [
       5,
@@ -95,6 +99,18 @@ const nodes = [
     'id': 7,
     'label': 'PD 3',
     'title': 'Kid stuff',
+  },
+  {
+    'dept': 'PD',
+    'description' : 'we have all been *that* person before',
+    'edges_from' : [],
+    'edges_to' : [
+      4,
+      6,
+    ],
+    'id' : 8,
+    'label' : 'PD FU',
+    'title' : 'Being a snot nosed brat',
   },
 ];
 
@@ -112,21 +128,24 @@ function doFromEdges(nodes, id, newNodes, newEdges) {
   const edgesFrom = nodes[id].edges_from;
 
   edgesFrom.forEach((fromID) => {
-    newNodes.push(nodes[fromID]);
     newEdges.push({
       'from': fromID,
       'to': id,
     });
-
-    doFromEdges(nodes, fromID, newNodes, newEdges);
+    if (testUnique(newNodes, fromID)) {
+      newNodes.push(nodes[fromID]);
+      doFromEdges(nodes, fromID, newNodes, newEdges);
+    }
   });
 }
 
-/**
- * @param nodes {Array.<object>} the entire node data set
- * @param id {number} the id number of a course
- * @returns {{edges: Array, nodes: Array}}
- */
+function testUnique(newNodes, id) {
+  for (let j = 0; j < newNodes.length; j++) {
+    if (newNodes[j].id === id) {return false;}
+  }
+  return true;
+}
+
 function filteredGraph(nodes, id) {
   let newNodes = [];
   let edgeList = [];
@@ -143,6 +162,10 @@ function filteredGraph(nodes, id) {
     'nodes' : newNodes,
   };
 
+  console.log('nodelist:');
+  for (let i = 0; i < newNodes.length; i++) {
+    console.log(newNodes[i].id);
+  }
   return newGraph;
 }
 
@@ -154,3 +177,5 @@ console.log(graph);
 //filteredGraph(nodes, 10)
 //blech.forEach(console.log.bind(console));
 //console.log(`output: ${blech[0].description}`);
+
+export default filteredGraph;
