@@ -116,7 +116,7 @@ const nodes = [
 
 /**
  * @param nodes {Array.<object>} the entire data set
- * @param id {number}
+ * @param id {Array.<number>}
  * @param newNodes {Array.<object>} the result
  * @param newEdges {Array.<object>} the result
  */
@@ -146,34 +146,41 @@ function testUnique(newNodes, id) {
   return true;
 }
 
-function filteredGraph(nodes, id) {
+function filteredGraph(nodes, ids) {
   let newNodes = [];
   let edgeList = [];
 
-  newNodes.push(nodes[id]);
+  ids.forEach( (id) => {
+    if(testUnique(newNodes, ids[id])) {
+      newNodes.push(nodes[id]);
+      doFromEdges(nodes, id, newNodes, edgeList);
+    }
+  });
 
-  doFromEdges(nodes, id, newNodes, edgeList);
 
-  console.log(edgeList);
-  console.log(newNodes);
+  //console.log(edgeList);
+  //console.log(newNodes);
 
   const newGraph = {
     'edges' : edgeList,
     'nodes' : newNodes,
   };
 
-  console.log('nodelist:');
+  /*console.log('nodelist:');
   for (let i = 0; i < newNodes.length; i++) {
     console.log(newNodes[i].id);
   }
+  console.log('edges');
+  console.log(edgeList);
+  */
   return newGraph;
 }
 
 //shitty output tests?
-const graph = filteredGraph(nodes, 0);
+const graph = filteredGraph(nodes, [0, 3]);
 
-console.log('GRAPH:');
-console.log(graph);
+//console.log('GRAPH:');
+//console.log(graph);
 //filteredGraph(nodes, 10)
 //blech.forEach(console.log.bind(console));
 //console.log(`output: ${blech[0].description}`);

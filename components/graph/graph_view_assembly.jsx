@@ -9,15 +9,21 @@ import Button from '@material-ui/core/Button';
 import Tooltip from '../Tooltip';
 import filteredGraph from '../utils/filterAlgortithm';
 
-const lStyle = {
+const leStyle = {
   overflow: 'auto',
-  maxHeight: '800px',
+  maxHeight: '400px',
   maxWidth: '300px',
 };
 
 const inStyle = {
   width: '250px',
   fontSize: '20px',
+};
+
+const boxers = {
+  width: '20px',
+  height: '10px',
+  fonstSize: '8px',
 };
 
 class Searchbar extends React.Component {
@@ -66,13 +72,14 @@ class SearchResultList extends React.Component {
   render() {
     let courses = this.props.courses.slice(0, this.state.visibleElements);
     return (
-      <div id='listDiv' style={lStyle} onScroll={this.onListScroll} >
+      <div id="listDiv" style={leStyle} onScroll={this.onListScroll} >
         <List >{courses.map((course) => (
         //<Tooltip
         //trigger={
           <ListItem
             key={course.id}
             button
+            divider
             onClick={this.props.click.bind(this, course.id)}
           >
             <ListItemText primary={`${course.label} ${course.title}`}/>
@@ -200,6 +207,18 @@ class SearchbarDrawer extends React.Component {
       isOpen : false,
     };
   }
+  renderSelected = (selected) => {
+    console.log(selected);
+    selected.forEach((course) => {
+      console.log(`course is: ${course}`);
+      console.log(`course label: ${this.props.courses[course].label}`);
+      return (
+        
+        <Button style={boxers}>{this.props.courses[course].label}</Button>
+      );
+    });
+  };
+
   toggleDrawer = (open) => () => {
     this.setState({
       isOpen: open,
@@ -214,34 +233,41 @@ class SearchbarDrawer extends React.Component {
         <Button onClick={this.toggleDrawer(true)}>Open Search Bar</Button>
         <Drawer anchor="left" open={this.state.isOpen} onClose={this.toggleDrawer(false)}>
           <SearchbarAssembly courses={contents} click={ (event, id) => this.props.click(event, id)}/>
+          <div>
+            {this.renderSelected(this.props.selected)}
+          </div>
         </Drawer>
       </div>
     );
   }
 }
 
-export default class GraphViewAssembly extends React.Component {
-  constructor(props){
-    super(props)
-    this.state = {
-      graphData: {"nodes" : [], "edges" : []},
-    }
-  }
 
+
+export default class GraphViewAssembly extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      graphData: {'nodes' : [], 'edges' : []},
+      selectedIDs: [],
+    };
+  }
 
   handleItemClick(id, event) {
     console.log(`course ID: ${id}`);
-    const newGraph = filteredGraph(this.props.data.nodes, id);
+    let newSelected = this.state.selectedIDs;
+    newSelected.push(id);
+    const newGraph = filteredGraph(this.props.data.nodes, newSelected);
     this.setState({
       graphData: newGraph,
+      selectedIDs: newSelected,
     });
   }
-
 
   render() {
     return (
       <div>
-        <SearchbarDrawer courses={this.props.data.nodes} click={ (event, id) => this.handleItemClick(event, id)}/>
+        <SearchbarDrawer courses={this.props.data.nodes} click={ (event, id) => this.handleItemClick(event, id)} selected={this.state.selectedIDs}/>
         {<GraphView data={this.state.graphData}/>}
       </div>
     );
