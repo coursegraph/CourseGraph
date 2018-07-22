@@ -112,19 +112,18 @@ const nodes = [
     'label' : 'PD FU',
     'title' : 'Being a snot nosed brat',
   },
+  {
+    'dept': '=/',
+    'description' : 'question mark',
+    'edges_from' : [],
+    'edges_to' : [],
+    'id' : 9,
+    'label' : 'whatevs',
+    'title' : 'whatevs',
+  },
 ];
 
-/**
- * @param nodes {Array.<object>} the entire data set
- * @param id {Array.<number>}
- * @param newNodes {Array.<object>} the result
- * @param newEdges {Array.<object>} the result
- */
-function doFromEdges(nodes, id, newNodes, newEdges) {
-  if (id > nodes.length) {
-    throw new Error('Selected Node is out of Range');
-  }
-
+function doFromEdges(nodes, id, newNodes, newEdges, froms) {
   const edgesFrom = nodes[id].edges_from;
 
   edgesFrom.forEach((fromID) => {
@@ -133,56 +132,96 @@ function doFromEdges(nodes, id, newNodes, newEdges) {
       'to': id,
     });
     if (testUnique(newNodes, fromID)) {
-      newNodes.push(nodes[fromID]);
-      doFromEdges(nodes, fromID, newNodes, newEdges);
+      newNodes.push(fromID);
+      newNodes[newNodes.length - 1].color = '#89C4F4';
+    }
+    if (testUnique(froms, fromID)) {
+      froms.push(fromID);
+      doFromEdges(nodes, fromID, newNodes, newEdges, froms);
+    }
+  });
+}
+
+function doToEdges(nodes, id, newNodes, newEdges, tos) {
+  const edgesTo = nodes[id].edges_to;
+
+  edgesTo.forEach((toID) => {
+    newEdges.push({
+      'from': id,
+      'to': toID,
+    });
+    if (testUnique(newNodes, toID)) {
+      newNodes.push(toID);
+      newNodes[newNodes.length - 1].color = '#89C4F4';
+    }
+    if (testUnique(tos, toID)) {
+      tos.push(toID);
+      doToEdges(nodes, toID, newNodes, newEdges, tos);
     }
   });
 }
 
 function testUnique(newNodes, id) {
   for (let j = 0; j < newNodes.length; j++) {
-    if (newNodes[j].id === id) {return false;}
+    if (newNodes[j] === id) {return false;}
   }
   return true;
 }
 
-function filteredGraph(nodes, ids) {
+/**
+ * @param nodes {Array.<object>} the entire data set
+ * @param ids {Array.<number>}
+ * @param getFrom {boolean} if true returns all from connections (default true)
+ * @param getTo {boolean} if true returns all to connections (default false)
+ */
+function filteredGraph(nodes, ids, getFrom = true, getTo) {
+  let froms = [];
+  let tos = [];
   let newNodes = [];
   let edgeList = [];
 
   ids.forEach( (id) => {
-    if (testUnique(newNodes, ids[id])) {
-      newNodes.push(nodes[id]);
-      doFromEdges(nodes, id, newNodes, edgeList);
+    if (testUnique(newNodes, id)) { newNodes.push(id); }
+
+    if (getFrom && testUnique(froms, id)) {
+      froms.push(id);
+      doFromEdges(nodes, id, newNodes, edgeList, froms);
+    }
+    if (getTo && testUnique(tos, id)) {
+      tos.push(id);
+      doToEdges(nodes, id, newNodes, edgeList, tos);
     }
   });
 
 
   //console.log(edgeList);
   //console.log(newNodes);
-
+  const graphNodes = [];
+  newNodes.forEach( (id) => graphNodes.push(nodes[id]) );
   const newGraph = {
     'edges' : edgeList,
-    'nodes' : newNodes,
+    'nodes' : graphNodes,
   };
-
-  /*console.log('nodelist:');
-  for (let i = 0; i < newNodes.length; i++) {
-    console.log(newNodes[i].id);
-  }
+  /*
+  console.log('nodelist:');
+  console.log(newNodes);
   console.log('edges');
   console.log(edgeList);
+  console.log('froms');
+  console.log(froms);
+  console.log('tos');
+  console.log(tos);
   */
   return newGraph;
 }
 
 //shitty output tests?
-const graph = filteredGraph(nodes, [0, 3]);
+//const graph = filteredGraph(nodes, [0]);
 
 //console.log('GRAPH:');
 //console.log(graph);
 //filteredGraph(nodes, 10)
-//blech.forEach(console.log.bind(console));
-//console.log(`output: ${blech[0].description}`);
+
+
 
 export default filteredGraph;
