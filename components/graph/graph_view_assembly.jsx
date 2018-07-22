@@ -277,7 +277,7 @@ export default class GraphViewAssembly extends React.Component {
   }
 
   handleItemClick(id, event) {
-    console.log(`course ID: ${id}`);
+    //console.log(`course ID: ${id}`);
     let newSelected = this.state.selectedIDs;
     if (testUnique(newSelected, id)) {
       newSelected.push(id);
@@ -289,8 +289,8 @@ export default class GraphViewAssembly extends React.Component {
     }
   }
   handleSelectedClick(select, event) {
-    console.log(`select is: ${select}`);
-    console.log(`selected items: ${this.state.selectedIDs}`);
+    //console.log(`select is: ${select}`);
+    //console.log(`selected items: ${this.state.selectedIDs}`);
     const index = this.state.selectedIDs.findIndex( (element) => element === select );
     let newSelected = this.state.selectedIDs;
     newSelected.splice(index, 1);
