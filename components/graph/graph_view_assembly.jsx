@@ -228,7 +228,7 @@ class SelectedList extends React.Component {
             divider
             onClick={this.props.selClick.bind(this, course)}
           >
-              <ListItemText disableTypography primary={<Typography style={{color: 'white', background: 'black', fontSize: '14px'}}>{this.props.courses[course].label}</Typography>}/>
+              <ListItemText disableTypography primary={<Typography style={{color: 'white', background: 'black', fontSize: '20px', fontFamily: 'Helvetica'}}>{this.props.courses[course].label}</Typography>}/>
           </ListItem>
 
         ))}</List>
