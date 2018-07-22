@@ -179,7 +179,7 @@ function filteredGraph(nodes, id) {
   //console.log(nodes[id].edges_from);
   //console.log(currentNode);
   if (id > n) {
-    throw 'Selected Node is out of Range';
+    throw new Error('Selected Node is out of Range');
   }
   //console.log(id)
 

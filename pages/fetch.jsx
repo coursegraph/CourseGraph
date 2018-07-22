@@ -2,10 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import fetch from 'isomorphic-unfetch';
 
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import Divider from '@material-ui/core/Divider';
 import { withStyles } from '@material-ui/core/styles';
 
 import Header from '../components/Header';
@@ -26,7 +22,7 @@ class Index extends React.Component {
   };
 
   static async getInitialProps() {
-    const res = await fetch('https://coursegraph.org/api/courses');
+    const res = await fetch('https://coursegraph.org/api/courses/ucsd');
     const data = await res.json();
 
     console.log(`Show data fetched. Count: ${data.length}`);
@@ -41,17 +37,7 @@ class Index extends React.Component {
       <div>
         <Header/>
         <h1>UCSC Courses</h1>
-        <List>
-          {
-            this.props.courses.map(({course_title}) => (
-              <ListItem button component="a" href="https://www.ucsc.edu/">
-                <ListItemText key={course_title}
-                              primary={course_title}/>
-              </ListItem>
-            ))
-          }
-        </List>
-        <Divider/>
+
       </div>
     );
   }
