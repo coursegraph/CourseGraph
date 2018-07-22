@@ -15,6 +15,14 @@ const leStyle = {
   maxWidth: '300px',
 };
 
+const selectStyle = {
+  maxWidth: '150px',
+};
+
+const selectText = {
+  fontSize: 10,
+};
+
 const inStyle = {
   width: '250px',
   fontSize: '20px',
@@ -55,7 +63,7 @@ class SearchResultList extends React.Component {
       visibleElements: 40,
     };
   }
-
+  //This is here because it needs to get scrollHeight and scrollTop of a div, taken any higher this is not possible.
   onListScroll = (event) => {
     const el = document.getElementById('listDiv');
 
@@ -80,7 +88,7 @@ class SearchResultList extends React.Component {
             key={course.id}
             button
             divider
-            onClick={this.props.click.bind(this, course.id)}
+            onClick={this.props.itemClick.bind(this, course.id)}
           >
             <ListItemText primary={`${course.label} ${course.title}`}/>
           </ListItem> //}
@@ -156,6 +164,14 @@ function match(q) {
   };
 }
 
+
+function testUnique(array, item) {
+  for (let j = 0; j < array.length; j++) {
+    if (array[j] === item) {return false;}
+  }
+  return true;
+}
+
 class SearchbarAssembly extends React.Component {
   constructor(props) {
     super(props);
@@ -193,9 +209,29 @@ class SearchbarAssembly extends React.Component {
       //<Draggable>
       <div>
         <Searchbar onChange={(search) => this.updateSearch(search)}/>
-        <SearchResultList courses={filteredData} click={(event, id) => this.props.click(event, id)}/>
+        <SearchResultList courses={filteredData} itemClick={(event, id) => this.props.itemClick(event, id)}/>
       </div>
       // </Draggable>
+    );
+  }
+}
+
+class SelectedList extends React.Component {
+  render() {
+    return (
+      <div id="selectDiv" style={selectStyle} onScroll={this.onListScroll} >
+        <List >{this.props.selected.map((course) => (
+          <ListItem
+            key={course}
+            button
+            divider
+            onClick={this.props.selClick.bind(this, course)}
+          >
+            <ListItemText color={{fontSize: '50px'}} primary={`${this.props.courses[course].label}`}/>
+          </ListItem>
+
+        ))}</List>
+      </div>
     );
   }
 }
@@ -207,17 +243,6 @@ class SearchbarDrawer extends React.Component {
       isOpen : false,
     };
   }
-  renderSelected = (selected) => {
-    console.log(selected);
-    selected.forEach((course) => {
-      console.log(`course is: ${course}`);
-      console.log(`course label: ${this.props.courses[course].label}`);
-      return (
-        
-        <Button style={boxers}>{this.props.courses[course].label}</Button>
-      );
-    });
-  };
 
   toggleDrawer = (open) => () => {
     this.setState({
@@ -232,10 +257,8 @@ class SearchbarDrawer extends React.Component {
       <div>
         <Button onClick={this.toggleDrawer(true)}>Open Search Bar</Button>
         <Drawer anchor="left" open={this.state.isOpen} onClose={this.toggleDrawer(false)}>
-          <SearchbarAssembly courses={contents} click={ (event, id) => this.props.click(event, id)}/>
-          <div>
-            {this.renderSelected(this.props.selected)}
-          </div>
+          <SearchbarAssembly courses={contents} itemClick={ (event, id) => this.props.itemClick(event, id)}/>
+          <SelectedList courses={contents} selected={this.props.selected} selClick={ (event, sel) => this.props.selClick(event, sel)}/>
         </Drawer>
       </div>
     );
@@ -254,9 +277,23 @@ export default class GraphViewAssembly extends React.Component {
   }
 
   handleItemClick(id, event) {
-    console.log(`course ID: ${id}`);
+    //console.log(`course ID: ${id}`);
     let newSelected = this.state.selectedIDs;
-    newSelected.push(id);
+    if (testUnique(newSelected, id)) {
+      newSelected.push(id);
+      const newGraph = filteredGraph(this.props.data.nodes, newSelected);
+      this.setState({
+        graphData: newGraph,
+        selectedIDs: newSelected,
+      });
+    }
+  }
+  handleSelectedClick(select, event) {
+    //console.log(`select is: ${select}`);
+    //console.log(`selected items: ${this.state.selectedIDs}`);
+    const index = this.state.selectedIDs.findIndex( (element) => element === select );
+    let newSelected = this.state.selectedIDs;
+    newSelected.splice(index, 1);
     const newGraph = filteredGraph(this.props.data.nodes, newSelected);
     this.setState({
       graphData: newGraph,
@@ -267,7 +304,12 @@ export default class GraphViewAssembly extends React.Component {
   render() {
     return (
       <div>
-        <SearchbarDrawer courses={this.props.data.nodes} click={ (event, id) => this.handleItemClick(event, id)} selected={this.state.selectedIDs}/>
+        <SearchbarDrawer
+          courses={this.props.data.nodes}
+          itemClick={ (event, id) => this.handleItemClick(event, id)}
+          selClick={(event, sel) => this.handleSelectedClick(event, sel)}
+          selected={this.state.selectedIDs}
+        />
         {<GraphView data={this.state.graphData}/>}
       </div>
     );
