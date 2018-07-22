@@ -2,6 +2,7 @@ import React from 'react';
 import GraphView from '../graph/graph_view';
 import Draggable from 'react-draggable';
 import List from '@material-ui/core/List';
+import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Drawer from '@material-ui/core/Drawer';
@@ -227,7 +228,7 @@ class SelectedList extends React.Component {
             divider
             onClick={this.props.selClick.bind(this, course)}
           >
-            <ListItemText color={{fontSize: '50px'}} primary={`${this.props.courses[course].label}`}/>
+              <ListItemText disableTypography primary={<Typography style={{color: 'white', background: 'black', fontSize: '14px'}}>{this.props.courses[course].label}</Typography>}/>
           </ListItem>
 
         ))}</List>
