@@ -51,7 +51,7 @@ class Popups extends React.Component {
   };
 
   removeDefTags() {
-    if(this.state.deftags === 'N/A'
+    if (this.state.deftags === 'N/A'
       || this.state.deftags === 'In Progress'
       || this.state.deftags === 'Finished') {
       this.state.deftags = '';

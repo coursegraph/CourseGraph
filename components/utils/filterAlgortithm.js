@@ -122,7 +122,7 @@ const nodes = [
  */
 function doFromEdges(nodes, id, newNodes, newEdges) {
   if (id > nodes.length) {
-    throw 'Selected Node is out of Range';
+    throw new Error('Selected Node is out of Range');
   }
 
   const edgesFrom = nodes[id].edges_from;
@@ -151,7 +151,7 @@ function filteredGraph(nodes, ids) {
   let edgeList = [];
 
   ids.forEach( (id) => {
-    if(testUnique(newNodes, ids[id])) {
+    if (testUnique(newNodes, ids[id])) {
       newNodes.push(nodes[id]);
       doFromEdges(nodes, id, newNodes, edgeList);
     }

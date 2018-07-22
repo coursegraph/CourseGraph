@@ -20,7 +20,7 @@ const LoginForm = ({
                      errors,
                      successMessage,
                      user,
-                     toggleAuthenticateStatus
+                     toggleAuthenticateStatus,
                    }) => (
   <div>
 
