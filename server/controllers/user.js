@@ -17,7 +17,7 @@ exports.getLogin = (app) => (req, res) => {
     return res.redirect('/');
   }
 
-  return app.render('/login', {
+  return app.render(req, res, '/account/login', {
     title: 'Login',
   });
 };
@@ -35,6 +35,8 @@ exports.postLogin = (app) => (req, res, next) => {
 
   const errors = req.validationErrors();
 
+  console.log(req.body);
+
   if (errors) {
     req.flash('errors', errors);
     return res.redirect('/account/login');
@@ -47,7 +49,7 @@ exports.postLogin = (app) => (req, res, next) => {
 
     if (!user) {
       req.flash('errors', info);
-      return res.redirect('/login');
+      return res.redirect('/account/login');
     }
 
     return req.logIn(user, (err) => {
@@ -71,7 +73,7 @@ exports.getSignup = (app) => (req, res) => {
     return res.redirect('/');
   }
 
-  return app.render('/account/signup', {
+  return app.render(req, res, '/account/signup', {
     title: 'Create Account',
   });
 };
@@ -82,7 +84,6 @@ exports.getSignup = (app) => (req, res) => {
  * @param app
  * @return {Function}
  */
-
 exports.postSignup = (app) => (req, res, next) => {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len(4);

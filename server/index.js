@@ -4,9 +4,16 @@
 const express = require('express');
 const next = require('next');
 const compression = require('compression');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const passport = require('passport');
+const expressValidator = require('express-validator');
 const LRUCache = require('lru-cache');
+const logger = require('morgan');
+const flash = require('express-flash');
+const MongoStore = require('connect-mongo')(session);
+
 
 /**
  * Controllers
@@ -52,7 +59,21 @@ app.prepare()
      * Express configuration.
      */
     server.use(bodyParser.json());
+    server.use(expressValidator());
     server.use(compression());
+    server.use(logger('dev'));
+    server.use(session({
+      resave: true,
+      saveUninitialized: true,
+      secret: 'I LOVE CMPS115',
+      cookie: {maxAge: 1209600000}, // two weeks in milliseconds
+      store: new MongoStore({
+        url: MONGODB_URI,
+        autoReconnect: true,
+      }),
+    }));
+    server.use(passport.initialize());
+    server.use(flash());
 
     /**
      * Connect to MongoDB.
@@ -74,10 +95,10 @@ app.prepare()
      */
     server.get('/', homeController.index(app));
 
-    server.get('/login', userController.getLogin(app));
-    server.post('/login', userController.postLogin(app));
-    server.get('/signup', userController.getSignup(app));
-    server.post('/signup', userController.postSignup(app));
+    server.get('/account/login', userController.getLogin(app));
+    server.post('/account/login', userController.postLogin(app));
+    server.get('/account/signup', userController.getSignup(app));
+    server.post('/account/signup', userController.postSignup(app));
 
     server.get('/foo', passportConfig.isAuthenticated, (req, res) => {
       res.send('hello world');
