@@ -12,13 +12,19 @@ const fs = require('fs');
 //   "title": ""
 // },
 
-let count = 0;
+// let count = 0;
 let data = JSON.parse(fs.readFileSync('../../data/ucsd_graph_data.json', 'utf8'));
 
-data.forEach((obj) => {
-  if (obj.) {
-    count++;
-  }
-});
+let deptSet = new Set();
 
-console.log(`Saved ${count}`);
+for (const obj of data.nodes) {
+  if (obj.dept) {
+    deptSet.add(obj.dept);
+  }
+}
+
+for (const dept of deptSet) {
+  console.log(dept);
+}
+
+console.log(`Saved ${deptSet.size}`);
