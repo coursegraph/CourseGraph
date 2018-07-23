@@ -16,7 +16,7 @@ def last_tok (s):
     return s.split('\n')[0] if s[0] != '\n' else '\\n%s'%(s.split('\n')[0])
 
 def parse_course_title_and_credits (s):
-    match = re.match(r'([A-Z][\w/\-,:\(\)]+(?:(?:\.\.\.|[ \t]+)(?:U\.S\.|C\.|A\.|[\(\)\w/\-,:!\d–"])+)*)(?:\s+\((\d+) credits?\))?\.*[ \t]*', s)
+    match = re.match(r'((?:[A-Z]|[234]D\s+|A Li|I C)[\w/\-,:\(\)\\\'\d–]+(?:(?:\.\.\.|[ \t]+)(?:vs\.|4\.5|Ph\.D\.|U\.S\.|C\.|A\.|[&\+\(\)\w/\-,:!\d–"\\\'])+)*)(?:\s+\((\d+) credits?\))?\.*[ \t]*', s)
     enforce(match, "Expected course title + credit(s), got '%s'"%last_tok(s))
     s = s[match.end():]
     title = match.group(1).strip()
@@ -25,7 +25,7 @@ def parse_course_title_and_credits (s):
     return s, title, credits
 
 def parse_course_term (s):
-    match = re.match(r'([FWS](?:,[FWS])*|\*)\n', s)
+    match = re.match(r'([FWS](?:,[FWS])*|\*+)\n', s)
     fallback = re.match(r'\n', s) if not match else None
     enforce(match or fallback, "Expected course term, got '%s'"%last_tok(s))
     if match:
@@ -58,7 +58,7 @@ def parse_course (s, dept=None, division=None):
 
 def parse_division (s, dept=None):
     match = re.match(r'[\n\s]*DIVISION\s+([A-Z][a-z]+(?:\-[A-Z][a-z]+)*)\s*\n', s)
-    fallback = re.match(r'<|Students submit petition to sponsoring agency\. May be repeated for credit\. The Staff|\[Return to top\]', s) if not match else None
+    fallback = re.match(r'\* Not|<|Students submit petition to sponsoring agency\. May be repeated for credit\. The Staff|\[Return to top\]', s) if not match else None
     enforce(match or fallback, "Expected 'DIVISION <div name>\\n', not\n%s"%last_tok(s))
     if not match:
         return '', []
