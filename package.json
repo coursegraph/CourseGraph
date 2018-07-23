@@ -38,6 +38,7 @@
     "react-graph-vis": "^1.0.2",
     "react-instantsearch": "^5.2.2",
     "react-jss": "^8.6.1",
+    "react-particles-js": "^2.2.0",
     "reactjs-popup": "^1.1.1",
     "styled-jsx": "^2.2.7"
   },

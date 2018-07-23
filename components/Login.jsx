@@ -1,8 +1,24 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import { withStyles } from '@material-ui/core/styles';
+
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 import fetch from 'isomorphic-unfetch';
+
+const styles = theme => ({
+  container: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  card: {
+    minWidth: 275,
+  },
+  button: {
+    margin: theme.spacing.unit * 3,
+  },
+});
 
 /**
  * Login Component that provide text fields and submit button.
@@ -48,7 +64,7 @@ class Login extends React.Component {
    * @return {Element}
    */
   render() {
-    return (<div>
+    return (<div className="container">
       <form className="login-form" onSubmit={this.handleSubmit}>
         <TextField
           required={true}
@@ -68,10 +84,12 @@ class Login extends React.Component {
           margin="normal"
         />
 
-        <Button className="login-button"
+        <Button className="button"
+                variant="contained"
                 onClick={this.handleSubmit}
         >Login</Button>
-        <Button className="login-button-2">
+        <Button className="button"
+                variant="contained">
           Login
         </Button>
       </form>
@@ -79,4 +97,4 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+export default withStyles(styles)(Login);

@@ -35,18 +35,18 @@ exports.postLogin = (app) => (req, res, next) => {
 
   const errors = req.validationErrors();
 
-  console.log(req.body);
-
   if (errors) {
     req.flash('errors', errors);
     return res.redirect('/account/login');
   }
 
   return passport.authenticate('local', (err, user, info) => {
+    console.log(err);
     if (err) {
       return next(err);
     }
 
+    console.log(user);
     if (!user) {
       req.flash('errors', info);
       return res.redirect('/account/login');
@@ -56,6 +56,7 @@ exports.postLogin = (app) => (req, res, next) => {
       if (err) {
         return next(err);
       }
+
       req.flash('success', {msg: 'Success! You are logged in.'});
       return res.redirect(req.session.returnTo || '/');
     });
