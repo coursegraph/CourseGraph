@@ -139,21 +139,28 @@ function doFromEdges(nodes, id, newNodes, newEdges) {
 }
 
 /**
- * @param nodes {Array.<object>} the entire data set
- * @param ids {Array.<number>}
- * @param getFrom {boolean} if true returns all from connections (default true)
- * @param getTo {boolean} if true returns all to connections (default false)
+ * @param nodes Array.<object>
+ * @param ids Array.<number>
+ * @returns {{edges: Array, nodes: Array}}
  */
+
 function filteredGraph(nodes, ids) {
   let newNodes = new Map();
   let edgeList = [];
 
-  ids.forEach( (id) => {
-    if (!newNodes.has(id)) {
-      newNodes.set(id, false);
-      doFromEdges(nodes, id, newNodes, edgeList);
+  if (typeof (ids) === 'number'){
+    if (!newNodes.has(ids)) {
+      newNodes.set(ids, false);
+      doFromEdges(nodes, ids, newNodes, edgeList);
     }
-  });
+  } else {
+    ids.forEach((id) => {
+      if (!newNodes.has(id)) {
+        newNodes.set(id, false);
+        doFromEdges(nodes, id, newNodes, edgeList);
+      }
+    });
+  }
 
 
   //console.log(edgeList);
@@ -164,7 +171,7 @@ function filteredGraph(nodes, ids) {
     'edges' : edgeList,
     'nodes': graphNodes,
   };
-  
+
   console.log('nodelist:');
   console.log(newNodes);
   console.log('edges');
@@ -174,7 +181,7 @@ function filteredGraph(nodes, ids) {
 }
 
 //shitty output tests?
-const graph = filteredGraph(nodes, [0]);
+const graph = filteredGraph(nodes, [0, 3]);
 
 //console.log('GRAPH:');
 //console.log(graph);
