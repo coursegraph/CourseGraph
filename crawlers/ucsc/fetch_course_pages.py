@@ -26,6 +26,7 @@ def extract_sections (content):
             enforce(match, "Expected header to be course heading, got '%s'", child.text)
             if division:
                 divisions[division] = text
+                text = ''
             division = match.group(1)
             # print("Setting division: '%s'"%division)
         elif division:
@@ -39,9 +40,11 @@ def extract_sections (content):
     if division:
         divisions[division] = text
 
+    print("Listed Divisions: %s"%divisions.keys())
+
     text = ''
     for k, v in divisions.items():
-        text += 'DIVISION %s\n%s'%(k, v)
+        text += '\nDIVISION %s\n%s'%(k, v)
     return text
 
 def fetch_dept_page_content (url):
