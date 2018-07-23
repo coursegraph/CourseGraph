@@ -56,7 +56,8 @@ class Searchbar extends React.Component {
   }
 
   render() {
-    return (<input style={inStyle} type="search" value={this.value} onChange={this.onChange} placeholder="Search for Classes"/>
+    return (<input style={inStyle} type="search" value={this.value}
+                   onChange={this.onChange} placeholder="Search for Classes"/>
     );
   }
 }
@@ -73,7 +74,7 @@ class SearchResultList extends React.Component {
   onListScroll = (event) => {
     const el = document.getElementById('listDiv');
 
-    if ( (el.scrollHeight - el.scrollTop) < 810 ) {
+    if ((el.scrollHeight - el.scrollTop) < 810) {
       let newVisibleElements = this.state.visibleElements + 40;
       this.setState({
         visibleElements: newVisibleElements,
@@ -86,10 +87,10 @@ class SearchResultList extends React.Component {
   render() {
     let courses = this.props.courses.slice(0, this.state.visibleElements);
     return (
-      <div id="listDiv" style={leStyle} onScroll={this.onListScroll} >
-        <List >{courses.map((course) => (
-        //<Tooltip
-        //trigger={
+      <div id="listDiv" style={leStyle} onScroll={this.onListScroll}>
+        <List>{courses.map((course) => (
+          //<Tooltip
+          //trigger={
           <ListItem
             key={course.id}
             button
@@ -145,7 +146,9 @@ function levenshtein(q, s, A, B) {
         Math.min(x, A[i + 1]) + 1,
         q[i] != s[j] ? A[i] + 1 : 0);
     }
-    let C = A; A = B; B = C;
+    let C = A;
+    A = B;
+    B = C;
   }
   return A[n];
 }
@@ -174,7 +177,9 @@ function match(q) {
 
 function testUnique(array, item) {
   for (let j = 0; j < array.length; j++) {
-    if (array[j] === item) {return false;}
+    if (array[j] === item) {
+      return false;
+    }
   }
   return true;
 }
@@ -227,8 +232,8 @@ class SearchbarAssembly extends React.Component {
 class SelectedList extends React.Component {
   render() {
     return (
-      <div id="selectDiv" style={selectStyle} onScroll={this.onListScroll} >
-        <Paper >{this.props.selected.map((course) => (
+      <div id="selectDiv" style={selectStyle} onScroll={this.onListScroll}>
+        <Paper>{this.props.selected.map((course) => (
           <Chip
             key={course}
             style={selectText}
@@ -245,7 +250,7 @@ class SearchbarDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen : false,
+      isOpen: false,
     };
   }
 
@@ -274,7 +279,6 @@ class SearchbarDrawer extends React.Component {
 }
 
 
-
 export default class GraphViewAssembly extends React.Component {
   constructor(props) {
     super(props);
@@ -294,16 +298,16 @@ export default class GraphViewAssembly extends React.Component {
 
     const newGraph = filteredGraph(this.props.data.nodes, newSelected);
     //THE COLOR STUFF!
-    newSelected.forEach( (selId) => {
-      let needNewColorIndex = newGraph.nodes.findIndex( (i) => i.id === selId);
+    newSelected.forEach((selId) => {
+      let needNewColorIndex = newGraph.nodes.findIndex((i) => i.id === selId);
       console.log(`selected: ${newGraph.nodes[needNewColorIndex].label}`);
       newGraph.nodes[needNewColorIndex].color = '#e04141';
     });
     //END OF THE COLOR STUFF!!!
-      this.setState({
-        graphData: newGraph,
-        selectedIDs: newSelected,
-      });
+    this.setState({
+      graphData: newGraph,
+      selectedIDs: newSelected,
+    });
 
   }
 
@@ -325,7 +329,7 @@ export default class GraphViewAssembly extends React.Component {
       <div>
         <SearchbarDrawer
           courses={this.props.data.nodes}
-          itemClick={ (event, id) => this.handleItemClick(event, id)}
+          itemClick={(event, id) => this.handleItemClick(event, id)}
           selClick={(event, sel) => this.handleSelectedClick(event, sel)}
           selected={this.state.selectedIDs}
         />
