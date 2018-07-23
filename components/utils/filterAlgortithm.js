@@ -148,7 +148,7 @@ function filteredGraph(nodes, ids) {
   let newNodes = new Map();
   let edgeList = [];
 
-  if (typeof (ids) === 'number'){
+  if (typeof (ids) === 'number') {
     if (!newNodes.has(ids)) {
       newNodes.set(ids, false);
       doFromEdges(nodes, ids, newNodes, edgeList);

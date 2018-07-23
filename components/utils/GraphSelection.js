@@ -18,12 +18,12 @@ class GraphSelection {
     cleanGraph(nodes, ids, this.nodeMap, this.edgeMap);
   }
 
-  clear(){
+  clear() {
     this.nodeMap.clear();
     this.edgeMap.clear();
   }
 
-  getGraphData(){
+  getGraphData() {
     const graphEdges = this.edgeMap.values();
     const graphNodes = this.nodeMap.values();
     const graphData = {
@@ -80,7 +80,7 @@ function cleanFromEdges(nodes, id, nodeMap, edgeMap) {
   //console.log(`recieved edges from: ${edgesFrom}`);
 
   //Delete edges by their unique key
-  edgesTo.forEach( (toID, index) =>{
+  edgesTo.forEach((toID, index) => {
     console.log(`removing key: ${index}_${id}`);
     edgeMap.delete(`${index}_${id}`);
   });
@@ -97,7 +97,7 @@ function cleanFromEdges(nodes, id, nodeMap, edgeMap) {
 function cleanGraph(nodes, ids, nodeMap, edgeMap) {
   console.log('in clean');
   if (typeof (ids) === 'number') {
-    if (nodeMap.has(ids)){
+    if (nodeMap.has(ids)) {
       console.log('number clean');
       cleanFromEdges(nodes, ids, nodeMap, edgeMap);
     }
@@ -236,7 +236,8 @@ const nodes = [
     'title': 'whatevs',
   },
 ];
-function outPut(graph){
+
+function outPut(graph) {
   const data = graph.getGraphData();
   console.log('NEW OUTPUT SEGMENT STARTS HERE!');
   data.nodes.forEach( (x) => {

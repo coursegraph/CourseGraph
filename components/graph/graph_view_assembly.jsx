@@ -5,7 +5,7 @@ import Typography from '@material-ui/core/Typography';
 
 import filteredGraph from '../utils/filterAlgortithm';
 import GraphView from '../graph/graph_view';
-import SearchbarDrawer from '../searchbar/SearchbarDrawer'
+import SearchbarDrawer from '../searchbar/SearchbarDrawer';
 import FloatingActionButton from '../searchbar/FloatingActionButton';
 
 
@@ -27,7 +27,7 @@ export default class GraphViewAssembly extends React.Component {
     };
   }
 
-  updateSelected (selection) {
+  updateSelected(selection) {
     let graph = filteredGraph(this.props.data.nodes, selection);
     // Update colors
     selection.forEach( (selId) => {
@@ -37,11 +37,11 @@ export default class GraphViewAssembly extends React.Component {
     });
     this.setState({
       graphData: graph,
-      selectedIDs: selection
+      selectedIDs: selection,
     });
   }
 
-  selectNode (nodeId) {
+  selectNode(nodeId) {
     // Skip if id is already selected
     if (!testUnique(this.state.selectedIDs, nodeId)) {
       return;
@@ -52,7 +52,7 @@ export default class GraphViewAssembly extends React.Component {
     this.updateSelected(selected);    
   }
 
-  deselectNode (nodeId) {
+  deselectNode(nodeId) {
     const index = this.state.selectedIDs.findIndex( (element) => element === nodeId );
     let selected = this.state.selectedIDs.slice();
     selected.splice(index, 1);
