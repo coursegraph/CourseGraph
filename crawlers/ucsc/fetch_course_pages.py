@@ -50,6 +50,8 @@ def fetch_dept_page_content (url):
         content = soup.find("div", {"class": "content"})
         text = extract_sections(content)
         enforce(text, "Empty page content: '%s'\nRaw content:\n%s", url, content.text)
+        text = text.replace('\\n', '')
+        text = '\n'.join([ line.strip() for line in text.split('\n') ])
         return text
     except HTTPError:
         print("Failed to open department page '%s'"%url)
