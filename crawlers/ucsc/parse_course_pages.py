@@ -42,6 +42,11 @@ def parse_course_description (s):
     else:
         return s[fallback.end():], None
 
+def parse_instructor_from_description (s):
+    match = re.search(r'\s*((\([FWS]\)|The Staff|[A-Z]\.|[A-Z][a-z]+(?:.[A-Z])?|m. cardenas)(?:(?:,?\s+)(The Staff|[A-Z]\.|[A-Z][a-z]+(?:.[A-Z])?|\([FWS]\)|m. cardenas))*),?\s*$', s)
+    enforce(match, "Expected instructor at end of course description, got '%s'", s)
+    return match.group(1), s[:match.start()]
+
 def parse_course (s, dept=None, division=None):
     match = re.match(r'[\n\s]*(\d+[A-Z]?)\.\s+', s)
     if not match:
@@ -51,9 +56,21 @@ def parse_course (s, dept=None, division=None):
     s, title, credits = parse_course_title_and_credits(s)
     s, term = parse_course_term(s)
     s, description = parse_course_description(s)
+    # print("Got course %s '%s', %s credit(s), %s"%(name, title, credits, term))
+    # print("Description: '%s'"%description)
 
-    print("Got course %s '%s', %s credit(s), %s"%(name, title, credits, term))
-    print("Description: '%s'"%description)
+    print("COURSE:      %s"%name)
+    print("INITIAL:     %s"%description)
+
+    if description:
+        instructor, description = parse_instructor_from_description(description)
+    else:
+        instructor = None
+
+    print("INSTRUCTOR:  %s"%instructor)
+    print("DESCRIPTION: %s"%description)
+    print()
+    # print("=> instructor(s) '%s', description '%s'"%(instructor, description))
     return s, Course(name, title, credits, term, dept, division, description)
 
 def parse_division (s, dept=None):
