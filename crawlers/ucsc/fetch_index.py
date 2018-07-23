@@ -1,10 +1,21 @@
 import re
 from urllib2 import urlopen
 from bs4 import BeautifulSoup
+import gzip
+import io
+
+def read_url (url):
+    response = urlopen(url)
+    return response.read()
+    try:
+        buffer = io.StringIO(response.read())
+        result = gzip.GzipFile(fileobj=buffer)
+        return result.read().decode('utf8')
+    except IOError:
+        return response.read().encode('utf8')
 
 def fetch_soup (url):
-    response = urlopen(url)
-    return BeautifulSoup(response.read(), 'html.parser')
+    return BeautifulSoup(read_url(url), 'html.parser')
 
 def enforce (condition, msg, *args):
     if not condition:
@@ -15,7 +26,7 @@ def parse_department_link (a):
     #title = a['title'] if 'title' in a else ''
     match = re.match(r'program.statements/([a-z]+\.html)', href)
     enforce(match, "Unexpected link url: '%s'", href)
-    text = a.text
+    text = a.text.strip()
     if text:
         return text, href
 
