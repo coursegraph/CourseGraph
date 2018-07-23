@@ -278,42 +278,67 @@ export default class GraphViewAssembly extends React.Component {
       selectedIDs: [],
     };
   }
-
-  handleItemClick(id, event) {
-    //console.log(`course ID: ${id}`);
-    let newSelected = this.state.selectedIDs;
-
-    if (testUnique(newSelected, id)) {
-      newSelected.push(id);
-    }
-
-    const newGraph = filteredGraph(this.props.data.nodes, newSelected);
-    //THE COLOR STUFF!
-    newSelected.forEach( (selId) => {
-      let needNewColorIndex = newGraph.nodes.findIndex( (i) => i.id === selId);
-      console.log(`selected: ${newGraph.nodes[needNewColorIndex].label}`);
-      newGraph.nodes[needNewColorIndex].color = '#e04141';
+  updateSelected (selection) {
+    let graph = filteredGraph(this.props.data.nodes, selection);
+    // Update colors
+    selection.forEach( (selId) => {
+      let needNewColorIndex = graph.nodes.findIndex( (i) => i.id === selId);
+      console.log(`selected: ${graph.nodes[needNewColorIndex].label}`);
+      graph.nodes[needNewColorIndex].color = '#e04141';
     });
-    //END OF THE COLOR STUFF!!!
-      this.setState({
-        graphData: newGraph,
-        selectedIDs: newSelected,
-      });
-
-  }
-  handleSelectedClick(select, event) {
-    //console.log(`select is: ${select}`);
-    //console.log(`selected items: ${this.state.selectedIDs}`);
-    const index = this.state.selectedIDs.findIndex( (element) => element === select );
-    let newSelected = this.state.selectedIDs;
-    newSelected.splice(index, 1);
-    const newGraph = filteredGraph(this.props.data.nodes, newSelected);
     this.setState({
-      graphData: newGraph,
-      selectedIDs: newSelected,
+      graphData: graph,
+      selectedIDs: selection
     });
   }
 
+  selectNode (nodeId) {
+    // Skip if id is already selected
+    if (!testUnique(this.state.selectedIDs, nodeId)) {
+      return;
+    }
+    // Add to selection + update graph
+    let selected = this.state.selectedIDs.slice();
+    selected.push(nodeId);
+    this.updateSelected(selected);    
+  }
+  deselectNode (nodeId) {
+    const index = this.state.selectedIDs.findIndex( (element) => element === select );
+    let selected = this.state.selectedIDs.slice();
+    selected.splice(index, 1);
+    this.updateSelected(selected);
+  }
+  handleItemClick(nodeId, event) {
+    this.selectNode(nodeId);
+    // console.log(`course ID: ${id}`);
+    // let newSelected = this.state.selectedIDs;
+
+    // if (testUnique(newSelected, id)) {
+    //   newSelected.push(id);
+    // }
+
+    // const newGraph = filteredGraph(this.props.data.nodes, newSelected);
+    // //THE COLOR STUFF!
+    
+    // //END OF THE COLOR STUFF!!!
+    //   this.setState({
+    //     graphData: newGraph,
+    //     selectedIDs: newSelected,
+    //   });
+  }
+  handleSelectedClick(nodeId, event) {
+    this.deselectNode(nodeId);
+    // console.log(`select is: ${select}`);
+    // console.log(`selected items: ${this.state.selectedIDs}`);
+    // const index = this.state.selectedIDs.findIndex( (element) => element === select );
+    // let newSelected = this.state.selectedIDs;
+    // newSelected.splice(index, 1);
+    // const newGraph = filteredGraph(this.props.data.nodes, newSelected);
+    // this.setState({
+    //   graphData: newGraph,
+    //   selectedIDs: newSelected,
+    // });
+  }
   render() {
     return (
       <div>
