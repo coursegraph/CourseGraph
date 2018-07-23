@@ -114,12 +114,12 @@ const nodes = [
   },
   {
     'dept': '=/',
-    'description' : 'question mark',
-    'edges_from' : [],
-    'edges_to' : [],
-    'id' : 9,
-    'label' : 'whatevs',
-    'title' : 'whatevs',
+    'description': 'question mark',
+    'edges_from': [],
+    'edges_to': [],
+    'id': 9,
+    'label': 'whatevs',
+    'title': 'whatevs',
   },
 ];
 
@@ -161,7 +161,9 @@ function doToEdges(nodes, id, newNodes, newEdges, tos) {
 
 function testUnique(newNodes, id) {
   for (let j = 0; j < newNodes.length; j++) {
-    if (newNodes[j] === id) {return false;}
+    if (newNodes[j] === id) {
+      return false;
+    }
   }
   return true;
 }
@@ -179,7 +181,9 @@ function filteredGraph(nodes, ids, getFrom = true, getTo) {
   let edgeList = [];
 
   ids.forEach( (id) => {
-    if (testUnique(newNodes, id)) { newNodes.push(id); }
+    if (testUnique(newNodes, id)) {
+      newNodes.push(id);
+    }
 
     if (getFrom && testUnique(froms, id)) {
       froms.push(id);
@@ -195,10 +199,10 @@ function filteredGraph(nodes, ids, getFrom = true, getTo) {
   //console.log(edgeList);
   //console.log(newNodes);
   const graphNodes = [];
-  newNodes.forEach( (id) => graphNodes.push(nodes[id]) );
+  newNodes.forEach((id) => graphNodes.push(nodes[id]));
   const newGraph = {
     'edges' : edgeList,
-    'nodes' : graphNodes,
+    'nodes': graphNodes,
   };
   /*
   console.log('nodelist:');
@@ -219,7 +223,6 @@ function filteredGraph(nodes, ids, getFrom = true, getTo) {
 //console.log('GRAPH:');
 //console.log(graph);
 //filteredGraph(nodes, 10)
-
 
 
 export default filteredGraph;

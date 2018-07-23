@@ -1,17 +1,18 @@
 import React from 'react';
-import GraphView from '../graph/graph_view';
-import Draggable from 'react-draggable';
+import PropTypes from 'prop-types';
+
 import List from '@material-ui/core/List';
 import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
-import Tooltip from '../Tooltip';
 import Paper from '@material-ui/core/Paper';
 import Chip from '@material-ui/core/Chip';
-import filteredGraph from '../utils/filterAlgortithm';
 
+import filteredGraph from '../utils/filterAlgortithm';
+import GraphView from '../graph/graph_view';
+import FloatingActionButton from '../searchbar/FloatingActionButton';
 
 const leStyle = {
   overflow: 'auto',
@@ -50,17 +51,16 @@ class Searchbar extends React.Component {
   }
 
   onChange(event) {
-    this.setState({ value: event.target.value });
+    this.setState({value: event.target.value});
     this.props.onChange(event.target.value);
   }
 
   render() {
-    return (<input style={inStyle} type="search" value={this.value} onChange={this.onChange} placeholder="Search for Classes"/>
+    return (<input style={inStyle} type="search" value={this.value}
+                   onChange={this.onChange} placeholder="Search for Classes"/>
     );
   }
 }
-
-
 
 class SearchResultList extends React.Component {
   constructor(props) {
@@ -69,27 +69,28 @@ class SearchResultList extends React.Component {
       visibleElements: 40,
     };
   }
+
   //This is here because it needs to get scrollHeight and scrollTop of a div, taken any higher this is not possible.
   onListScroll = (event) => {
     const el = document.getElementById('listDiv');
 
-    if ( (el.scrollHeight - el.scrollTop) < 810 ) {
+    if ((el.scrollHeight - el.scrollTop) < 810) {
       let newVisibleElements = this.state.visibleElements + 40;
       this.setState({
-        visibleElements: newVisibleElements});
+        visibleElements: newVisibleElements,
+      });
     }
     //console.log(`max scroll height : ${el.scrollHeight}`);
     //console.log(`amount scrolled? : ${el.scrollTop}`);
   };
 
-
   render() {
     let courses = this.props.courses.slice(0, this.state.visibleElements);
     return (
-      <div id="listDiv" style={leStyle} onScroll={this.onListScroll} >
-        <List >{courses.map((course) => (
-        //<Tooltip
-        //trigger={
+      <div id="listDiv" style={leStyle} onScroll={this.onListScroll}>
+        <List>{courses.map((course) => (
+          //<Tooltip
+          //trigger={
           <ListItem
             key={course.id}
             button
@@ -98,17 +99,17 @@ class SearchResultList extends React.Component {
           >
             <ListItemText primary={`${course.label} ${course.title}`}/>
           </ListItem> //}
-        /*content={
-          <div>
-            <h3>{`${course.title}`}</h3>
-            <p>{`Instructor: ${course.instructor}`}</p>
-            <p>{`Terms: ${course.terms}`}</p>
-            <p>{`GE: ${course.geCategories}`}</p>
-            <p>{`Division: ${course.division}`}</p>
-            <p>{`Description: ${course.description}`}</p>
-          </div>
-        }
-      /> */
+          /*content={
+            <div>
+              <h3>{`${course.title}`}</h3>
+              <p>{`Instructor: ${course.instructor}`}</p>
+              <p>{`Terms: ${course.terms}`}</p>
+              <p>{`GE: ${course.geCategories}`}</p>
+              <p>{`Division: ${course.division}`}</p>
+              <p>{`Description: ${course.description}`}</p>
+            </div>
+          }
+        /> */
         ))}</List>
       </div>
     );
@@ -119,13 +120,13 @@ class SearchResultList extends React.Component {
 function fuzzyMatch(q, s) {
   let i = s.length;
   let j = q.length;
-  while (j != 0 && i >= j) {
-    if (s[i - 1] == q[j - 1]) {
+  while (j !== 0 && i >= j) {
+    if (s[i - 1] === q[j - 1]) {
       --j;
     }
     --i;
   }
-  return j == 0;
+  return j === 0;
 }
 
 function levenshtein(q, s, A, B) {
@@ -145,10 +146,13 @@ function levenshtein(q, s, A, B) {
         Math.min(x, A[i + 1]) + 1,
         q[i] != s[j] ? A[i] + 1 : 0);
     }
-    let C = A; A = B; B = C;
+    let C = A;
+    A = B;
+    B = C;
   }
   return A[n];
 }
+
 // def lev (a, b):
 //     n, m = len(a), len(b)
 //     row, prev = [0] * (n + 1), [0] * (n + 1)
@@ -173,7 +177,9 @@ function match(q) {
 
 function testUnique(array, item) {
   for (let j = 0; j < array.length; j++) {
-    if (array[j] === item) {return false;}
+    if (array[j] === item) {
+      return false;
+    }
   }
   return true;
 }
@@ -215,7 +221,8 @@ class SearchbarAssembly extends React.Component {
       //<Draggable>
       <div>
         <Searchbar onChange={(search) => this.updateSearch(search)}/>
-        <SearchResultList courses={filteredData} itemClick={(event, id) => this.props.itemClick(event, id)}/>
+        <SearchResultList courses={filteredData}
+                          itemClick={(event, id) => this.props.itemClick(event, id)}/>
       </div>
       // </Draggable>
     );
@@ -225,8 +232,8 @@ class SearchbarAssembly extends React.Component {
 class SelectedList extends React.Component {
   render() {
     return (
-      <div id="selectDiv" style={selectStyle} onScroll={this.onListScroll} >
-        <Paper >{this.props.selected.map((course) => (
+      <div id="selectDiv" style={selectStyle} onScroll={this.onListScroll}>
+        <Paper>{this.props.selected.map((course) => (
           <Chip
             key={course}
             style={selectText}
@@ -243,7 +250,7 @@ class SearchbarDrawer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen : false,
+      isOpen: false,
     };
   }
 
@@ -259,9 +266,12 @@ class SearchbarDrawer extends React.Component {
     return (
       <div>
         <Button onClick={this.toggleDrawer(true)}>Open Search Bar</Button>
-        <Drawer anchor="left" open={this.state.isOpen} onClose={this.toggleDrawer(false)}>
-          <SearchbarAssembly courses={contents} itemClick={ (event, id) => this.props.itemClick(event, id)}/>
-          <SelectedList courses={contents} selected={this.props.selected} selClick={ (event, sel) => this.props.selClick(event, sel)}/>
+        <Drawer anchor="left" open={this.state.isOpen}
+                onClose={this.toggleDrawer(false)}>
+          <SearchbarAssembly courses={contents}
+                             itemClick={(event, id) => this.props.itemClick(event, id)}/>
+          <SelectedList courses={contents} selected={this.props.selected}
+                        selClick={(event, sel) => this.props.selClick(event, sel)}/>
         </Drawer>
       </div>
     );
@@ -269,12 +279,11 @@ class SearchbarDrawer extends React.Component {
 }
 
 
-
 export default class GraphViewAssembly extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      graphData: {'nodes' : [], 'edges' : []},
+      graphData: {'nodes': [], 'edges': []},
       selectedIDs: [],
     };
   }
@@ -324,6 +333,7 @@ export default class GraphViewAssembly extends React.Component {
           selected={this.state.selectedIDs}
         />
         {<GraphView data={this.state.graphData}/>}
+        {/*<FloatingActionButton buttonClick={() => {alert('hahaha');}}/>*/}
       </div>
     );
   }
