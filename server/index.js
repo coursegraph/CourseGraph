@@ -1,16 +1,30 @@
+/**
+ * Module dependency
+ */
 const express = require('express');
 const next = require('next');
 const compression = require('compression');
+const session = require('express-session');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
+const passport = require('passport');
+const expressValidator = require('express-validator');
 const LRUCache = require('lru-cache');
+const logger = require('morgan');
+const flash = require('express-flash');
+const MongoStore = require('connect-mongo')(session);
 
-// temp ugly solution
-const api = require('./operations/get_course_db');
 
-const Courses = require('./controllers/courses');
+/**
+ * Controllers
+ */
+const homeController = require('./controllers/home');
+const courseController = require('./controllers/courses');
+const userController = require('./controllers/user');
 
+/**
+ * Constant Settings
+ */
 const PORT = parseInt(process.env.PORT, 10) || 8080;
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -45,7 +59,21 @@ app.prepare()
      * Express configuration.
      */
     server.use(bodyParser.json());
+    server.use(expressValidator());
     server.use(compression());
+    server.use(logger('dev'));
+    server.use(session({
+      resave: true,
+      saveUninitialized: true,
+      secret: 'I LOVE CMPS115',
+      cookie: {maxAge: 1209600000}, // two weeks in milliseconds
+      store: new MongoStore({
+        url: MONGODB_URI,
+        autoReconnect: true,
+      }),
+    }));
+    server.use(passport.initialize());
+    server.use(flash());
 
     /**
      * Connect to MongoDB.
@@ -65,9 +93,12 @@ app.prepare()
     /**
      * Primary app routes.
      */
-    server.get('/', (req, res) => {
-      res.redirect('/ucsc');
-    });
+    server.get('/', homeController.index(app));
+
+    server.get('/account/login', userController.getLogin(app));
+    server.post('/account/login', userController.postLogin(app));
+    server.get('/account/signup', userController.getSignup(app));
+    server.post('/account/signup', userController.postSignup(app));
 
     server.get('/foo', passportConfig.isAuthenticated, (req, res) => {
       res.send('hello world');
@@ -76,7 +107,7 @@ app.prepare()
     /**
      * API routes.
      */
-    server.get('/api/courses/:id', Courses.getCourses);
+    server.get('/api/courses/:id', courseController.getCourses);
 
     /**
      * Fall-back on other next.js assets.
