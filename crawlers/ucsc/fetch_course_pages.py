@@ -41,7 +41,7 @@ def extract_sections (content):
 
     text = ''
     for k, v in divisions.items():
-        text += 'DIVISION %s%s'%(k, v)
+        text += 'DIVISION %s\n%s'%(k, v)
     return text
 
 def fetch_dept_page_content (url):
@@ -96,13 +96,14 @@ def fetch_courses_from_disk (path='data'):
     for filename in os.listdir(u'%s/courses/'%path):
         with open(u'%s/courses/%s'%(path, filename), 'r') as f:
             lines = f.read().split('\n')
-            print(len(lines))
-            yield DepartmentPageEntry(
+            result = DepartmentPageEntry(
                 lines[0], 
                 lines[1], 
                 lines[2],
-                '\n'.join(lines[2:])
-            )
+                '\n'.join(lines[3:]))
+            print("Loaded %s: '%s', %s byte(s)"%(
+                result.dept, result.title, len(result.content)))
+            yield result
 
 def fetch_course_pages (*args, **kwargs):
     courses = list(fetch_courses_from_disk(*args, **kwargs))
