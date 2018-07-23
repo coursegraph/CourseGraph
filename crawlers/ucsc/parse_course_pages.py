@@ -16,7 +16,7 @@ def last_tok (s):
     return s.split('\n')[0] if s[0] != '\n' else '\\n%s'%(s.split('\n')[0])
 
 def parse_course_title_and_credits (s):
-    match = re.match(r'([A-Z][\w/\-,:]+(?:\s+[\w/\-,:]+)*)(?:\s+\((\d+) credits?\))?\.[ \t]*', s)
+    match = re.match(r'([A-Z][\w/\-,:]+(?:\s+[\w/\-,:(?:U\.S\.)]+)*)(?:\s+\((\d+) credits?\))?\.+[ \t]*', s)
     enforce(match, "Expected course title + credit(s), got '%s'"%last_tok(s))
     s = s[match.end():]
     title = match.group(1).strip()
@@ -25,8 +25,8 @@ def parse_course_title_and_credits (s):
     return s, title, credits
 
 def parse_course_term (s):
-    match = re.match(r'([FWS](?:,[FWS])*|\*)\n[\n\s]*', s)
-    fallback = re.match(r'\n[\n\s]*', s) if not match else None
+    match = re.match(r'([FWS](?:,[FWS])*|\*)\n', s)
+    fallback = re.match(r'\n', s) if not match else None
     enforce(match or fallback, "Expected course term, got '%s'"%last_tok(s))
     if match:
         return s[match.end():], match.group(1)
@@ -34,9 +34,13 @@ def parse_course_term (s):
         return s[fallback.end():], None    
 
 def parse_course_description (s):
-    match = re.match(r'([^\n]+)(?:\n+|$)', s)
-    enforce(match, "Expected course description, got '%s'"%last_tok(s))
-    return s[match.end():], match.group(1)
+    match = re.match(r'\n*([A-Z"][^\n]+)(?:\n+|$)', s)
+    fallback = re.match(r'\n+', s)
+    enforce(match or fallback, "Expected course description, got '%s'"%last_tok(s))
+    if match:
+        return s[match.end():], match.group(1)
+    else:
+        return s[fallback.end():], None
 
 def parse_course (s, dept=None, division=None):
     match = re.match(r'[\n\s]*(\d+[A-Z]?)\.\s+', s)
@@ -49,6 +53,7 @@ def parse_course (s, dept=None, division=None):
     s, description = parse_course_description(s)
 
     print("Got course %s '%s', %s credit(s), %s"%(name, title, credits, term))
+    print("Description: '%s'"%description)
     return s, Course(name, title, credits, term, dept, division, description)
 
 def parse_division (s, dept=None):
