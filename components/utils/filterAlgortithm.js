@@ -181,11 +181,11 @@ function filteredGraph(nodes, ids) {
 }
 
 //shitty output tests?
-const graph = filteredGraph(nodes, [0, 3]);
+//const graph = filteredGraph(nodes, [0, 3]);
 
 //console.log('GRAPH:');
 //console.log(graph);
 //filteredGraph(nodes, 10)
 
 
-//export default filteredGraph;
+export default filteredGraph;
