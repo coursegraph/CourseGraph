@@ -1,16 +1,23 @@
+/**
+ * Module dependency
+ */
 const express = require('express');
 const next = require('next');
 const compression = require('compression');
 const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-
 const LRUCache = require('lru-cache');
 
-// temp ugly solution
-const api = require('./operations/get_course_db');
+/**
+ * Controllers
+ */
+const homeController = require('./controllers/home');
+const courseController = require('./controllers/courses');
+const userController = require('./controllers/user');
 
-const Courses = require('./controllers/courses');
-
+/**
+ * Constant Settings
+ */
 const PORT = parseInt(process.env.PORT, 10) || 8080;
 const dev = process.env.NODE_ENV !== 'production';
 
@@ -65,9 +72,12 @@ app.prepare()
     /**
      * Primary app routes.
      */
-    server.get('/', (req, res) => {
-      res.redirect('/ucsc');
-    });
+    server.get('/', homeController.index(app));
+
+    server.get('/login', userController.getLogin(app));
+    server.post('/login', userController.postLogin(app));
+    server.get('/signup', userController.getSignup(app));
+    server.post('/signup', userController.postSignup(app));
 
     server.get('/foo', passportConfig.isAuthenticated, (req, res) => {
       res.send('hello world');
@@ -76,7 +86,7 @@ app.prepare()
     /**
      * API routes.
      */
-    server.get('/api/courses/:id', Courses.getCourses);
+    server.get('/api/courses/:id', courseController.getCourses);
 
     /**
      * Fall-back on other next.js assets.

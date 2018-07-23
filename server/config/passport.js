@@ -27,7 +27,7 @@ passport.use(new LocalStrategy({usernameField: 'email'},
         return done(null, false, {msg: `Email ${email} not found.`});
       }
 
-      user.comparePassword(password, (err, isMatch) => {
+      return user.comparePassword(password, (err, isMatch) => {
         if (err) {
           return done(err);
         }
@@ -46,6 +46,7 @@ exports.isAuthenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return next();
   }
-  res.redirect('/login');
+
+  return res.redirect('/login');
 };
 

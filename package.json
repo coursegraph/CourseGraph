@@ -16,6 +16,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "latest",
     "compression": "^1.7.2",
+    "crypto": "^1.0.1",
     "express": "^4.16.3",
     "isomorphic-unfetch": "^2.0.0",
     "jss": "^9.8.7",

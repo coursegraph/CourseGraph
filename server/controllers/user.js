@@ -1,15 +1,77 @@
+const {promisify} = require('util');
+const crypto = require('crypto');
 const passport = require('passport');
-const User = require('../models/User');
+
+const User = require('../models/user');
+
+const randomBytesAsync = promisify(crypto.randomBytes);
+
+/**
+ * GET /login
+ * Login page.
+ * @param app {App} Next app
+ * @return {Function}
+ */
+exports.getLogin = (app) => (req, res) => {
+  if (req.user) {
+    return res.redirect('/');
+  }
+
+  return app.render('/login', {
+    title: 'Login',
+  });
+};
+
+/**
+ * POST /login
+ * Sign in using email and password.
+ * @param app {App} Next app
+ * @return {Function}
+ */
+exports.postLogin = (app) => (req, res, next) => {
+  req.assert('email', 'Email is not valid').isEmail();
+  req.assert('password', 'Password cannot be blank').notEmpty();
+  req.sanitize('email').normalizeEmail({gmail_remove_dots: false});
+
+  const errors = req.validationErrors();
+
+  if (errors) {
+    req.flash('errors', errors);
+    return res.redirect('/account/login');
+  }
+
+  return passport.authenticate('local', (err, user, info) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!user) {
+      req.flash('errors', info);
+      return res.redirect('/login');
+    }
+
+    return req.logIn(user, (err) => {
+      if (err) {
+        return next(err);
+      }
+      req.flash('success', {msg: 'Success! You are logged in.'});
+      return res.redirect(req.session.returnTo || '/');
+    });
+  })(req, res, next);
+};
 
 /**
  * GET /signup
  * Signup page.
+ * @param app
+ * @return {Function}
  */
-exports.getSignup = (req, res) => {
+exports.getSignup = (app) => (req, res) => {
   if (req.user) {
     return res.redirect('/');
   }
-  res.render('account/signup', {
+
+  return app.render('/account/signup', {
     title: 'Create Account',
   });
 };
@@ -17,18 +79,22 @@ exports.getSignup = (req, res) => {
 /**
  * POST /signup
  * Create a new local account.
+ * @param app
+ * @return {Function}
  */
-exports.postSignup = (req, res, next) => {
+
+exports.postSignup = (app) => (req, res, next) => {
   req.assert('email', 'Email is not valid').isEmail();
   req.assert('password', 'Password must be at least 4 characters long').len(4);
-  req.assert('confirmPassword', 'Passwords do not match').equals(req.body.password);
+  req.assert('confirmPassword', 'Passwords do not match').equals(
+    req.body.password);
   req.sanitize('email').normalizeEmail({gmail_remove_dots: false});
 
   const errors = req.validationErrors();
 
   if (errors) {
     req.flash('errors', errors);
-    return res.redirect('/signup');
+    return res.redirect('/account/signup');
   }
 
   const user = new User({
@@ -36,23 +102,30 @@ exports.postSignup = (req, res, next) => {
     password: req.body.password,
   });
 
-  User.findOne({email: req.body.email}, (err, existingUser) => {
+  // Check if the user already exist
+  return User.findOne({email: req.body.email}, (err, existingUser) => {
     if (err) {
       return next(err);
     }
+
     if (existingUser) {
-      req.flash('errors', {msg: 'Account with that email address already exists.'});
-      return res.redirect('/signup');
+      req.flash('errors', {
+        msg: 'Account with that email address already exists.',
+      });
+      return res.redirect('/account/signup');
     }
-    user.save((err) => {
+
+    return user.save((err) => {
       if (err) {
         return next(err);
       }
-      req.logIn(user, (err) => {
+
+      return req.logIn(user, (err) => {
         if (err) {
           return next(err);
         }
-        res.redirect('/');
+
+        return res.redirect('/');
       });
     });
   });
