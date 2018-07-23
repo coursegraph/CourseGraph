@@ -18,7 +18,7 @@ def extract_text (element):
     else:
         return element.text
 
-def extract_sections (content):
+def extract_sections (content, dept):
     divisions = {}
     text = ''
     division = None
@@ -45,6 +45,15 @@ def extract_sections (content):
     print("Listed Divisions: %s"%divisions.keys())
 
     text = ''
+    
+    # THIS IS A TERRIBLE HACK.
+    # Problem: the sociology page's intro course is missing a course number.
+    # Solution: this.
+    # This will break (hopefully) whenever the sociology fixes that page.
+    # Until then, uh...
+    if dept == 'socy':
+        divisions['Lower-Division'] = '1. '+divisions['Lower-Division']
+    
     for k, v in divisions.items():
         text += '\nDIVISION %s\n%s'%(k, v)
     return text
@@ -53,7 +62,7 @@ def fetch_dept_page_content (url):
     try:
         soup = fetch_soup(url)  
         content = soup.find("div", {"class": "content"})
-        text = extract_sections(content)
+        text = extract_sections(content, url.split('/')[-1].split('.')[0])
         enforce(text, "Empty page content: '%s'\nRaw content:\n%s", url, content.text)
         text = text.replace('\\n', '')
         text = '\n'.join([ line.strip() for line in text.split('\n') ])
