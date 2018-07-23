@@ -18,7 +18,7 @@ def last_tok (s):
     return s.split('\n')[0] if s[0] != '\n' else '\\n%s'%(s.split('\n')[0])
 
 def parse_course_title_and_credits (s):
-    match = re.match(r'((?:U\.\s*S\.\s*|W\.E\.B\.\s*|C\.E\.\s*|[A-Z@"]|[234]D\s+|A Li|I C)[\w/\-,:\(\)\\\'\d–!/?]+(?:(?:\.\.\.|[ \t]+)(?:Vol\.|vs\.|4\.5|Ph\.D\.|U\.S\.|(?:B\.)?C\.E\.?|C\.|A\.|c\.\s+1|[&\+\(\)\w/\-,:!\d–"\\\'!/?])+)*)(?:\s+\((\d+) credits?\))?\.*[ \t]*', s)
+    match = re.match(r'((?:U\.\s*S\.\s*|W\.E\.B\.\s*|C\.E\.\s*|[A-Z@"]|[234]D\s+|A (?:Li|Su)|I C)[\w/\-,:\(\)\\\'\d–!/?]+(?:(?:\.\.\.|[ \t]+)(?:Vol\.|vs\.|4\.5|Ph\.D\.|U\.S\.|(?:B\.)?C\.E\.?|C\.|A\.|c\.\s+1|[&\+\(\)\w/\-,:!\d–"\\\'!/?])+)*)(?:\s+\((\d+) credits?\))?\.*[ \t]*', s)
     enforce(match, "Expected course title + credit(s), got '%s'"%last_tok(s))
     s = s[match.end():]
     title = match.group(1).strip()
@@ -47,7 +47,7 @@ def parse_course_description (s):
 def parse_instructor_from_description (s):
     if not s:
         return s, None
-    match = re.search(r'\s*((\([FWS]\)|The Staff|[A-Z]\.|[A-Z][a-z]+(?:.[A-Z])?|m. cardenas)(?:(?:,?\s+)(The Staff|[A-Z]\.|[A-Z][a-z]+(?:.[A-Z])?|\([FWS]\)|m. cardenas))*),?\s*$', s)
+    match = re.search(r'\s*((\([FWS]\)|The Staff|[A-Z]r?\.|[A-Z][a-z]+(?:.[A-Z])?|m. cardenas)(?:(?:,?\s+)(The Staff|[A-Z]r?\.|[A-Z][a-z]+(?:.[A-Z])?|\([FWS]\)|m. cardenas))*),?\s*$', s)
     enforce(match, "Expected instructor at end of course description, got '%s'", s)
     return match.group(1), s[:match.start()]
 
@@ -111,6 +111,7 @@ def parse_division (s, dept=None, dept_lookup=None):
         return '', []
     division = match.group(1)
     s = s[match.end():]
+    print("got DIVISION: '%s' in dept '%s'"%(division, dept))
 
     courses = []
     while s:
