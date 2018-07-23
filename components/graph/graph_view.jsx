@@ -2,6 +2,10 @@ import React from 'react';
 import Graph from 'react-graph-vis';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
+import Tooltip from '@material-ui/core/Tooltip';
+
 
 const options = {
   layout: {
@@ -34,9 +38,13 @@ const options = {
       fit: true,
     },
   },
+  interaction: {
+    hover:true,
+    hoverConnectedEdges: false,
+  },
 };
 
-const styles = {
+const mStyles = {
   modal: {
     position: 'absolute',
     top: 350,
@@ -58,12 +66,33 @@ const styles = {
   },
 };
 
+const tStyles = {
+  tooltip: {
+    position: 'relative',
+    overflow: 'hidden',
+    maxWidth: 300,
+    backgroundColor: 'white',
+  },
+  title: {
+    fontSize: 14,
+    color: 'black',
+    padding: 5,
+  },
+  content:{
+    fontSize: 12,
+    color: 'black',
+    padding: 5,
+  },
+};
+
 export default class GraphView extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      open: false,
-      node: '',
+      toolOpen: false,
+      toolNode: '',
+      popOpen: false,
+      popNode: '',
     };
   }
 
@@ -91,15 +120,23 @@ export default class GraphView extends React.Component {
     },
     doubleClick: (event) => {
       let {nodes} = event;
-      this.setState({ open: true });
-      this.setState({ node: this.getNode(nodes) });
+      this.setState({ popOpen: true });
+      this.setState({ popNode: this.getNode(nodes) });
       //console.log(`double clicked nodes: ${nodes}`);
       // console.log(this.getNode(nodes));
       // const myId = this.getNode(nodes);
       // this.setState({nodeId: myId});
     },
     click: () => {
-      this.setState({ open: false });
+      this.setState({ popOpen: false });
+    },
+    hoverNode: (event) => {
+      let {node} = event;
+      this.setState({ toolOpen: true });
+      this.setState({ toolNode: this.getNode(node) });
+    },
+    blurNode: () => {
+      this.setState({ toolOpen: false });
     },
   };
 
@@ -107,28 +144,27 @@ export default class GraphView extends React.Component {
     return (
       <div>
         <Graph graph={this.props.data}
-               options={options}
-               events={this.events}
+          options={options}
+          events={this.events}
         />
         <Modal aria-labelledby="simple-modal-title"
-               aria-describedby="simple-modal-description"
-               open={this.state.open} onClose={this.events.click}>
-          <div style={styles.modal}>
-            <Typography style={styles.title} id="modal-title">
+          aria-describedby="simple-modal-description"
+          open={this.state.popOpen} onClose={this.events.click}>
+          <div style={mStyles.modal}>
+            <Typography style={mStyles.title} id="modal-title">
               <br />
-              {this.state.node.title}
+              {this.state.popNode.title}
             </Typography>
-            <Typography style={styles.content} id="simple-modal-description">
-              <p>{`Instructor: ${this.state.node.instructor}`}</p>
-              <p>{`Terms: ${this.state.node.terms}`}</p>
-              <p>{`GE: ${this.state.node.geCategories}`}</p>
-              <p>{`Division: ${this.state.node.division}`}</p>
-              <p>{`Description: ${this.state.node.description}`}</p>
+            <Typography style={mStyles.content} id="simple-modal-description">
+              <p>{`Instructor: ${this.state.popNode.instructor}`}</p>
+              <p>{`Terms: ${this.state.popNode.terms}`}</p>
+              <p>{`GE: ${this.state.popNode.geCategories}`}</p>
+              <p>{`Division: ${this.state.popNode.division}`}</p>
+              <p>{`Description: ${this.state.popNode.description}`}</p>
             </Typography>
           </div>
         </Modal>
       </div>
-
     );
   }
 }
