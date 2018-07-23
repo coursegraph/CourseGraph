@@ -9,6 +9,8 @@ import os
 def extract_text (element):
     if element.name == 'p':
         return '\n%s\n'%(u''.join(map(extract_text, element)))
+    elif element.name == 'div':
+        return '\n%s\n'%(u''.join(map(extract_text, element)))
     elif element.name == 'br':
         return '\n'
     elif element.name is None:

@@ -27,3 +27,5 @@ package-lock.json
 /crawlers/ucsc/data/*
 /crawlers/ucsc/prereqs
 /crawlers/ucsc/unparsed
+
+crawlers/ucsc/temp
