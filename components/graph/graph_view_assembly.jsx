@@ -303,48 +303,23 @@ export default class GraphViewAssembly extends React.Component {
     this.updateSelected(selected);    
   }
   deselectNode (nodeId) {
-    const index = this.state.selectedIDs.findIndex( (element) => element === select );
+    const index = this.state.selectedIDs.findIndex( (element) => element === nodeId );
     let selected = this.state.selectedIDs.slice();
     selected.splice(index, 1);
     this.updateSelected(selected);
   }
   handleItemClick(nodeId, event) {
     this.selectNode(nodeId);
-    // console.log(`course ID: ${id}`);
-    // let newSelected = this.state.selectedIDs;
-
-    // if (testUnique(newSelected, id)) {
-    //   newSelected.push(id);
-    // }
-
-    // const newGraph = filteredGraph(this.props.data.nodes, newSelected);
-    // //THE COLOR STUFF!
-    
-    // //END OF THE COLOR STUFF!!!
-    //   this.setState({
-    //     graphData: newGraph,
-    //     selectedIDs: newSelected,
-    //   });
   }
   handleSelectedClick(nodeId, event) {
     this.deselectNode(nodeId);
-    // console.log(`select is: ${select}`);
-    // console.log(`selected items: ${this.state.selectedIDs}`);
-    // const index = this.state.selectedIDs.findIndex( (element) => element === select );
-    // let newSelected = this.state.selectedIDs;
-    // newSelected.splice(index, 1);
-    // const newGraph = filteredGraph(this.props.data.nodes, newSelected);
-    // this.setState({
-    //   graphData: newGraph,
-    //   selectedIDs: newSelected,
-    // });
   }
   render() {
     return (
       <div>
         <SearchbarDrawer
           courses={this.props.data.nodes}
-          itemClick={ (event, id) => this.handleItemClick(event, id)}
+          itemClick={(event, id) => this.handleItemClick(event, id)}
           selClick={(event, sel) => this.handleSelectedClick(event, sel)}
           selected={this.state.selectedIDs}
         />
