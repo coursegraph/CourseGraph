@@ -131,11 +131,15 @@ def parse_course_page (page, dept_lookup):
         courses += result
     return courses
 
+def fixup_course_lookup (lookup):
+    lookup['Chemistry'] = lookup['Chemistry and Biochemistry']
+
 def parse_course_pages (*args, **kwargs):
     pages = list(fetch_course_pages(*args, **kwargs))
     dept_lookup = {}
     for page in pages:
         dept_lookup[page.title] = page.dept
+    fixup_course_lookup(dept_lookup)
 
     print("Dept lookup:")
     items = sorted(list(dept_lookup.items()), key=lambda x: x[0])

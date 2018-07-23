@@ -52,11 +52,12 @@ def fetch_department_urls (base_url = 'https://registrar.ucsc.edu/catalog/progra
     enforce(dept_anchor, "Could not find '%s/#departments'", index_url)
     header = dept_anchor.parent
     enforce(header.name == "h2", "Unexpected: is not a h2 tag (got '%s')", header.name)
-    table = header.findNext('td')
-    enforce(table.name == "td", "Expected element after heading to be table, not '%s'", table.name)
+    table = header.findNext('tr')
+    enforce(table.name == "tr", "Expected element after heading to be table, not '%s'", table.name)
     return {k: '%s/%s'%(base_url, v) for k, v in parse_department_links(table.find_all('a'))}
-
 
 if __name__ == '__main__':
     result = fetch_department_urls()
-    print(result)
+    print("Found %s department(s):"%len(result))
+    for k, v in result.items():
+        print("%s: %s"%(k, v))
