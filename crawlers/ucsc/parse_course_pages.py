@@ -16,7 +16,7 @@ def last_tok (s):
     return s.split('\n')[0] if s[0] != '\n' else '\\n%s'%(s.split('\n')[0])
 
 def parse_course_title_and_credits (s):
-    match = re.match(r'([A-Z][\w/\-,:]+(?:\s+(?:U.S.|[\w/\-,:!\d–]+))*)(?:\s+\((\d+) credits?\))?\.+[ \t]*', s)
+    match = re.match(r'([A-Z][\w/\-,:\(\)]+(?:(?:\.\.\.|[ \t]+)(?:U\.S\.|C\.|A\.|[\(\)\w/\-,:!\d–"])+)*)(?:\s+\((\d+) credits?\))?\.*[ \t]*', s)
     enforce(match, "Expected course title + credit(s), got '%s'"%last_tok(s))
     s = s[match.end():]
     title = match.group(1).strip()
