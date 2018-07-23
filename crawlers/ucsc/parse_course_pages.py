@@ -59,17 +59,17 @@ def parse_course (s, dept=None, division=None):
     # print("Got course %s '%s', %s credit(s), %s"%(name, title, credits, term))
     # print("Description: '%s'"%description)
 
-    print("COURSE:      %s"%name)
-    print("INITIAL:     %s"%description)
+    # print("COURSE:      %s"%name)
+    # print("INITIAL:     %s"%description)
 
     if description:
         instructor, description = parse_instructor_from_description(description)
     else:
         instructor = None
 
-    print("INSTRUCTOR:  %s"%instructor)
-    print("DESCRIPTION: %s"%description)
-    print()
+    # print("INSTRUCTOR:  %s"%instructor)
+    # print("DESCRIPTION: %s"%description)
+    # print()
     # print("=> instructor(s) '%s', description '%s'"%(instructor, description))
     return s, Course(name, title, credits, term, dept, division, description)
 
@@ -96,79 +96,38 @@ def parse_course_page (page):
     courses = []
     while text:
         text, result = parse_division(text, dept=page.dept)
+        if result:
+            print("Parsed %s courses from %s (%s)"%(len(result), page.dept, result[0].division))
         courses += result
     return courses
 
-    division = None
-    text = page.content
-    dept = page.dept.upper()
-    courses = {}
-
-    # def parse_division (s):
-    #     if match:
-    #         division = match.group(1).strip()
-    #         print("Set division '%s'"%division)
-    #         return s[match.end():], True
-    #     # else:
-    #     return s, False 
-
-    def parse_course_id (s):
-        match = re.match(r'\s*(\d+[A-Z]?)\.\s+', s)
-        if match:
-            name = '%s %s'%(dept, match.group(1))
-            return s[match.end():], name
-        return s, None
-
-    def parse_course_title (s):
-        match = re.match(r'([^\.]+)\.\s+', s)
-        if match:
-            return s[match.end():], match.group(1)
-        return s, None
-
-    def parse_course_term (s):
-        match = re.match(r'([FWS](?:,[FWS])+|\*)\s+', s)
-        if match:
-            return s[match.end():], match.group(1)
-        return s, None
-
-    def parse_course (s):
-        s, name = parse_course_id(s)
-        if name:
-            s, title = parse_course_title(s)
-            enforce(title, "Empty course title: '%s'", name)
-            print("Got course %s: '%s'"%(name, title))
-            s, term = parse_course_term(s)
-            if term:
-                print("Got course term '%s'"%term)
-
-
-            return s, True
-        return s, False
-
-    stages = [
-        parse_division,
-        parse_course
-    ]
-    def try_parse (text):
-        for stage in stages:
-            text, parsed = stage(text)
-            if parsed:
-                return text, True
-        return text, False
-
-    print("Got %s"%text)
-
-    while len(text) > 0:
-        text, parsed = try_parse(text)
-        enforce(parsed, "Could not parse: %s", text)
-
-
 def parse_course_pages (*args, **kwargs):
-    return list(map(parse_course_page, fetch_course_pages(*args, **kwargs)))
-
-
+    for page in fetch_course_pages(*args, **kwargs):
+        for result in parse_course_page(page):
+            yield result
 
 if __name__ == '__main__':
-    parse_course_pages()
+    courses = list(parse_course_pages())
+    print("Parsed %s courses"%len(courses))
+
+    byDept = {}
+    byDiv  = {}
+    for course in courses:
+        if not course.dept in byDept:
+            byDept[course.dept] = []
+        if not course.division in byDiv:
+            byDiv[course.division] = []
+        byDept[course.dept].append(course)
+        byDiv[course.division].append(course)
+
+    print("Courses by department:")
+    for dept, courses in byDept.items():
+        print("\t%s: %s course(s)"%(dept, len(courses)))
+
+    print("Courses by division:")
+    for div, courses in byDiv.items():
+        print("\t%s: %s course(s)"%(div, len(courses)))
+
+
     # print(fetch_course_pages())
     # map(parse_course_page, fetch_course_pages())
