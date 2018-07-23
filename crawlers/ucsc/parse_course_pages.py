@@ -1,6 +1,6 @@
 import re
 from fetch_index import fetch_soup, enforce
-from fetch_course_pages import fetch_department_course_pages
+from fetch_course_pages import fetch_course_pages
 
 def parse_course_page (page):
     state = { 'section': None }
@@ -65,5 +65,7 @@ def parse_course_page (page):
         enforce(parsed, "Could not parse: %s", text)
 
 
+
+
 if __name__ == '__main__':
-    map(parse_course_page, fetch_department_course_pages())
+    map(parse_course_page, fetch_course_pages())
