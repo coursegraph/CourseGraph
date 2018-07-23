@@ -58,7 +58,7 @@ def parse_course (s, dept=None, division=None):
 
 def parse_division (s, dept=None):
     match = re.match(r'[\n\s]*DIVISION\s+([A-Z][a-z]+(?:\-[A-Z][a-z]+)*)\s*\n', s)
-    fallback = re.match(r'Students submit petition to sponsoring agency\. May be repeated for credit\. The Staff|\[Return to top\]', s) if not match else None
+    fallback = re.match(r'<|Students submit petition to sponsoring agency\. May be repeated for credit\. The Staff|\[Return to top\]', s) if not match else None
     enforce(match or fallback, "Expected 'DIVISION <div name>\\n', not\n%s"%last_tok(s))
     if not match:
         return '', []
