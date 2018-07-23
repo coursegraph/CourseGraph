@@ -123,7 +123,7 @@ const nodes = [
   },
 ];
 
-function doFromEdges(nodes, id, newNodes, newEdges, froms) {
+function doFromEdges(nodes, id, newNodes, newEdges) {
   const edgesFrom = nodes[id].edges_from;
 
   edgesFrom.forEach((fromID) => {
@@ -131,69 +131,36 @@ function doFromEdges(nodes, id, newNodes, newEdges, froms) {
       'from': fromID,
       'to': id,
     });
-    if (testUnique(newNodes, fromID)) {
-      newNodes.push(fromID);
-    }
-    if (testUnique(froms, fromID)) {
-      froms.push(fromID);
-      doFromEdges(nodes, fromID, newNodes, newEdges, froms);
+    if (!newNodes.has(fromID)) {
+      newNodes.set(fromID, false);
+      doFromEdges(nodes, fromID, newNodes, newEdges);
     }
   });
-}
-
-function doToEdges(nodes, id, newNodes, newEdges, tos) {
-  const edgesTo = nodes[id].edges_to;
-
-  edgesTo.forEach((toID) => {
-    newEdges.push({
-      'from': id,
-      'to': toID,
-    });
-    if (testUnique(newNodes, toID)) {
-      newNodes.push(toID);
-    }
-    if (testUnique(tos, toID)) {
-      tos.push(toID);
-      doToEdges(nodes, toID, newNodes, newEdges, tos);
-    }
-  });
-}
-
-function testUnique(newNodes, id) {
-  for (let j = 0; j < newNodes.length; j++) {
-    if (newNodes[j] === id) {
-      return false;
-    }
-  }
-  return true;
 }
 
 /**
- * @param nodes {Array.<object>} the entire data set
- * @param ids {Array.<number>}
- * @param getFrom {boolean} if true returns all from connections (default true)
- * @param getTo {boolean} if true returns all to connections (default false)
+ * @param nodes Array.<object>
+ * @param ids Array.<number>
+ * @returns {{edges: Array, nodes: Array}}
  */
-function filteredGraph(nodes, ids, getFrom = true, getTo) {
-  let froms = [];
-  let tos = [];
-  let newNodes = [];
+
+function filteredGraph(nodes, ids) {
+  let newNodes = new Map();
   let edgeList = [];
 
-  ids.forEach( (id) => {
-    if (testUnique(newNodes, id)) {
-      newNodes.push(id);
+  if (typeof (ids) === 'number'){
+    if (!newNodes.has(ids)) {
+      newNodes.set(ids, false);
+      doFromEdges(nodes, ids, newNodes, edgeList);
     }
-
-    if (getFrom && testUnique(froms, id)) {
-      froms.push(id);
-      doFromEdges(nodes, id, newNodes, edgeList, froms);
-    }
-    if (getTo && testUnique(tos, id)) {
-      tos.push(id);
-      doToEdges(nodes, id, newNodes, edgeList, tos);
-    }
-  });
+  } else {
+    ids.forEach((id) => {
+      if (!newNodes.has(id)) {
+        newNodes.set(id, false);
+        doFromEdges(nodes, id, newNodes, edgeList);
+      }
+    });
+  }
 
 
   //console.log(edgeList);
@@ -204,25 +171,21 @@ function filteredGraph(nodes, ids, getFrom = true, getTo) {
     'edges' : edgeList,
     'nodes': graphNodes,
   };
-  /*
+
   console.log('nodelist:');
   console.log(newNodes);
   console.log('edges');
   console.log(edgeList);
-  console.log('froms');
-  console.log(froms);
-  console.log('tos');
-  console.log(tos);
-  */
+
   return newGraph;
 }
 
 //shitty output tests?
-//const graph = filteredGraph(nodes, [0]);
+const graph = filteredGraph(nodes, [0, 3]);
 
 //console.log('GRAPH:');
 //console.log(graph);
 //filteredGraph(nodes, 10)
 
 
-export default filteredGraph;
+//export default filteredGraph;
