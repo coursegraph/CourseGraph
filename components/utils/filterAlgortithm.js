@@ -133,7 +133,6 @@ function doFromEdges(nodes, id, newNodes, newEdges, froms) {
     });
     if (testUnique(newNodes, fromID)) {
       newNodes.push(fromID);
-      newNodes[newNodes.length - 1].color = '#89C4F4';
     }
     if (testUnique(froms, fromID)) {
       froms.push(fromID);
@@ -152,7 +151,6 @@ function doToEdges(nodes, id, newNodes, newEdges, tos) {
     });
     if (testUnique(newNodes, toID)) {
       newNodes.push(toID);
-      newNodes[newNodes.length - 1].color = '#89C4F4';
     }
     if (testUnique(tos, toID)) {
       tos.push(toID);

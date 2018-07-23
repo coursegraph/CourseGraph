@@ -8,7 +8,10 @@ import ListItemText from '@material-ui/core/ListItemText';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
 import Tooltip from '../Tooltip';
+import Paper from '@material-ui/core/Paper';
+import Chip from '@material-ui/core/Chip';
 import filteredGraph from '../utils/filterAlgortithm';
+
 
 const leStyle = {
   overflow: 'auto',
@@ -17,7 +20,9 @@ const leStyle = {
 };
 
 const selectStyle = {
-  maxWidth: '150px',
+  maxWidth: '300px',
+  overflow: 'auto',
+  maxHeight: '300px',
 };
 
 const selectText = {
@@ -221,22 +226,14 @@ class SelectedList extends React.Component {
   render() {
     return (
       <div id="selectDiv" style={selectStyle} onScroll={this.onListScroll} >
-        <List >{this.props.selected.map((course) => (
-          <ListItem
+        <Paper >{this.props.selected.map((course) => (
+          <Chip
             key={course}
-            button
-            divider
-            onClick={this.props.selClick.bind(this, course)}
-          >
-            <ListItemText disableTypography primary={<Typography style={{
-              color: 'white',
-              background: 'black',
-              fontSize: '20px'
-            }}>{this.props.courses[course].label}</Typography>}/>
-
-          </ListItem>
-
-        ))}</List>
+            style={selectText}
+            label={this.props.courses[course].label}
+            onDelete={this.props.selClick.bind(this, course)}
+          />
+        ))}</Paper>
       </div>
     );
   }
@@ -285,14 +282,24 @@ export default class GraphViewAssembly extends React.Component {
   handleItemClick(id, event) {
     //console.log(`course ID: ${id}`);
     let newSelected = this.state.selectedIDs;
+
     if (testUnique(newSelected, id)) {
       newSelected.push(id);
-      const newGraph = filteredGraph(this.props.data.nodes, newSelected);
+    }
+
+    const newGraph = filteredGraph(this.props.data.nodes, newSelected);
+    //THE COLOR STUFF!
+    newSelected.forEach( (selId) => {
+      let needNewColorIndex = newGraph.nodes.findIndex( (i) => i.id === selId);
+      console.log(`selected: ${newGraph.nodes[needNewColorIndex].label}`);
+      newGraph.nodes[needNewColorIndex].color = '#e04141';
+    });
+    //END OF THE COLOR STUFF!!!
       this.setState({
         graphData: newGraph,
         selectedIDs: newSelected,
       });
-    }
+
   }
   handleSelectedClick(select, event) {
     //console.log(`select is: ${select}`);
