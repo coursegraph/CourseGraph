@@ -1,8 +1,11 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import re
-from urllib2 import urlopen
+from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import gzip
 import io
+import unicodedata
 
 def read_url (url):
     response = urlopen(url)
@@ -12,10 +15,16 @@ def read_url (url):
         result = gzip.GzipFile(fileobj=buffer)
         return result.read().decode('utf8')
     except IOError:
-        return response.read().encode('utf8')
+        return response.read()#.encode('utf8')
 
 def fetch_soup (url):
-    return BeautifulSoup(read_url(url), 'html.parser')
+    text = str(read_url(url))
+    # text = text.replace(u'\u2014', u'–') # unicode bullshit
+    text = text.replace('\xa0', ' ')
+    text = unicodedata.normalize('NFKD', text)
+    with open('temp', 'w') as f:
+        f.write(text)
+    return BeautifulSoup(text, 'html.parser')
 
 def enforce (condition, msg, *args):
     if not condition:

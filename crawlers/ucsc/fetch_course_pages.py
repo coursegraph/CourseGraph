@@ -1,16 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import re
-from urllib2 import urlopen, HTTPError
 from bs4 import BeautifulSoup
+from urllib.request import HTTPError
 from fetch_index import fetch_soup, enforce, fetch_department_urls
-
+import os
 
 def extract_text (element):
     if element.name == 'p':
-        return '\n%s\n'%(''.join(map(extract_text, element)))
+        return '\n%s\n'%(u''.join(map(extract_text, element)))
     elif element.name == 'br':
         return '\n'
     elif element.name is None:
-        return '%s'%element
+        return ('%s'%element)
     else:
         return element.text
 
@@ -38,7 +40,7 @@ def extract_sections (content):
         divisions[division] = text
 
     text = ''
-    for k, v in divisions.iteritems():
+    for k, v in divisions.items():
         text += 'DIVISION %s%s'%(k, v)
     return text
 
@@ -69,20 +71,44 @@ def fetch_department_course_pages (base_url = 'https://registrar.ucsc.edu/catalo
         dept_urls = fetch_department_urls(base_url)
         enforce(dept_urls, "Could not fetch department urls from index at base url '%s'", base_url)
 
-    for title, url in dept_urls.iteritems():
-        page = url.split('/')[-1]
-        dept = page.split('.')[0]
-        url = '%s/course-descriptions/%s'%(base_url, page)
+    for title, url in dept_urls.items():
+        page = url.split(u'/')[-1]
+        dept = page.split(u'.')[0]
+        url = u'%s/course-descriptions/%s'%(base_url, page)
         print("Fetching '%s' => '%s'"%(title, url))
         result = fetch_dept_page_content(url)
         if result:
             yield DepartmentPageEntry(dept, title, url, result)
 
-
-def dump_department_pages_to_disk (path, base_url = 'https://registrar.ucsc.edu/catalog/programs-courses', dept_urls = None):
+def dump_department_pages_to_disk (path='data', base_url = 'https://registrar.ucsc.edu/catalog/programs-courses', dept_urls = None):
     for dept in fetch_department_course_pages(base_url, dept_urls):
         with open('%s/courses/%s'%(path, dept.dept), 'w') as f:
-            f.write(dept.content.encode('utf8'))
+            f.write(u'\n'.join([
+                dept.dept,
+                dept.title,
+                dept.url,
+                dept.content
+            ]))
+
+def fetch_courses_from_disk (path='data'):
+    for filename in os.listdir(u'%s/courses/'%path):
+        with open(u'%s/courses/%s'%(path, filename), 'r') as f:
+            lines = f.read().split('\n')
+            print(len(lines))
+            yield DepartmentPageEntry(
+                lines[0], 
+                lines[1], 
+                lines[2],
+                '\n'.join(lines[2:])
+            )
+
+def fetch_course_pages (*args, **kwargs):
+    courses = list(fetch_courses_from_disk(*args, **kwargs))
+    if not courses:
+        print("No disk cache; refetching")
+        return fetch_department_course_pages(*args, **kwargs)
+    return courses
+
 
 if __name__ == '__main__':
     dump_department_pages_to_disk('data')
