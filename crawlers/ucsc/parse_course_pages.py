@@ -18,7 +18,7 @@ def last_tok (s):
     return s.split('\n')[0] if s[0] != '\n' else '\\n%s'%(s.split('\n')[0])
 
 def parse_course_title_and_credits (s):
-    match = re.match(r'((?:[A-Z]|[234]D\s+|A Li|I C)[\w/\-,:\(\)\\\'\d–]+(?:(?:\.\.\.|[ \t]+)(?:vs\.|4\.5|Ph\.D\.|U\.S\.|C\.|A\.|[&\+\(\)\w/\-,:!\d–"\\\'])+)*)(?:\s+\((\d+) credits?\))?\.*[ \t]*', s)
+    match = re.match(r'((?:U\.\s*S\.\s*|W\.E\.B\.\s*|C\.E\.\s*|[A-Z@"]|[234]D\s+|A Li|I C)[\w/\-,:\(\)\\\'\d–!/?]+(?:(?:\.\.\.|[ \t]+)(?:Vol\.|vs\.|4\.5|Ph\.D\.|U\.S\.|(?:B\.)?C\.E\.?|C\.|A\.|c\.\s+1|[&\+\(\)\w/\-,:!\d–"\\\'!/?])+)*)(?:\s+\((\d+) credits?\))?\.*[ \t]*', s)
     enforce(match, "Expected course title + credit(s), got '%s'"%last_tok(s))
     s = s[match.end():]
     title = match.group(1).strip()
@@ -87,11 +87,11 @@ def parse_course (s, dept=None, division=None, dept_lookup=None):
     s, title, credits = parse_course_title_and_credits(s)
     s, term = parse_course_term(s)
     s, description = parse_course_description(s)
-    # print("Got course %s '%s', %s credit(s), %s"%(name, title, credits, term))
-    # print("Description: '%s'"%description)
+    print("Got course %s '%s', %s credit(s), %s"%(name, title, credits, term))
+    print("Description: '%s'"%description)
 
-    # print("COURSE:      %s"%name)
-    # print("INITIAL:     %s"%description)
+    print("COURSE:      %s"%name)
+    print("INITIAL:     %s"%description)
 
     instructor, description = parse_instructor_from_description(description)
     prereqs = parse_prereqs_from_description(description, dept, dept_lookup)
