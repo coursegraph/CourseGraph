@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 import re
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 from urllib.request import HTTPError
 from fetch_index import fetch_soup, enforce, fetch_department_urls
 import os
 
 def extract_text (element):
-    if element.name == 'p':
+    # this is REALLY f***ing ugly...
+    if isinstance(element, Comment):
+        return ''
+    elif element.name == 'p':
         return '\n%s\n'%(u''.join(map(extract_text, element)))
     elif element.name == 'div':
         return '\n%s\n'%(u''.join(map(extract_text, element)))
@@ -37,6 +40,8 @@ def extract_text (element):
         return text + '\n' if has_non_internal_line_break else text
     elif element.name is None:
         return '%s'%element
+    elif element.name == 'comment':
+        raise Exception("Skipping comment %s"%element.text)
     else:
         return element.text
 
