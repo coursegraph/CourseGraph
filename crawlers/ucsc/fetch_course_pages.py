@@ -13,8 +13,16 @@ def extract_text (element):
         return '\n%s\n'%(u''.join(map(extract_text, element)))
     elif element.name == 'br':
         return '\n'
+    elif element.name == 'strong':
+        text = ''
+        for child in element:
+            if child.name == 'br':
+                text += '\n'
+            elif child.name == None:
+                text += child
+        return text
     elif element.name is None:
-        return ('%s'%element)
+        return '%s'%element
     else:
         return element.text
 
