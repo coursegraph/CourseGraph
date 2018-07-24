@@ -6,12 +6,12 @@ import JssProvider from 'react-jss/lib/JssProvider';
 import getPageContext from '../utils/getPageContext';
 
 class MyApp extends App {
-  pageContext = null;
-
   constructor(props) {
     super(props);
     this.pageContext = getPageContext();
   }
+
+  pageContext = null;
 
   componentDidMount() {
     // Remove the server-side injected CSS.

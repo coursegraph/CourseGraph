@@ -107,7 +107,7 @@ export default class GraphView extends React.Component {
     arr.forEach((node) => {
       if (node.id == id) { // must use '==' instead of '==='
         result = node;
-        return;
+
       }
     });
 

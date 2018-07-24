@@ -93,7 +93,7 @@ app.prepare()
     /**
      * Primary app routes.
      */
-    server.get('/', homeController.index(app));
+    // server.get('/', homeController.index(app));
 
     server.get('/account/login', userController.getLogin(app));
     server.post('/account/login', userController.postLogin(app));

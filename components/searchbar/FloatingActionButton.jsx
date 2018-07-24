@@ -14,12 +14,12 @@ import SearchIcon from '@material-ui/icons/Search';
  */
 const styles = theme => ({
   extendedIcon: {
-    marginRight: theme.spacing.unit,
+    'marginRight': theme.spacing.unit,
   },
   absolute: {
-    position: 'absolute',
-    top: theme.spacing.unit * 2,
-    left: theme.spacing.unit * 3,
+    'position': 'absolute',
+    'top': theme.spacing.unit * 2,
+    'left': theme.spacing.unit * 3,
   },
 });
 
