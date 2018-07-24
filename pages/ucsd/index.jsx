@@ -19,8 +19,6 @@ class GraphPage extends React.Component {
   static async getInitialProps({req, query}) {
     const isServer = !!req;
 
-    console.log('getInitialProps called:', isServer ? 'server' : 'client');
-
     const URL = 'https://raw.githubusercontent.com/coursegraph/coursegraph-data/master/ucsd/ucsd_graph_data.json';
 
     if (isServer) {
@@ -40,9 +38,6 @@ class GraphPage extends React.Component {
       <div>
         <Header/>
         <GraphViewAssembly data={this.props.graphData}/>
-        {/*<GraphViewLoader*/}
-        {/*jsonDataUrl="https://raw.githubusercontent.com/coursegraph/coursegraph-data/master/ucsd/ucsd_graph_data.json"*/}
-        {/*/>*/}
       </div>
     );
   }
