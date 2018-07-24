@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
 
 import filteredGraph from '../utils/filterAlgortithm';
-import GraphView from '../graph/graph_view';
+import GraphView from './GraphView';
 import SearchbarDrawer from '../searchbar/SearchbarDrawer';
 import FloatingActionButton from '../searchbar/FloatingActionButton';
 
@@ -32,7 +32,7 @@ export default class GraphViewAssembly extends React.Component {
     // Update colors
     selection.forEach( (selId) => {
       let needNewColorIndex = graph.nodes.findIndex( (i) => i.id === selId);
-      console.log(`selected: ${graph.nodes[needNewColorIndex].label}`);
+      // console.log(`selected: ${graph.nodes[needNewColorIndex].label}`);
       graph.nodes[needNewColorIndex].color = '#e04141';
     });
     this.setState({
@@ -49,7 +49,7 @@ export default class GraphViewAssembly extends React.Component {
     // Add to selection + update graph
     let selected = this.state.selectedIDs.slice();
     selected.push(nodeId);
-    this.updateSelected(selected);    
+    this.updateSelected(selected);
   }
 
   deselectNode(nodeId) {

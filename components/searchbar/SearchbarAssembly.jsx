@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { Component } from 'react';
+
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import {levenshtein, match } from '../utils/levenshtien';
+
+import { levenshtein, match } from '../utils/levenshtien';
 
 const leStyle = {
   overflow: 'auto',
@@ -15,7 +17,7 @@ const inStyle = {
   fontSize: '20px',
 };
 
-class Searchbar extends React.Component {
+class Searchbar extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -31,12 +33,12 @@ class Searchbar extends React.Component {
 
   render() {
     return (<input style={inStyle} type="search" value={this.value}
-      onChange={this.onChange} placeholder="Search for Classes"/>
+                   onChange={this.onChange} placeholder="Search for Classes"/>
     );
   }
 }
 
-class SearchResultList extends React.Component {
+class SearchResultList extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -54,8 +56,6 @@ class SearchResultList extends React.Component {
         visibleElements: newVisibleElements,
       });
     }
-    //console.log(`max scroll height : ${el.scrollHeight}`);
-    //console.log(`amount scrolled? : ${el.scrollTop}`);
   };
 
   render() {
@@ -63,8 +63,6 @@ class SearchResultList extends React.Component {
     return (
       <div id="listDiv" style={leStyle} onScroll={this.onListScroll}>
         <List>{courses.map((course) => (
-          //<Tooltip
-          //trigger={
           <ListItem
             key={course.id}
             button
@@ -72,26 +70,14 @@ class SearchResultList extends React.Component {
             onClick={this.props.itemClick.bind(this, course.id)}
           >
             <ListItemText primary={`${course.label} ${course.title}`}/>
-          </ListItem> //}
-          /*content={
-            <div>
-              <h3>{`${course.title}`}</h3>
-              <p>{`Instructor: ${course.instructor}`}</p>
-              <p>{`Terms: ${course.terms}`}</p>
-              <p>{`GE: ${course.geCategories}`}</p>
-              <p>{`Division: ${course.division}`}</p>
-              <p>{`Description: ${course.description}`}</p>
-            </div>
-          }
-        /> */
+          </ListItem>
         ))}</List>
       </div>
     );
-    // <ListItemText primary={`${course.priority} ${course.label} ${course.title}`} />
   }
 }
 
-export default class SearchbarAssembly extends React.Component {
+export default class SearchbarAssembly extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -114,13 +100,6 @@ export default class SearchbarAssembly extends React.Component {
     filteredData.forEach((course) => {
       course.priority
         = levenshtein(searchQuery.toLowerCase(), course.searchString.toLowerCase(), this.tempArrayA, this.tempArrayB);
-      // = levenshtein(course.searchString.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB);
-      // = levenshtein(course.label.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB) * 10
-      // + levenshtein(course.title.toLowerCase(), searchQuery.toLowerCase(), this.tempArrayA, this.tempArrayB) * 3
-      // = levenshtein(searchQuery.toLowerCase(), course.label.toLowerCase(), this.tempArrayA, this.tempArrayB) * 10
-      // + levenshtein(searchQuery.toLowerCase(), course.title.toLowerCase(), this.tempArrayA, this.tempArrayB) * 3
-
-
     });
     filteredData.sort((a, b) => a.priority > b.priority);
 
@@ -129,7 +108,7 @@ export default class SearchbarAssembly extends React.Component {
       <div>
         <Searchbar onChange={(search) => this.updateSearch(search)}/>
         <SearchResultList courses={filteredData}
-          itemClick={(event, id) => this.props.itemClick(event, id)}/>
+                          itemClick={(event, id) => this.props.itemClick(event, id)}/>
       </div>
       // </Draggable>
     );

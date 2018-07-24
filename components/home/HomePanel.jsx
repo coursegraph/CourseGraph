@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
-import Link from 'next/link';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -31,7 +30,6 @@ const styles = theme => ({
     'margin': 'auto',
   },
 });
-
 
 /**
  * @param href {string}
