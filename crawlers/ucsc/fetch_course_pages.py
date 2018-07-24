@@ -14,13 +14,27 @@ def extract_text (element):
     elif element.name == 'br':
         return '\n'
     elif element.name == 'strong':
+        # This probably deserves some explaination. Ok, issues are as follows:
+        #  – some idiot put a line break to separate stuff-that-should-be-separated in lgst.
+        #    line break / paragraph element doesn't show up elsewhere, so we have to catch + 
+        #    address it here.
+        #  - some other idiot put a line break in anthropology, separating a title that
+        #    SHOULDN'T be separated
+        #
+        # So, we do the following:
+        #  – we manually concatenate all of the inner text tags (b/c no way to do this otherwise)
+        #  - if non-empty text is followed by a line break, we emit a '\n' afterwards
+        #  - if not we don't, b/c there shouldn't be any good reason to put a <br /> inside of a 
+        #    strong tag given what the registrar page is supposed to look like...
         text = ''
+        has_non_internal_line_break = False
         for child in element:
             if child.name == 'br':
-                text += '\n'
+                has_non_internal_line_break = True
             elif child.name == None:
                 text += child
-        return text
+                has_non_internal_line_break = False
+        return text + '\n' if has_non_internal_line_break else text
     elif element.name is None:
         return '%s'%element
     else:
