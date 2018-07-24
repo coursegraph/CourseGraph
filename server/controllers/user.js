@@ -40,25 +40,37 @@ exports.postLogin = (app) => (req, res, next) => {
     return res.redirect('/account/error'); // login
   }
 
-  return passport.authenticate('local', (err, user, info) => {
-    if (err) {
-      return next(err);
+  console.log('ready');
+
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/account/login'
     }
+  );
 
-    if (!user) {
-      // req.flash('errors', info);
-      return res.redirect('/account/error');
-    }
+  console.log('go');
 
-    return req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
+  return res.redirect('/');
 
-      // req.flash('success', {msg: 'Success! You are logged in.'});
-      return res.redirect(req.session.returnTo || '/');
-    });
-  })(req, res, next);
+  // return passport.authenticate('local', (err, user, info) => {
+  //   if (err) {
+  //     return next(err);
+  //   }
+  //
+  //   if (!user) {
+  //     // req.flash('errors', info);
+  //     return res.redirect('/account/error');
+  //   }
+  //
+  //   return req.logIn(user, (err) => {
+  //     if (err) {
+  //       return next(err);
+  //     }
+  //
+  //     // req.flash('success', {msg: 'Success! You are logged in.'});
+  //     return res.redirect(req.session.returnTo || '/');
+  //   });
+  // })(req, res, next);
 };
 
 /**
