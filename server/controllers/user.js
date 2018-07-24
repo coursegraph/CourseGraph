@@ -36,20 +36,18 @@ exports.postLogin = (app) => (req, res, next) => {
   const errors = req.validationErrors();
 
   if (errors) {
-    req.flash('errors', errors);
-    return res.redirect('/account/login');
+    // req.flash('errors', errors);
+    return res.redirect('/account/error'); // login
   }
 
   return passport.authenticate('local', (err, user, info) => {
-    console.log(err);
     if (err) {
       return next(err);
     }
 
-    console.log(user);
     if (!user) {
-      req.flash('errors', info);
-      return res.redirect('/account/login');
+      // req.flash('errors', info);
+      return res.redirect('/account/error');
     }
 
     return req.logIn(user, (err) => {
@@ -57,7 +55,7 @@ exports.postLogin = (app) => (req, res, next) => {
         return next(err);
       }
 
-      req.flash('success', {msg: 'Success! You are logged in.'});
+      // req.flash('success', {msg: 'Success! You are logged in.'});
       return res.redirect(req.session.returnTo || '/');
     });
   })(req, res, next);
@@ -94,11 +92,17 @@ exports.postSignup = (app) => (req, res, next) => {
 
   const errors = req.validationErrors();
 
+  console.log(req.body);
+  console.log(errors);
+
   if (errors) {
-    req.flash('errors', errors);
-    return res.redirect('/account/signup');
+    // req.flash('errors', errors);
+    return res.redirect('/account/error');
   }
 
+  /**
+   * @type {Model}
+   */
   const user = new User({
     email: req.body.email,
     password: req.body.password,
@@ -114,7 +118,7 @@ exports.postSignup = (app) => (req, res, next) => {
       req.flash('errors', {
         msg: 'Account with that email address already exists.',
       });
-      return res.redirect('/account/signup');
+      return res.redirect('/account/error');
     }
 
     return user.save((err) => {
