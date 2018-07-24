@@ -18,9 +18,10 @@ const MongoStore = require('connect-mongo')(session);
 /**
  * Controllers
  */
-const homeController = require('./controllers/home');
+// const homeController = require('./controllers/home');
 const courseController = require('./controllers/courses');
 const userController = require('./controllers/user');
+const api = require('./operations/get_graph_data');
 
 /**
  * Constant Settings
@@ -102,6 +103,11 @@ app.prepare()
 
     server.get('/foo', passportConfig.isAuthenticated, (req, res) => {
       res.send('hello world');
+    });
+
+    server.get('/ucsd', (req, res) => {
+      const itemData = api.getItem();
+      app.render(req, res, '/ucsd', {itemData: itemData});
     });
 
     /**

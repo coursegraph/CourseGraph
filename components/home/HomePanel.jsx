@@ -71,7 +71,7 @@ const HomePanel = ({classes}) => {
               UC <br/> Santa Cruz
             </Button>
           </Link>
-          <Link href="/ucsd">
+          <Link prefetch href="/ucsd">
             <Button className={classes.button}
                     onClick={onClickHandler}
                     variant="contained">
