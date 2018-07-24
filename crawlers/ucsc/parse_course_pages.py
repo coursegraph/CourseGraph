@@ -87,11 +87,11 @@ def parse_course (s, dept=None, division=None, dept_lookup=None):
     s, title, credits = parse_course_title_and_credits(s)
     s, term = parse_course_term(s)
     s, description = parse_course_description(s)
-    print("Got course %s '%s', %s credit(s), %s"%(name, title, credits, term))
-    print("Description: '%s'"%description)
+    # print("Got course %s '%s', %s credit(s), %s"%(name, title, credits, term))
+    # print("Description: '%s'"%description)
 
-    print("COURSE:      %s"%name)
-    print("INITIAL:     %s"%description)
+    # print("COURSE:      %s"%name)
+    # print("INITIAL:     %s"%description)
 
     instructor, description = parse_instructor_from_description(description)
     prereqs = parse_prereqs_from_description(description, dept, dept_lookup)
@@ -111,7 +111,7 @@ def parse_division (s, dept=None, dept_lookup=None):
         return '', []
     division = match.group(1)
     s = s[match.end():]
-    print("got DIVISION: '%s' in dept '%s'"%(division, dept))
+    # print("got DIVISION: '%s' in dept '%s'"%(division, dept))
 
     courses = []
     while s:
@@ -127,8 +127,8 @@ def parse_course_page (page, dept_lookup):
     courses = []
     while text:
         text, result = parse_division(text, dept=page.dept, dept_lookup=dept_lookup)
-        if result:
-            print("Parsed %s courses from %s (%s)"%(len(result), page.dept, result[0].division))
+        # if result:
+        #     print("Parsed %s courses from %s (%s)"%(len(result), page.dept, result[0].division))
         courses += result
     return courses
 
@@ -142,7 +142,7 @@ def parse_course_pages (*args, **kwargs):
         dept_lookup[page.title] = page.dept
     fixup_course_lookup(dept_lookup)
 
-    print("Dept lookup:")
+    # print("Dept lookup:")
     items = sorted(list(dept_lookup.items()), key=lambda x: x[0])
     for i, (title, dept) in enumerate(items):
         print("\t%d\t'%s': '%s'"%(i, title, dept))
@@ -158,7 +158,7 @@ if __name__ == '__main__':
         f.write('')
 
     courses = list(parse_course_pages())
-    print("Parsed %s courses"%len(courses))
+    # print("Parsed %s courses"%len(courses))
 
     byDept = {}
     byDiv  = {}
@@ -170,13 +170,13 @@ if __name__ == '__main__':
         byDept[course.dept].append(course)
         byDiv[course.division].append(course)
 
-    print("Courses by department:")
-    for dept, courses in byDept.items():
-        print("\t%s: %s course(s)"%(dept, len(courses)))
+    # print("Courses by department:")
+    # for dept, courses in byDept.items():
+    #     print("\t%s: %s course(s)"%(dept, len(courses)))
 
-    print("Courses by division:")
-    for div, courses in byDiv.items():
-        print("\t%s: %s course(s)"%(div, len(courses)))
+    # print("Courses by division:")
+    # for div, courses in byDiv.items():
+    #     print("\t%s: %s course(s)"%(div, len(courses)))
 
 
     # print(fetch_course_pages())
