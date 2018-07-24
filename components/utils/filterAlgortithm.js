@@ -166,7 +166,7 @@ function filteredGraph(nodes, ids) {
   //console.log(edgeList);
   //console.log(newNodes);
   const graphNodes = [];
-  newNodes.forEach((id) => graphNodes.push(nodes[id]));
+  newNodes.forEach((_, id) => { graphNodes.push(nodes[id]) });
   const newGraph = {
     'edges' : edgeList,
     'nodes': graphNodes,
