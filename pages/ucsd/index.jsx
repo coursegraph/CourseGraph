@@ -58,7 +58,7 @@ class GraphPage extends React.Component {
     return (
       <div>
         <Header/>
-        {/*<style>{'body { background-color: #222222; }'}</style>*/}
+        <style>{'body { background-color: #ECF0F1; }'}</style>
         <GraphViewAssembly data={graphData}/>
       </div>
     );

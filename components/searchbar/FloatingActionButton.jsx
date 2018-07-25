@@ -19,8 +19,8 @@ const styles = theme => ({
   },
   absolute: {
     'position': 'absolute',
-    'top': theme.spacing.unit * 2,
-    'left': theme.spacing.unit * 3,
+    'top': theme.spacing.unit * 4,
+    'left': theme.spacing.unit * 6,
   },
 });
 

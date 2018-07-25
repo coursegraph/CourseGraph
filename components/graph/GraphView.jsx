@@ -49,7 +49,7 @@ const options = {
     color: '#89C4F4',
     shapeProperties: {
       borderRadius: 0,     // only for box shape
-    },
+    }
   },
   physics: {
     solver: 'forceAtlas2Based',
