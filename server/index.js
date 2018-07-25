@@ -13,7 +13,7 @@ const LRUCache = require('lru-cache');
 const logger = require('morgan');
 const flash = require('express-flash');
 const MongoStore = require('connect-mongo')(session);
-
+const cors = require('cors');
 
 /**
  * Controllers
@@ -75,6 +75,7 @@ app.prepare()
     }));
     server.use(passport.initialize());
     server.use(flash());
+    server.use(cors());
 
     /**
      * Connect to MongoDB.
@@ -94,7 +95,9 @@ app.prepare()
     /**
      * Primary app routes.
      */
-    // server.get('/', homeController.index(app));
+    server.get('/', (req, res) => {
+      renderAndCache(req, res, '/');
+    });
 
     server.get('/account/login', userController.getLogin(app));
     server.post('/account/login', userController.postLogin(app));
@@ -105,9 +108,14 @@ app.prepare()
       res.send('hello world');
     });
 
+    server.get('/ucsc', (req, res) => {
+      renderAndCache(req, res, '/ucsc');
+    });
+
     server.get('/ucsd', (req, res) => {
       const itemData = api.getGraphData();
-      app.render(req, res, '/ucsd', {itemData: itemData});
+      renderAndCache(req, res, '/ucsd', {itemData: itemData});
+      // app.render(req, res, '/ucsd', {itemData: itemData});
     });
 
     /**
