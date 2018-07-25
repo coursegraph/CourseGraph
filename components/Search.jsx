@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Configure, Highlight, Hits, SearchBox } from 'react-instantsearch/dom';
+
 import { InstantSearch } from './Instantsearch';
 
 /**

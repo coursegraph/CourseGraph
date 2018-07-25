@@ -4,10 +4,25 @@ const path = require('path');
 const data = fs.readFileSync(
   path.join(__dirname, '../../data/ucsd_graph_data.json'), 'utf8');
 
-const parsedData = JSON.parse(data);
+/**
+ * @type {Map.<String, object>}
+ */
+const schoolMap = new Map([
+  ['UCSD', data],
+]);
 
-function getItem() {
-  return parsedData;
+/**
+ * @param school {string}
+ * @return {object}
+ */
+function getGraphData(school = 'UCSD') {
+  const graphData = schoolMap.get(school.toUpperCase());
+
+  if (!graphData) {
+    return {};
+  }
+
+  return JSON.parse(graphData);
 }
 
-module.exports = {getItem};
+module.exports = {getGraphData};

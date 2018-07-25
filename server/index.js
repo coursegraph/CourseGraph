@@ -106,7 +106,7 @@ app.prepare()
     });
 
     server.get('/ucsd', (req, res) => {
-      const itemData = api.getItem();
+      const itemData = api.getGraphData();
       app.render(req, res, '/ucsd', {itemData: itemData});
     });
 
@@ -114,6 +114,10 @@ app.prepare()
      * API routes.
      */
     server.get('/api/courses/:id', courseController.getCourses);
+    server.get('/api/graph-data/:school', (req, res) => {
+      const itemData = api.getGraphData(req.params.school);
+      res.json(itemData);
+    });
 
     /**
      * Fall-back on other next.js assets.

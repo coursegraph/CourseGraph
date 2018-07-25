@@ -22,7 +22,6 @@ class GraphPage extends React.Component {
     const URL = 'https://raw.githubusercontent.com/coursegraph/coursegraph-data/master/ucsd/ucsd_graph_data.json';
 
     if (isServer) {
-      // console.log(query.itemData.edges.length);
       return {graphData: query.itemData};
     } else {
       const res = await fetch(URL, {
