@@ -114,8 +114,8 @@ app.prepare()
 
     server.get('/ucsd', (req, res) => {
       const itemData = api.getGraphData();
-      renderAndCache(req, res, '/ucsd', {itemData: itemData});
-      // app.render(req, res, '/ucsd', {itemData: itemData});
+      // renderAndCache(req, res, '/ucsd', {itemData: itemData});
+      app.render(req, res, '/ucsd', {itemData: itemData});
     });
 
     /**
