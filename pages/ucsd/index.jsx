@@ -39,14 +39,13 @@ class GraphPage extends React.Component {
   static async getInitialProps({req, query}) {
     const isServer = !!req;
 
-    const URL = 'http://localhost:8080/api/graph-data/ucsd';
+    // const URL = 'http://localhost:8080/api/graph-data/ucsd';
+    // const URL = 'https://coursegraph.org/api/graph-data/ucsd';
 
     if (isServer) {
       return {graphData: query.itemData};
     } else {
-      const res = await fetch(URL, {
-        headers: {'Accept': 'application/json'},
-      });
+      const res = await fetch('https://coursegraph.org/api/graph-data/ucsd');
       const json = await res.json();
       return {graphData: json};
     }
