@@ -1,16 +1,28 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
 import Drawer from '@material-ui/core/Drawer';
-import Button from '@material-ui/core/Button';
+import Divider from '@material-ui/core/Divider';
+
 import SearchbarAssembly from '../searchbar/SearchbarAssembly';
 import SelectedList from '../searchbar/SelectedList';
+import FloatingActionButton from '../searchbar/FloatingActionButton';
 
-export default class SearchbarDrawer extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      isOpen: false,
-    };
-  }
+/**
+ * Component that you can trigger a button to open the drawer.
+ */
+class SearchbarDrawer extends Component {
+  static propTypes = {
+    classes: PropTypes.object,
+    courses: PropTypes.array.isRequired,
+    selected: PropTypes.array.isRequired,
+    itemClick: PropTypes.func.isRequired,
+    selClick: PropTypes.func.isRequired,
+  };
+
+  state = {
+    isOpen: false,
+  };
 
   toggleDrawer = (open) => () => {
     this.setState({
@@ -19,19 +31,25 @@ export default class SearchbarDrawer extends React.Component {
   };
 
   render() {
-    const contents = this.props.courses;
+    const {courses, selected, selClick, itemClick} = this.props;
 
     return (
       <div>
-        <Button onClick={this.toggleDrawer(true)}>Open Search Bar</Button>
-        <Drawer anchor="left" open={this.state.isOpen}
-                onClose={this.toggleDrawer(false)}>
-          <SearchbarAssembly courses={contents}
-                             itemClick={(event, id) => this.props.itemClick(event, id)}/>
-          <SelectedList courses={contents} selected={this.props.selected}
-                        selClick={(event, sel) => this.props.selClick(event, sel)}/>
+        <FloatingActionButton buttonClick={this.toggleDrawer(true)}/>
+        <Drawer anchor="left"
+                open={this.state.isOpen}
+                onClose={this.toggleDrawer(false)}
+        >
+          <SearchbarAssembly courses={courses}
+                             itemClick={(event, id) => itemClick(event, id)}/>
+          <Divider/>
+          <SelectedList courses={courses}
+                        selected={selected}
+                        selClick={(event, sel) => selClick(event, sel)}/>
         </Drawer>
       </div>
     );
   }
 }
+
+export default SearchbarDrawer;

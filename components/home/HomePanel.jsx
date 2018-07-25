@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Router from 'next/router';
-import Link from 'next/link';
 
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
@@ -32,17 +31,14 @@ const styles = theme => ({
   },
 });
 
-
 /**
  * @param href {string}
  * @return {Function}
  */
-function onClickHandler(href) {
-  return (e) => {
-    e.preventDefault();
-    Router.push(href);
-  };
-}
+const onClickHandler = (href) => (e) => {
+  e.preventDefault();
+  Router.push(href);
+};
 
 /**
  * @param classes
@@ -64,20 +60,16 @@ const HomePanel = ({classes}) => {
           Designed to help students with course planning.
         </Typography>
         <CardActions>
-          <Link href="/ucsc">
-            <Button className={classes.button}
-                    onClick={onClickHandler}
-                    variant="contained">
+          <Button className={classes.button}
+                  onClick={onClickHandler('/ucsc')}
+                  variant="contained">
               UC <br/> Santa Cruz
-            </Button>
-          </Link>
-          <Link href="/ucsd">
-            <Button className={classes.button}
-                    onClick={onClickHandler}
-                    variant="contained">
+          </Button>
+          <Button className={classes.button}
+                  onClick={onClickHandler('/ucsd')}
+                  variant="contained">
               UC <br/> San Diego
-            </Button>
-          </Link>
+          </Button>
         </CardActions>
       </CardContent>
     </Card>

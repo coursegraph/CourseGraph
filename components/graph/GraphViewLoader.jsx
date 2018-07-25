@@ -1,5 +1,5 @@
 import React from 'react';
-import GraphViewAssembly from '../graph/graph_view_assembly';
+import GraphViewAssembly from './GraphViewAssembly';
 
 class LoadingMessage extends React.Component {
   render() {

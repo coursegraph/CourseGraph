@@ -172,10 +172,10 @@ function filteredGraph(nodes, ids) {
     'nodes': graphNodes,
   };
 
-  console.log('nodelist:');
-  console.log(newNodes);
-  console.log('edges');
-  console.log(edgeList);
+  // console.log('nodelist:');
+  // console.log(newNodes);
+  // console.log('edges');
+  // console.log(edgeList);
 
   return newGraph;
 }
