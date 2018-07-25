@@ -23,3 +23,7 @@ package-lock.json
 
 *.pyc
 /.coveralls.yml
+
+crawlers/ucsd/ucsd_courses.json
+
+crawlers/ucsd/ucsd_graph_data.json
