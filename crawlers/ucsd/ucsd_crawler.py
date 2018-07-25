@@ -248,18 +248,12 @@ def do_work (x):
     get_page_courses(x['work_item']['dept'], x['work_item'], x)
     return x['courses']
 
-if __name__ == '__main__':
-    import argparse
-    parser = argparse.ArgumentParser(description='Fetches course data from the UCSD course catalog')
-    parser.add_argument('-o', '--out', type=str, help='output file', nargs='?', default='ucsd_courses.json')
-    parser.add_argument('-n', '--parallel', type=int, nargs='?', default=16)
-    args = parser.parse_args()
-
-    base_url = 'http://ucsd.edu/catalog'
-    out_file  = args.out
-    processes = max(args.parallel, 1)
-    parallel  = processes > 1
-
+def fetch_ucsd_courses (
+    base_url='http://ucsd.edu/catalog',
+    out_file=None,
+    parallelism=16,
+    return_results=True,
+):    
     print("Fetching course pages...")
     course_pages = get_catalog_course_pages(base_url)
     print("Got %d pages from %s"%(len(course_pages), base_url))
@@ -270,10 +264,9 @@ if __name__ == '__main__':
         course_pages[k]['dept'] = k
 
     output = { 'courses': {} }
-    if parallel:
+    if parallelism > 1:
         from multiprocessing import Pool
-        # with Pool(processes) as pool:
-        pool = Pool(processes)
+        pool = Pool(parallelism)
         items = [ { 'courses': {}, 'work_item': item } for k, item in course_pages.iteritems() ]
         courses = pool.map(do_work, items)
         for result in courses:
@@ -282,9 +275,24 @@ if __name__ == '__main__':
         for k, x in course_pages.iteritems():
             get_page_courses(k, x, output)
 
-    # print(sorted(dept_set))
+    if out_file:
+        import json
+        with open(out_file, 'w') as f:
+            json.dump(output, f)
+        print("Wrote %d courses to '%s'"%(len(output['courses']), out_file))
 
-    import json
-    with open(out_file, 'w') as f:
-        json.dump(output, f)
-    print("Wrote %d courses to '%s'"%(len(output['courses']), out_file))
+    if return_results:
+        return output
+
+
+if __name__ == '__main__':
+    import argparse
+    parser = argparse.ArgumentParser(description='Fetches course data from the UCSD course catalog')
+    parser.add_argument('-o', '--out', type=str, help='output file', nargs='?', default='ucsd_courses.json')
+    parser.add_argument('-n', '--parallel', type=int, nargs='?', default=16)
+    args = parser.parse_args()
+
+    fetch_ucsd_courses(
+        base_url = 'http://ucsd.edu/catalog',
+        out_file = args.out,
+        parallelism = args.parallel)

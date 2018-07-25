@@ -1,3 +1,4 @@
+from ucsd_crawler import fetch_ucsd_courses
 import json
 
 def generate_graph_data (courses, limit = -1):
@@ -55,13 +56,28 @@ if __name__ == '__main__':
         from subprocess import call
         call(['python', 'ucsd_crawler.py', '--out', str(args.input), '--parallel', str(args.parallel)])
 
-    with open(args.input, 'r') as f:
-        content = json.loads(f.read())
-        # print(len(content['courses']))
-        courses = content['courses']
+    if args.rebuild:
+        content = fetch_ucsd_courses(
+            out_file = args.input,
+            return_results = True,
+            parallelism = args.parallel
+        )
+    else:
+        with open(args.input, 'r') as f:
+            content = json.loads(f.read())
+            # print(len(content['courses']))
+    courses = content['courses']
 
     with open(args.out, 'w') as f:
-        data = generate_graph_data(courses, limit=args.limit)
+        graph_data = generate_graph_data(courses, limit=args.limit)
+        data = {
+            'course_info': {
+                'ucsd': {
+                    'courses': content['courses'],
+                    'vizjs': graph_data
+                }
+            }
+        }
         # print(len(data))
         # print(len(data['nodes']))
         # print(len(data['edges']))
