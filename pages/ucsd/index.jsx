@@ -19,7 +19,7 @@ class GraphPage extends React.Component {
   static async getInitialProps({req, query}) {
     const isServer = !!req;
 
-    const URL = 'https://raw.githubusercontent.com/coursegraph/coursegraph-data/master/ucsd/ucsd_graph_data.json';
+    const URL = 'https://coursegraph.org/api/graph-data/ucsd';
 
     if (isServer) {
       return {graphData: query.itemData};
