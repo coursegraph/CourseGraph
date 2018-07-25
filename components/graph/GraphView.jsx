@@ -4,6 +4,8 @@ import Graph from 'react-graph-vis';
 
 import { withStyles } from '@material-ui/core/styles';
 
+import CourseInfoCard from './CourseInfoCard';
+
 /**
  * Define the style of components on this page
  * @param theme
@@ -33,8 +35,10 @@ const options = {
     },
   },
   layout: {
+    randomSeed: 666,
     hierarchical: {
       enabled: false,
+      sortMethod: 'hubsize',
     },
     improvedLayout: true,
   },
@@ -49,7 +53,7 @@ const options = {
     color: '#89C4F4',
     shapeProperties: {
       borderRadius: 0,     // only for box shape
-    }
+    },
   },
   physics: {
     solver: 'forceAtlas2Based',
@@ -60,6 +64,9 @@ const options = {
       updateInterval: 100,
       onlyDynamicEdges: false,
       fit: true,
+    },
+    repulsion: {
+      nodeDistance: 250,
     },
   },
   interaction: {
@@ -124,31 +131,33 @@ class GraphView extends Component {
     arr.forEach((node) => {
       if (node.id == id) { // must use '==' instead of '==='
         result = node;
-
       }
     });
 
     return result;
   }
 
+  /**
+   * @type {
+   * {select: GraphView.events.select,
+   * hoverNode: GraphView.events.hoverNode,
+   * blurNode: GraphView.events.blurNode}
+   * }
+   */
   events = {
     select: (event) => {
-      let {nodes, edges} = event;
-    },
-    doubleClick: (event) => {
       let {nodes} = event;
-      this.setState({popOpen: true});
-      this.setState({popNode: this.getNode(nodes)});
-    },
-    click: () => {
-      this.setState({popOpen: false});
+
+
+      console.log(nodes);
     },
     hoverNode: (event) => {
-      let {node} = event;
+      let {nodes} = event;
       this.setState({toolOpen: true});
-      this.setState({toolNode: this.getNode(node)});
+      this.setState({toolNode: this.getNode(nodes)});
     },
     blurNode: () => {
+      let {nodes} = event;
       this.setState({toolOpen: false});
     },
   };
@@ -172,6 +181,7 @@ class GraphView extends Component {
                  events={this.events}
           />
         </div>
+        <CourseInfoCard/>
       </div>
     );
   }
