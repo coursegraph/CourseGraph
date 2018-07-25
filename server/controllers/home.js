@@ -5,5 +5,7 @@
  * @return {Function}
  */
 exports.index = (app) => (req, res) => {
-  res.redirect('/graph');
+  // check if logged in already,
+
+  res.redirect('/');
 };

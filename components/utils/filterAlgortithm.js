@@ -148,7 +148,7 @@ function filteredGraph(nodes, ids) {
   let newNodes = new Map();
   let edgeList = [];
 
-  if (typeof (ids) === 'number'){
+  if (typeof (ids) === 'number') {
     if (!newNodes.has(ids)) {
       newNodes.set(ids, false);
       doFromEdges(nodes, ids, newNodes, edgeList);
@@ -166,26 +166,26 @@ function filteredGraph(nodes, ids) {
   //console.log(edgeList);
   //console.log(newNodes);
   const graphNodes = [];
-  newNodes.forEach((id) => graphNodes.push(nodes[id]));
+  newNodes.forEach((_, id) => { graphNodes.push(nodes[id]) });
   const newGraph = {
     'edges' : edgeList,
     'nodes': graphNodes,
   };
 
-  console.log('nodelist:');
-  console.log(newNodes);
-  console.log('edges');
-  console.log(edgeList);
+  // console.log('nodelist:');
+  // console.log(newNodes);
+  // console.log('edges');
+  // console.log(edgeList);
 
   return newGraph;
 }
 
 //shitty output tests?
-const graph = filteredGraph(nodes, [0, 3]);
+//const graph = filteredGraph(nodes, [0, 3]);
 
 //console.log('GRAPH:');
 //console.log(graph);
 //filteredGraph(nodes, 10)
 
 
-//export default filteredGraph;
+export default filteredGraph;

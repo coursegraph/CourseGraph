@@ -13,14 +13,15 @@ const LRUCache = require('lru-cache');
 const logger = require('morgan');
 const flash = require('express-flash');
 const MongoStore = require('connect-mongo')(session);
-
+const cors = require('cors');
 
 /**
  * Controllers
  */
-const homeController = require('./controllers/home');
+// const homeController = require('./controllers/home');
 const courseController = require('./controllers/courses');
 const userController = require('./controllers/user');
+const api = require('./operations/get_graph_data');
 
 /**
  * Constant Settings
@@ -74,6 +75,7 @@ app.prepare()
     }));
     server.use(passport.initialize());
     server.use(flash());
+    server.use(cors());
 
     /**
      * Connect to MongoDB.
@@ -93,7 +95,9 @@ app.prepare()
     /**
      * Primary app routes.
      */
-    server.get('/', homeController.index(app));
+    server.get('/', (req, res) => {
+      renderAndCache(req, res, '/');
+    });
 
     server.get('/account/login', userController.getLogin(app));
     server.post('/account/login', userController.postLogin(app));
@@ -104,10 +108,24 @@ app.prepare()
       res.send('hello world');
     });
 
+    server.get('/ucsc', (req, res) => {
+      renderAndCache(req, res, '/ucsc');
+    });
+
+    server.get('/ucsd', (req, res) => {
+      const itemData = api.getGraphData();
+      // renderAndCache(req, res, '/ucsd', {itemData: itemData});
+      app.render(req, res, '/ucsd', {itemData: itemData});
+    });
+
     /**
      * API routes.
      */
     server.get('/api/courses/:id', courseController.getCourses);
+    server.get('/api/graph-data/:school', (req, res) => {
+      const itemData = api.getGraphData(req.params.school);
+      res.json(itemData);
+    });
 
     /**
      * Fall-back on other next.js assets.

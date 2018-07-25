@@ -51,7 +51,7 @@ class Login extends React.Component {
     };
 
     // https://coursegraph.org/account/login
-    const res = await fetch('http://localhost:8080/account/login', {
+    await fetch('http://localhost:8080/account/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

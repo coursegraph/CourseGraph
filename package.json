@@ -17,6 +17,7 @@
     "body-parser": "latest",
     "compression": "^1.7.2",
     "connect-mongo": "^2.0.1",
+    "cors": "^2.8.4",
     "crypto": "^1.0.1",
     "express": "^4.16.3",
     "express-flash": "0.0.2",

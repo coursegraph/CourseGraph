@@ -23,8 +23,11 @@ for (const obj of data.nodes) {
   }
 }
 
+let text = '[\n';
 for (const dept of deptSet) {
-  console.log(dept);
+  text += `"${dept}",\n`;
 }
+text += ']';
 
 console.log(`Saved ${deptSet.size}`);
+console.log(text);

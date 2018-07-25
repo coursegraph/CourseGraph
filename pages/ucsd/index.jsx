@@ -1,71 +1,67 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Router from 'next/router';
+import fetch from 'isomorphic-unfetch';
+
 import { withStyles } from '@material-ui/core/styles';
 
-import Particles from 'react-particles-js';
-
+import GraphViewAssembly from '../../components/graph/GraphViewAssembly';
 import Header from '../../components/Header';
 
+/**
+ * Define the style of components on this page
+ * @param theme
+ * @return {object}
+ */
 const styles = theme => ({
-  // body: {
-  //   'margin': '0',
-  //   'padding': '0',
-  //   'background-color': '#2e3250',
-  // },
   wrapper: {
-    'height': '100vh',
-    'width': '100vw',
-    'line-height': '100vh',
     'text-align': 'center',
+  },
+  appBar: {
+    position: 'absolute',
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
   },
 });
 
-/**
- * Search Page
- */
-class IndexPage extends React.Component {
+class GraphPage extends React.Component {
   static propTypes = {
-    // resultsState: PropTypes.object,
-    // searchState: PropTypes.object,
+    classes: PropTypes.object.isRequired,
+    graphData: PropTypes.object.isRequired,
   };
 
-  // static async getInitialProps(params) {
-  //   return {resultsState, searchState};
-  // }
+  /**
+   * @param req
+   * @param query
+   * @return {Promise<*>}
+   */
+  static async getInitialProps({req, query}) {
+    const isServer = !!req;
+
+    // const URL = 'http://localhost:8080/api/graph-data/ucsd';
+    // const URL = 'https://coursegraph.org/api/graph-data/ucsd';
+
+    if (isServer) {
+      return {graphData: query.itemData};
+    } else {
+      const res = await fetch('https://coursegraph.org/api/graph-data/ucsd');
+      const json = await res.json();
+      return {graphData: json};
+    }
+  }
 
   render() {
+    const {classes, graphData} = this.props;
+
     return (
-      <div className="wrapper">
+      <div>
         <Header/>
-        <style>{'body { background-color: #2e3250; }'}</style>
-        <Particles params={{
-          particles: {
-            'number': {
-              'value': 40,
-              'density': {
-                'enable': true,
-                'value_area': 800,
-              },
-            },
-            'color': {
-              'value': '#ffffff',
-            },
-            'opacity': {
-              'value': 0.5,
-              'random': false,
-              'anim': {
-                'enable': false,
-                'speed': 1,
-                'opacity_min': 0.1,
-                'sync': false,
-              },
-            },
-          },
-        }}/>
+        <style>{'body { background-color: #ECF0F1; }'}</style>
+        <GraphViewAssembly data={graphData}/>
       </div>
     );
   }
 }
 
-export default withStyles(styles)(IndexPage);
+export default withStyles(styles)(GraphPage);

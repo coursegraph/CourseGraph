@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
@@ -14,12 +15,12 @@ import SearchIcon from '@material-ui/icons/Search';
  */
 const styles = theme => ({
   extendedIcon: {
-    marginRight: theme.spacing.unit,
+    'marginRight': theme.spacing.unit,
   },
   absolute: {
-    position: 'absolute',
-    top: theme.spacing.unit * 2,
-    left: theme.spacing.unit * 3,
+    'position': 'absolute',
+    'top': theme.spacing.unit * 4,
+    'left': theme.spacing.unit * 6,
   },
 });
 

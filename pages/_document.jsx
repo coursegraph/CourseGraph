@@ -10,7 +10,7 @@ class MyDocument extends Document {
     return (
       <html lang="en" dir="ltr">
       <Head>
-        <title>My page</title>
+        <title>Course Graph</title>
         <meta charSet="utf-8"/>
         {/* Use minimum-scale=1 to enable GPU rasterization */}
         <meta
@@ -83,9 +83,7 @@ MyDocument.getInitialProps = ctx => {
         <style
           id="jss-server-side"
           // eslint-disable-next-line react/no-danger
-          dangerouslySetInnerHTML={
-            {__html: pageContext.sheetsRegistry.toString()}
-          }
+          dangerouslySetInnerHTML={{__html: pageContext.sheetsRegistry.toString()}}
         />
         {flush() || null}
       </React.Fragment>
