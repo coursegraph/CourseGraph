@@ -1,6 +1,7 @@
 import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import PropTypes from 'prop-types';
 import Particles from 'react-particles-js';
+import { withStyles } from '@material-ui/core/styles';
 
 import Header from '../components/Header';
 import HomePanel from '../components/home/HomePanel';
@@ -49,6 +50,10 @@ const particleParams = {
  * Home Page
  */
 class IndexPage extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
+
   render() {
     const {classes} = this.props;
 

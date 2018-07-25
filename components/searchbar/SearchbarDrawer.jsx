@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Drawer from '@material-ui/core/Drawer';
-import Button from '@material-ui/core/Button';
 
 import SearchbarAssembly from '../searchbar/SearchbarAssembly';
 import SelectedList from '../searchbar/SelectedList';
+import FloatingActionButton from '../searchbar/FloatingActionButton';
 
 /**
  * Component that you can trigger a button to open the drawer.
@@ -34,9 +34,7 @@ class SearchbarDrawer extends Component {
 
     return (
       <div>
-        <Button onClick={this.toggleDrawer(true)}>
-          Open Search Bar
-        </Button>
+        <FloatingActionButton buttonClick={this.toggleDrawer(true)}/>
         <Drawer anchor="left"
                 open={this.state.isOpen}
                 onClose={this.toggleDrawer(false)}

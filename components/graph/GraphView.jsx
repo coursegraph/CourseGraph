@@ -1,13 +1,39 @@
 import React from 'react';
 import Graph from 'react-graph-vis';
+
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
-import Paper from '@material-ui/core/Paper';
-import Popper from '@material-ui/core/Popper';
-import Tooltip from '@material-ui/core/Tooltip';
+import { withStyles } from '@material-ui/core/styles';
+import PropTypes from "prop-types";
 
+/**
+ * Define the style of components on this page
+ * @param theme
+ * @return {object}
+ */
+const styles = theme => ({
+  fullpage: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    overflow: 'hidden',
+    'z-index': -1,
+  },
+});
 
+/**
+ * vis.js graph configuration setting
+ * @type {object}
+ */
 const options = {
+  groups: {
+    useDefaultGroups: true,
+    myGroupId: {
+      /*node options*/
+    },
+  },
   layout: {
     hierarchical: {
       enabled: false,
@@ -18,28 +44,28 @@ const options = {
     color: '#000000',
   },
   width: '100%',
-  height: '800px',
+  height: '100%',
   autoResize: true,
   nodes: {
     shape: 'box',
     color: '#89C4F4',
+    shapeProperties: {
+      borderRadius: 0,     // only for box shape
+    },
   },
   physics: {
     solver: 'forceAtlas2Based',
     adaptiveTimestep: true,
-    // barnesHut: {
-    //   avoidOverlap: 0.75,
-    // },
     stabilization: {
       enabled: true,
-      iterations: 100,
+      iterations: 1,
       updateInterval: 100,
       onlyDynamicEdges: false,
       fit: true,
     },
   },
   interaction: {
-    hover:true,
+    hover: true,
     hoverConnectedEdges: false,
   },
 };
@@ -78,23 +104,24 @@ const tStyles = {
     color: 'black',
     padding: 5,
   },
-  content:{
+  content: {
     fontSize: 12,
     color: 'black',
     padding: 5,
   },
 };
 
-export default class GraphView extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      toolOpen: false,
-      toolNode: '',
-      popOpen: false,
-      popNode: '',
-    };
-  }
+class GraphView extends React.Component {
+  static propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
+
+  state = {
+    toolOpen: false,
+    toolNode: '',
+    popOpen: false,
+    popNode: '',
+  };
 
   /**
    * @param id
@@ -120,39 +147,39 @@ export default class GraphView extends React.Component {
     },
     doubleClick: (event) => {
       let {nodes} = event;
-      this.setState({ popOpen: true });
-      this.setState({ popNode: this.getNode(nodes) });
-      //console.log(`double clicked nodes: ${nodes}`);
-      // console.log(this.getNode(nodes));
-      // const myId = this.getNode(nodes);
-      // this.setState({nodeId: myId});
+      this.setState({popOpen: true});
+      this.setState({popNode: this.getNode(nodes)});
     },
     click: () => {
-      this.setState({ popOpen: false });
+      this.setState({popOpen: false});
     },
     hoverNode: (event) => {
       let {node} = event;
-      this.setState({ toolOpen: true });
-      this.setState({ toolNode: this.getNode(node) });
+      this.setState({toolOpen: true});
+      this.setState({toolNode: this.getNode(node)});
     },
     blurNode: () => {
-      this.setState({ toolOpen: false });
+      this.setState({toolOpen: false});
     },
   };
 
   render() {
+    const {classes} = this.props;
+
     return (
       <div>
-        <Graph graph={this.props.data}
-          options={options}
-          events={this.events}
-        />
+        <div className={classes.fullpage}>
+          <Graph graph={this.props.data}
+                 options={options}
+                 events={this.events}
+          />
+        </div>
         <Modal aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
           open={this.state.popOpen} onClose={this.events.click}>
           <div style={mStyles.modal}>
             <Typography style={mStyles.title} id="modal-title">
-              <br />
+              <br/>
               {this.state.popNode.title}
             </Typography>
             <Typography style={mStyles.content} id="simple-modal-description">
@@ -169,3 +196,4 @@ export default class GraphView extends React.Component {
   }
 }
 
+export default withStyles(styles)(GraphView);
