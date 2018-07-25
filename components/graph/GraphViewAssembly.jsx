@@ -19,6 +19,10 @@ function testUnique(array, item) {
   return true;
 }
 
+/**
+ * GraphViewAssembly renders both drawers and the graph view. Takes a prop
+ * data. Which is the graph data of a school.
+ */
 class GraphViewAssembly extends Component {
   static propTypes = {
     data: PropTypes.object.isRequired,

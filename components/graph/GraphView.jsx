@@ -1,10 +1,8 @@
-import React from 'react';
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import Graph from 'react-graph-vis';
 
-import Typography from '@material-ui/core/Typography';
-import Modal from '@material-ui/core/Modal';
 import { withStyles } from '@material-ui/core/styles';
-import PropTypes from "prop-types";
 
 /**
  * Define the style of components on this page
@@ -70,48 +68,40 @@ const options = {
   },
 };
 
-const mStyles = {
-  modal: {
-    position: 'absolute',
-    top: 350,
-    left: 700,
-    width: 500,
-    backgroundColor: 'white',
-  },
-  title: {
-    fontSize: 16,
-    top: 10,
-    color: 'black',
-    padding: 5,
-  },
-  content: {
-    fontSize: 14,
-    top: 5,
-    color: 'black',
-    padding: 5,
-  },
+/**
+ * @param dept {string} the Department name
+ * @return {object}
+ */
+const generateGroupObject = (dept) => {
+  // gen random color
+
+  return {
+    color: {background: 'red'},
+  };
 };
 
-const tStyles = {
-  tooltip: {
-    position: 'relative',
-    overflow: 'hidden',
-    maxWidth: 300,
-    backgroundColor: 'white',
-  },
-  title: {
-    fontSize: 14,
-    color: 'black',
-    padding: 5,
-  },
-  content: {
-    fontSize: 12,
-    color: 'black',
-    padding: 5,
-  },
-};
+/**
+ * Takes the raw data received from the server, 'parser' it to add additional
+ * properties to the nodes.
+ * @param rawData
+ * @return {{data: object, departments: Set}}
+ */
+function parseGraphData(rawData) {
+  let graph = Object.assign({}, rawData);
+  let depts = new Set();
 
-class GraphView extends React.Component {
+  graph.nodes.forEach((node) => {
+    node.group = node.dept;
+    depts.add(node.dept);
+  });
+
+  return {graph, depts};
+}
+
+/**
+ * Wrapper to the Vis.js Graph. Handle additional Events.
+ */
+class GraphView extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
   };
@@ -164,33 +154,24 @@ class GraphView extends React.Component {
   };
 
   render() {
-    const {classes} = this.props;
+    const {classes, data} = this.props;
+
+    // Modify the graphData before passing to child component.
+    const {graph, depts} = parseGraphData(data);
+
+    // Must inject the groups data into the options.
+    for (const department of depts) {
+      options.groups.myGroupId[department] = generateGroupObject(department);
+    }
 
     return (
       <div>
         <div className={classes.fullpage}>
-          <Graph graph={this.props.data}
+          <Graph graph={graph}
                  options={options}
                  events={this.events}
           />
         </div>
-        <Modal aria-labelledby="simple-modal-title"
-          aria-describedby="simple-modal-description"
-          open={this.state.popOpen} onClose={this.events.click}>
-          <div style={mStyles.modal}>
-            <Typography style={mStyles.title} id="modal-title">
-              <br/>
-              {this.state.popNode.title}
-            </Typography>
-            <Typography style={mStyles.content} id="simple-modal-description">
-              <p>{`Instructor: ${this.state.popNode.instructor}`}</p>
-              <p>{`Terms: ${this.state.popNode.terms}`}</p>
-              <p>{`GE: ${this.state.popNode.geCategories}`}</p>
-              <p>{`Division: ${this.state.popNode.division}`}</p>
-              <p>{`Description: ${this.state.popNode.description}`}</p>
-            </Typography>
-          </div>
-        </Modal>
       </div>
     );
   }

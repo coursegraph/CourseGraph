@@ -1,15 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import fetch from 'isomorphic-unfetch';
 
 import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 
 import GraphViewAssembly from '../../components/graph/GraphViewAssembly';
 import Header from '../../components/Header';
-
-import fetch from 'isomorphic-unfetch';
 
 /**
  * Define the style of components on this page
@@ -32,7 +28,7 @@ const styles = theme => ({
 class GraphPage extends React.Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
-    graphData: PropTypes.object,
+    graphData: PropTypes.object.isRequired,
   };
 
   /**
@@ -57,13 +53,13 @@ class GraphPage extends React.Component {
   }
 
   render() {
-    const {classes} = this.props;
+    const {classes, graphData} = this.props;
 
     return (
       <div>
         <Header/>
         {/*<style>{'body { background-color: #222222; }'}</style>*/}
-        <GraphViewAssembly data={this.props.graphData}/>
+        <GraphViewAssembly data={graphData}/>
       </div>
     );
   }
