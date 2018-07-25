@@ -89,20 +89,45 @@ npm run test
 
 This command runs [`jest`](http://jestjs.io/) and [`enzyme`](http://airbnb.io/enzyme/), an incredibly useful testing utility.
 
-### And coding style tests
-
-We uses `TSLint`, just a command:
-
-```
-npm run pretest
-```
-
 ## Built With
 
 * [Next.js](https://nextjs.org/) - A lightweight framework for static and server‑rendered applications.
 * [React](https://reactjs.org) - A JavaScript library for building user interfaces
 * [Node.js](https://nodejs.org/en/) - A JavaScript runtime built on Chrome's V8 JavaScript engine.
 * [MongoDB](https://www.mongodb.com/) - Build innovative modern applications that create a competitive advantage.
+
+## Dependencies
+* [Material-ui/core]
+* [material-ui/icons]
+* [algoliasearch]
+* [bcrypt-nodejs]
+* [body-parser]
+* [compression]
+* [connect-mongo'
+* [crypto]
+* [express]
+* [express-flash]
+* [express-session]
+* [express-validator]
+* [isomorphic-unfetch]
+* [jss]
+* [lru-cache]
+* [mongoose]
+* [next]
+* [npgrogress]
+* [passport]
+* [passport-local]
+* [prop-types]
+* [qs]
+* [react]
+* [react-dom]
+* [react-draggable]
+* [react-graph-vis]
+* [react-instantsearc]
+* [react-jss]
+* [reactjs-popup]
+* [styled-jsx]
+
 
 ## Authors
 
