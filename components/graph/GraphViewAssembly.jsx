@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import filteredGraph from '../utils/filterAlgortithm';
 import GraphView from './GraphView';
 import SearchbarDrawer from '../searchbar/SearchbarDrawer';
+import CourseInfoCard from './CourseInfoCard';
 
 /**
  * GraphViewAssembly renders both drawers and the graph view. Takes a prop
@@ -17,6 +18,7 @@ class GraphViewAssembly extends Component {
   state = {
     graphData: {'nodes': [], 'edges': []},
     selectedIDs: [],
+    selectedNode: null, // the current node object on graph
   };
 
   /**
@@ -86,7 +88,50 @@ class GraphViewAssembly extends Component {
     this.deselectNode(nodeId);
   }
 
+  /**
+   * Passed to child component
+   * @type {
+   * {select: GraphView.events.select,
+   * hoverNode: GraphView.events.hoverNode,
+   * blurNode: GraphView.events.blurNode}
+   * }
+   */
+  events = {
+    select: (event) => {
+      let {nodes} = event;
+
+      this.setState({
+        selectedNode: nodes.length > 0 ? this.getNode(nodes[0]) : null,
+      });
+    },
+    hoverNode: (event) => {
+      let {nodes} = event;
+    },
+    blurNode: () => {
+      let {nodes} = event;
+    },
+  };
+
+  /**
+   * @param id
+   * @returns {object}
+   */
+  getNode(id) {
+    let arr = this.props.data.nodes;
+    let result = null;
+
+    arr.forEach((node) => {
+      if (node.id == id) { // must use '==' instead of '==='
+        result = node;
+      }
+    });
+
+    return result;
+  }
+
   render() {
+    const {selectedNode} = this.state;
+
     return (
       <div>
         <SearchbarDrawer
@@ -95,7 +140,12 @@ class GraphViewAssembly extends Component {
           selClick={(event, sel) => this.handleSelectedClick(event, sel)}
           selected={this.state.selectedIDs}
         />
-        <GraphView data={this.state.graphData}/>
+        <GraphView data={this.state.graphData} events={this.events}/>
+        {selectedNode && <CourseInfoCard title={selectedNode.title}
+                                         description={selectedNode.description}
+                                         label={selectedNode.label}
+        />
+        }
       </div>
     );
   }

@@ -4,8 +4,6 @@ import Graph from 'react-graph-vis';
 
 import { withStyles } from '@material-ui/core/styles';
 
-import CourseInfoCard from './CourseInfoCard';
-
 /**
  * Define the style of components on this page
  * @param theme
@@ -111,6 +109,12 @@ function parseGraphData(rawData) {
 class GraphView extends Component {
   static propTypes = {
     classes: PropTypes.object.isRequired,
+    data: PropTypes.object.isRequired,
+    events: PropTypes.shape({
+      select: PropTypes.func.isRequired,
+      hoverNode: PropTypes.func.isRequired,
+      blurNode: PropTypes.func.isRequired,
+    }).isRequired,
   };
 
   state = {
@@ -120,50 +124,8 @@ class GraphView extends Component {
     popNode: '',
   };
 
-  /**
-   * @param id
-   * @returns {object}
-   */
-  getNode(id) {
-    let arr = this.props.data.nodes;
-    let result = null;
-
-    arr.forEach((node) => {
-      if (node.id == id) { // must use '==' instead of '==='
-        result = node;
-      }
-    });
-
-    return result;
-  }
-
-  /**
-   * @type {
-   * {select: GraphView.events.select,
-   * hoverNode: GraphView.events.hoverNode,
-   * blurNode: GraphView.events.blurNode}
-   * }
-   */
-  events = {
-    select: (event) => {
-      let {nodes} = event;
-
-
-      console.log(nodes);
-    },
-    hoverNode: (event) => {
-      let {nodes} = event;
-      this.setState({toolOpen: true});
-      this.setState({toolNode: this.getNode(nodes)});
-    },
-    blurNode: () => {
-      let {nodes} = event;
-      this.setState({toolOpen: false});
-    },
-  };
-
   render() {
-    const {classes, data} = this.props;
+    const {classes, data, events} = this.props;
 
     // Modify the graphData before passing to child component.
     const {graph, depts} = parseGraphData(data);
@@ -174,14 +136,11 @@ class GraphView extends Component {
     }
 
     return (
-      <div>
-        <div className={classes.fullpage}>
-          <Graph graph={graph}
-                 options={options}
-                 events={this.events}
-          />
-        </div>
-        <CourseInfoCard/>
+      <div className={classes.fullpage}>
+        <Graph graph={graph}
+               options={options}
+               events={events}
+        />
       </div>
     );
   }
