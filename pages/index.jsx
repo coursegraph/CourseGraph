@@ -1,69 +1,71 @@
 import React from 'react';
-import { bindActionCreators } from 'redux';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Particles from 'react-particles-js';
+import { withStyles } from '@material-ui/core/styles';
 
-import { addCount, serverRenderClock, startClock } from '../utils/store';
-import Page from '../components/Page';
+import Header from '../components/Header';
+import HomePanel from '../components/home/HomePanel';
 
 /**
- * @extends Component
- * @constructor
+ * Define the style of components on this page
+ * @param theme
+ * @return {object}
  */
-class Counter extends React.Component {
+const styles = theme => ({
+  wrapper: {
+    'text-align': 'center',
+  },
+});
 
-  /**
-   * @type {{startClock: shim}}
-   */
+/**
+ * Define the 'particle-js' setting on the background
+ * @type {object}
+ */
+const particleParams = {
+  particles: {
+    'number': {
+      'value': 40,
+      'density': {
+        'enable': true,
+        'value_area': 800,
+      },
+    },
+    'color': {
+      'value': '#ffffff',
+    },
+    'opacity': {
+      'value': 0.5,
+      'random': false,
+      'anim': {
+        'enable': false,
+        'speed': 1,
+        'opacity_min': 0.1,
+        'sync': false,
+      },
+    },
+  },
+};
+
+/**
+ * Home Page
+ */
+class IndexPage extends React.Component {
   static propTypes = {
-    startClock: PropTypes.func,
+    classes: PropTypes.object.isRequired,
   };
 
-  /**
-   * @param store {Store}
-   * @param isServer {bool}
-   * @return {Promise<{isServer: bool}>}
-   */
-  static async getInitialProps({store, isServer}) {
-    store.dispatch(serverRenderClock(isServer));
-    store.dispatch(addCount());
-
-    return {isServer};
-  }
-
-  /**
-   * Start the timer.
-   */
-  componentDidMount() {
-    this.timer = this.props.startClock();
-  }
-
-  /**
-   * Reset the timer.
-   */
-  componentWillUnmount() {
-    clearInterval(this.timer);
-  }
-
-  /**
-   * @return {JSX.Element}
-   */
   render() {
+    const {classes} = this.props;
+
     return (
-      <Page title="Index Page" linkTo="/other"/>
+      <div className={classes.wrapper}>
+        <Header/>
+        <style>{'body { background-color: #2e3250; }'}</style>
+        <HomePanel/>
+        <Particles params={particleParams}/>
+      </div>
     );
   }
 }
 
-/**
- * @param dispatch
- * @return {{addCount: addCount|ActionCreator<any>|ActionCreatorsMapObject<any>, startClock: startClock|ActionCreator<any>|ActionCreatorsMapObject<any>}}
- */
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addCount: bindActionCreators(addCount, dispatch),
-    startClock: bindActionCreators(startClock, dispatch),
-  };
-};
-
-export default connect(null, mapDispatchToProps)(Counter);
+export default withStyles(styles)(IndexPage);
