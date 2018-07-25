@@ -21,8 +21,8 @@ Solution? CourseGraph, a webapp that will:
 
 Technology: we will need
 
- + a web frontend (probably React, Typescript, D3) and people interested in UX and software design (myself included)
- + a web backend (probably node) and people interested in backend development and data storage / retrieval
+ + a web frontend (probably React, vis.js, material-ui) and people interested in UX and software design (myself included)
+ + a web backend (probably node, mongoDB) and people interested in backend development and data storage / retrieval
  + several web crawlers to datamine UCSC sites and maybe others; anyone interested in this please apply!
 + possible integration of other web services (if we could embed eg. ratemyprofessors that would be awesome)
 
@@ -32,11 +32,11 @@ Is this feasible in <5 weeks?
  + Plus side is we all get to wear lots of hats and use a lot of cool tech to build a real tool that students and counselors can use to explore class options and make planning schedules a lot easier
  + This project can be subdivided with 2-3 teams working in parallel on different components (eg. frontend and data mining), so we should be able to work without too many bottlenecks
 
-You do NOT need to have experience with typescript, react, node, or d3 to join this project, just a good attitude and a willingness to learn and contribute.
+You do NOT need to have experience with react, node, or Vis to join this project, just a good attitude and a willingness to learn and contribute.
 
-That said, you will need time to learn a bit of typescript and either frontend (react, d3), backend (node, databases – ask Ivan), or data mining (web crawlers, either node or python), since we'll probably be splitting into sub-teams that focus on one of those categories. And you'll need to do this fairly quickly (ie. over the next few weeks) since we'll need to hit the ground running as soon as possible. Oh, and if you'd like to do project management (as one of your many hats) that would be very useful too.
+That said, you will need time to learn a bit of typescript and either frontend (react, vis.js), backend (node, databases – ask Ivan), or data mining (web crawlers, either node or python), since we'll probably be splitting into sub-teams that focus on one of those categories. And you'll need to do this fairly quickly (ie. over the next few weeks) since we'll need to hit the ground running as soon as possible. Oh, and if you'd like to do project management (as one of your many hats) that would be very useful too.
 
-I'll be learning react and d3 over the next week or so, so if you're interested in that (whether you're a part of this team or not) please hit me up! (ssemery@ucsc.edu)
+I'll be learning react and vis.js over the next week or so, so if you're interested in that (whether you're a part of this team or not) please hit me up! (ssemery@ucsc.edu)
 
 ## Getting Started
 
@@ -45,6 +45,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 [Node.js](https://nodejs.org/en/) - JavaScript runtime built on Chrome's V8 JavaScript engine.
+[mongoDB] (https://docs.mongodb.com/manual/installation/) - MongoDB is an open-source document database that provides high performance, high availability, and automatic scaling.
 
 The minimum supported Node version is `v6.0.0` by default. (We are using `v10.0.0`).
 
@@ -89,14 +90,6 @@ npm run test
 
 This command runs [`jest`](http://jestjs.io/) and [`enzyme`](http://airbnb.io/enzyme/), an incredibly useful testing utility.
 
-### And coding style tests
-
-We uses `TSLint`, just a command:
-
-```
-npm run pretest
-```
-
 ## Built With
 
 * [Next.js](https://nextjs.org/) - A lightweight framework for static and server‑rendered applications.
@@ -104,14 +97,47 @@ npm run pretest
 * [Node.js](https://nodejs.org/en/) - A JavaScript runtime built on Chrome's V8 JavaScript engine.
 * [MongoDB](https://www.mongodb.com/) - Build innovative modern applications that create a competitive advantage.
 
+## Dependencies
+* [Material-ui/core]
+* [material-ui/icons]
+* [algoliasearch]
+* [bcrypt-nodejs]
+* [body-parser]
+* [compression]
+* [connect-mongo'
+* [crypto]
+* [express]
+* [express-flash]
+* [express-session]
+* [express-validator]
+* [isomorphic-unfetch]
+* [jss]
+* [lru-cache]
+* [mongoose]
+* [next]
+* [npgrogress]
+* [passport]
+* [passport-local]
+* [prop-types]
+* [qs]
+* [react]
+* [react-dom]
+* [react-draggable]
+* [react-graph-vis]
+* [react-instantsearc]
+* [react-jss]
+* [reactjs-popup]
+* [styled-jsx]
+
+
 ## Authors
 
-* **Seiji Emery** ([SeijiEmery](https://github.com/SeijiEmery) ) -
+* **Seiji Emery** ([SeijiEmery](https://github.com/SeijiEmery) ) - Lead Tech Developer
 * **Yanwen Xu** ([RaiderSoap](https://github.com/RaiderSoap) ) - :floppy_disk: Back-End Developer
-* **Patrick Lauderdale** ([ThePatrickLauderdale](https://github.com/ThePatrickLauderdale)) -
-* **Sharad Shrestha** ([sharad97](https://github.com/sharad97) ) -
-* **Wendy Liang** ([wendyrliang](https://github.com/wendyrliang) ) -
-* **Ka Ho Tran** ([Kutaho](https://github.com/Kutaho) ) -
+* **Patrick Lauderdale** ([ThePatrickLauderdale](https://github.com/ThePatrickLauderdale)) - FrontEnd Developer
+* **Wendy Liang** ([wendyrliang](https://github.com/wendyrliang) ) - FrontEnd Developer
+* **Ka Ho Tran** ([Kutaho](https://github.com/Kutaho) ) - FrontEnd Developer
+* **Nikki Miller** ([NikMills](https;//github.com/nikmills)) - FrontEnd Developer
 
 See also the list of [contributors](https://github.com/coursegraph/CourseGraph/settings/collaboration) who participated in this project.
 
