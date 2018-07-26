@@ -1,9 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import SearchIcon from '@material-ui/icons/Search';
+import Draggable from 'react-draggable';
 
 /**
  * Material UI theme styles. This Button can float above other components.
@@ -39,7 +39,7 @@ class FloatingActionButtons extends React.Component {
     const {classes} = this.props;
 
     return (
-      <div>
+      <Draggable>
         <Button variant="extendedFab"
                 aria-label="Delete"
                 className={classes.absolute}
@@ -48,7 +48,7 @@ class FloatingActionButtons extends React.Component {
           <SearchIcon className={classes.extendedIcon}/>
           Open Search Bar
         </Button>
-      </div>
+      </Draggable>
     );
   }
 }
