@@ -1,0 +1,13 @@
+node_modules/
+.next/
+.idea/
+coverage/
+static/
+spider/
+data/
+assets/
+crawlers/
+docs/
+*.json
+*.md
+LICENSE
